@@ -22,6 +22,7 @@ import { getUserReservationsReqDto } from './dto/getUserReservations.req.dto';
 import { getUserReservationsResDto } from './dto/getUserReservations.res.dto';
 import { cancelReservationReqDto } from './dto/cancelReservation.req.dto';
 import { cancelReservationResDto } from './dto/cancelReservation.res.dto';
+import { searchAgenciesResDto } from './dto/searchAgencies.res.dto';
 
 @Injectable()
 export class UserService {
@@ -32,56 +33,66 @@ export class UserService {
   }
 
   async kakaoLogin(dto: kakaoLoginReqDto): Promise<kakaoLoginResDto> {
-    return 'Completed';
+    const response = new kakaoLoginResDto();
+    return response;
   }
 
   async kakaoSignupCallback(
     dto: kakaoSignupCallbackReqDto,
   ): Promise<kakaoSignupCallbackResDto> {
-    return 'Completed';
+    const response = new kakaoSignupCallbackResDto();
+    return response;
   }
 
   async searchAgencies(
     dto: searchAgenciesReqDto,
-  ): Promise<searchRatePlansResDto> {
-    return 'Completed';
+  ): Promise<searchAgenciesResDto> {
+    const response = new searchAgenciesResDto();
+    return response;
   }
 
   async refilterAgencies(
     dto: refilterAgenciesReqDto,
   ): Promise<refilterAgenciesResDto> {
-    return 'Completed';
+    const response = new refilterAgenciesResDto();
+    return response;
   }
 
   async getAgencyDetail(
     dto: getAgencyDetailReqDto,
   ): Promise<getAgencyDetailResDto> {
-    return 'Completed';
+    const response = new getAgencyDetailResDto();
+    return response;
   }
 
   async searchRatePlans(
     dto: searchRatePlansReqDto,
   ): Promise<searchRatePlansResDto> {
-    return 'Completed';
+    const response = new searchRatePlansResDto();
+    return response;
   }
 
   async chooseAgency(dto: chooseAgencyReqDto): Promise<chooseAgencyResDto> {
-    return 'Completed';
+    const response = new chooseAgencyResDto();
+    return response;
   }
 
   async confirmVisit(dto: confirmVisitReqDto): Promise<confirmVisitResDto> {
-    return 'Completed';
+    const response = new confirmVisitResDto();
+    return response;
   }
 
   async getUserReservations(
     dto: getUserReservationsReqDto,
   ): Promise<getUserReservationsResDto> {
-    return 'Completed';
+    const response = new getUserReservationsResDto();
+    return response;
   }
 
   async cancelReservation(
     dto: cancelReservationReqDto,
   ): Promise<cancelReservationResDto> {
-    return 'Completed';
+    const response = new cancelReservationResDto();
+    return response;
   }
 }

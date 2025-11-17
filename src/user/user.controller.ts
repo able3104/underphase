@@ -45,7 +45,11 @@ export class UserController {
 
   @Post('kakaoLogin')
   @ApiOperation({ summary: '카카오 로그인' })
-  @ApiResponse({ status: 201, description: '로그인 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '로그인 성공',
+    type: kakaoLoginResDto,
+  })
   @ApiBadRequestResponse({ description: '로그인 실패' })
   @ApiNotFoundResponse({ description: '해당 카카오 아이디 보유 유저 없음' })
   async kakaoLogin(@Body() dto: kakaoLoginReqDto): Promise<kakaoLoginResDto> {
@@ -54,7 +58,11 @@ export class UserController {
 
   @Post('kakaoSignupCallback')
   @ApiOperation({ summary: '카카오 회원가입 콜백' })
-  @ApiResponse({ status: 201, description: '회원가입 콜백 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '회원가입 콜백 성공',
+    type: kakaoSignupCallbackResDto,
+  })
   @ApiBadRequestResponse({ description: '회원가입 콜백 실패' })
   @ApiNotFoundResponse({ description: '해당 카카오 아이디 보유 유저 없음' })
   async kakaoSignupCallback(
@@ -65,7 +73,11 @@ export class UserController {
 
   @Post('searchAgencies')
   @ApiOperation({ summary: '판매점 검색' })
-  @ApiResponse({ status: 201, description: '판매점 검색 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '판매점 검색 성공',
+    type: searchAgenciesResDto,
+  })
   @ApiBadRequestResponse({ description: '판매점 검색 실패' })
   @ApiNotFoundResponse({ description: '조건에 맞는 판매점 없음' })
   async searchAgencies(
@@ -76,7 +88,11 @@ export class UserController {
 
   @Post('refilterAgencies')
   @ApiOperation({ summary: '판매점 재필터링' })
-  @ApiResponse({ status: 201, description: '판매점 재필터링 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '판매점 재필터링 성공',
+    type: refilterAgenciesResDto,
+  })
   @ApiBadRequestResponse({ description: '판매점 재필터링 실패' })
   @ApiNotFoundResponse({ description: '조건에 맞는 판매점 없음' })
   async refilterAgencies(
@@ -85,20 +101,30 @@ export class UserController {
     return this.userService.refilterAgencies(dto);
   }
 
-  @Get('getAgencyDetail')
+  @Post('getAgencyDetail')
+  //get 으로 하면 id 취탈가능성 존재
+  //그러므로 get >> post
   @ApiOperation({ summary: '판매점 상세정보 조회' })
-  @ApiResponse({ status: 201, description: '판매점 상세정보 조회 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '판매점 상세정보 조회 성공',
+    type: getAgencyDetailResDto,
+  })
   @ApiBadRequestResponse({ description: '판매점 상세정보 조회 실패' })
   @ApiNotFoundResponse({ description: '해당 판매점 없음' })
   async getAgencyDetail(
-    @Query() dto: getAgencyDetailReqDto,
+    @Body() dto: getAgencyDetailReqDto,
   ): Promise<getAgencyDetailResDto> {
     return this.userService.getAgencyDetail(dto);
   }
 
   @Post('searchRatePlans')
   @ApiOperation({ summary: '요금제 검색' })
-  @ApiResponse({ status: 201, description: '요금제 검색 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '요금제 검색 성공',
+    type: searchRatePlansResDto,
+  })
   @ApiBadRequestResponse({ description: '요금제 검색 실패' })
   @ApiNotFoundResponse({ description: '조건에 맞는 요금제 없음' })
   async searchRatePlans(
@@ -109,7 +135,11 @@ export class UserController {
 
   @Post('chooseAgency')
   @ApiOperation({ summary: '판매점 선택' })
-  @ApiResponse({ status: 201, description: '판매점 선택 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '판매점 선택 성공',
+    type: chooseAgencyResDto,
+  })
   @ApiBadRequestResponse({ description: '판매점 선택 실패' })
   @ApiNotFoundResponse({ description: '해당 판매점 없음' })
   async chooseAgency(
@@ -120,7 +150,11 @@ export class UserController {
 
   @Post('confirmVisit')
   @ApiOperation({ summary: '방문 확정' })
-  @ApiResponse({ status: 201, description: '방문 확정 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '방문 확정 성공',
+    type: confirmVisitResDto,
+  })
   @ApiBadRequestResponse({ description: '방문 확정 실패' })
   @ApiNotFoundResponse({ description: '해당 예약 없음' })
   async confirmVisit(
@@ -131,7 +165,11 @@ export class UserController {
 
   @Get('getUserReservations')
   @ApiOperation({ summary: '유저 예약 내역 조회' })
-  @ApiResponse({ status: 201, description: '유저 예약 내역 조회 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '유저 예약 내역 조회 성공',
+    type: getUserReservationsResDto,
+  })
   @ApiBadRequestResponse({ description: '유저 예약 내역 조회 실패' })
   @ApiNotFoundResponse({ description: '해당 유저 예약 내역 없음' })
   async getUserReservations(
@@ -142,7 +180,11 @@ export class UserController {
 
   @Delete('cancelReservation')
   @ApiOperation({ summary: '예약 취소' })
-  @ApiResponse({ status: 201, description: '예약 취소 성공' })
+  @ApiResponse({
+    status: 201,
+    description: '예약 취소 성공',
+    type: cancelReservationResDto,
+  })
   @ApiBadRequestResponse({ description: '예약 취소 실패' })
   @ApiNotFoundResponse({ description: '해당 예약 없음' })
   async cancelReservation(
