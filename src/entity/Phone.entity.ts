@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -60,7 +61,7 @@ export class Phone {
   })
   image_URL: string;
 
-  @Column()
+  @CreateDateColumn()
   @ApiProperty({
     description: '생성 시간',
     example: '2023-01-01T00:00:00.000Z',
@@ -71,8 +72,9 @@ export class Phone {
   @ApiProperty({
     description: '삭제 시간',
     example: null,
+    default: null,
   })
-  delete_time: string;
+  delete_time: Date;
 
   @OneToMany(() => SearchedInfo, (searchedInfo) => searchedInfo.phone)
   searchedInfos: SearchedInfo[];

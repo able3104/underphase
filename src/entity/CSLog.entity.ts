@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { KakaoUser } from './KakaoUser.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -55,7 +61,7 @@ export class CSLog {
   }) //다시 예시 적용
   status: string;
 
-  @Column()
+  @CreateDateColumn()
   @ApiProperty({
     description: '생성 시간',
     example: '2023-01-01T00:00:00.000Z',
@@ -66,6 +72,7 @@ export class CSLog {
   @ApiProperty({
     description: '삭제 시간',
     example: null,
+    default: null,
   })
-  delete_time: string;
+  delete_time: Date;
 }

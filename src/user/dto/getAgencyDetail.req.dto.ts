@@ -10,5 +10,11 @@ export class getAgencyDetailReqDto {
   })
   id: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '요금제 금액',
+    example: 55000,
+  })
   rating: number;
 }

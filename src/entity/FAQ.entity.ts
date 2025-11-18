@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class FAQ {
@@ -38,7 +43,7 @@ export class FAQ {
   }) //다시 예시 적용
   display_order: number;
 
-  @Column()
+  @CreateDateColumn()
   @ApiProperty({
     description: '생성 시간',
     example: '2023-01-01T00:00:00.000Z',
@@ -49,6 +54,7 @@ export class FAQ {
   @ApiProperty({
     description: '삭제 시간',
     example: null,
+    default: null,
   })
-  delete_time: string;
+  delete_time: Date;
 }

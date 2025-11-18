@@ -26,6 +26,12 @@ export class chooseAgencyReqDto {
   })
   phone_color: string;
 
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '유저 선택 정보 id',
+    example: '5',
+  })
   searchedInfo_id: number;
 
   // @IsNumber()

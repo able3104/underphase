@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -37,7 +38,7 @@ export class Rate {
   })
   telecom: Telecom;
 
-  @Column()
+  @CreateDateColumn()
   @ApiProperty({
     description: '생성 시간',
     example: '2023-01-01T00:00:00.000Z',
@@ -48,8 +49,9 @@ export class Rate {
   @ApiProperty({
     description: '삭제 시간',
     example: null,
+    default: null,
   })
-  delete_time: string;
+  delete_time: Date;
 
   @OneToMany(() => PriceList, (pricelist) => pricelist.rate)
   pricelist: PriceList[];

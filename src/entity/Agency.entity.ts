@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -68,9 +69,17 @@ export class Agency {
   phone_number: string;
 
   @Column()
+  @ApiProperty({
+    description: '오픈 시간',
+    example: '11:00',
+  })
   start_time: string;
 
   @Column()
+  @ApiProperty({
+    description: '클로즈 시간',
+    example: '19:00',
+  })
   end_time: string;
 
   @Column()
@@ -80,7 +89,7 @@ export class Agency {
   })
   image_URL: string;
 
-  @Column()
+  @CreateDateColumn()
   @ApiProperty({
     description: '생성 시간',
     example: '2023-01-01T00:00:00.000Z',
@@ -91,8 +100,9 @@ export class Agency {
   @ApiProperty({
     description: '삭제 시간',
     example: null,
+    default: null,
   })
-  delete_time: string;
+  delete_time: Date;
 
   @OneToMany(() => PriceList, (priceList) => priceList.agency)
   priceLists: PriceList[];

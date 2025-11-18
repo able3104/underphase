@@ -18,5 +18,11 @@ export class searchRatePlansReqDto {
   })
   telecom: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '대리점 명',
+    example: '실버실버 대리점',
+  })
   agency_name: string;
 }

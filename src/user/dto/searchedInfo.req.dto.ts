@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsSemVer, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsSemVer, IsString } from 'class-validator';
 
 export enum Telecom {
   SKT = 'SKT',
@@ -33,6 +33,7 @@ export class searchedInfoReqDto {
   @IsString()
   telecom: Telecom;
 
+  @IsBoolean()
   @ApiProperty({
     description: '통신사 이동 가능 여부',
     example: true,

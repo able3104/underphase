@@ -39,16 +39,29 @@ export class getAgencyDetailResDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: '',
+    description: '오픈 시간',
+    example: '11:00',
   })
   start_time: string;
 
   @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '클로즈 시간',
+    example: '19:00',
+  })
   end_time: string;
 
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '요금제 금액',
+    example: 55000,
+  })
   rating: number;
 
-  desciption: string;
+  // desciption: string;
+  // 이게 필요할까?
 
   constructor(agencies: Agency) {
     this.id = agencies.id;
