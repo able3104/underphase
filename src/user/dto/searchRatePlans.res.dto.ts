@@ -24,7 +24,7 @@ export class searchRatePlansResDto {
     description: '매월 사용가능 데이터량',
     example: '110GB',
   })
-  data: string;
+  data: number;
 
   @IsString()
   @IsNotEmpty()

@@ -68,6 +68,12 @@ export class Agency {
   phone_number: string;
 
   @Column()
+  start_time: string;
+
+  @Column()
+  end_time: string;
+
+  @Column()
   @ApiProperty({
     description: '판매점 이미지 URL',
     example: 'http://under-phase.com/agency_image.jpg',
@@ -86,7 +92,7 @@ export class Agency {
     description: '삭제 시간',
     example: null,
   })
-  delete_time: Date | null;
+  delete_time: string;
 
   @OneToMany(() => PriceList, (priceList) => priceList.agency)
   priceLists: PriceList[];

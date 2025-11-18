@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToMany,
   ManyToOne,
@@ -83,6 +84,22 @@ export class Estimate {
 
   @Column()
   @ApiProperty({
+    description: '방문 확정 여부',
+    example: true,
+    default: false,
+  })
+  is_visitable: boolean;
+
+  @Column()
+  @ApiProperty({
+    description: '방문 시간',
+    example: '14:00',
+    default: null,
+  })
+  visit_time: string;
+
+  @CreateDateColumn()
+  @ApiProperty({
     description: '생성 시간',
     example: '2023-01-01T00:00:00.000Z',
   })
@@ -92,8 +109,9 @@ export class Estimate {
   @ApiProperty({
     description: '삭제 시간',
     example: null,
+    default: null,
   })
-  delete_time: Date | null;
+  delete_time: Date;
 
   @OneToMany(() => BillImage, (billImage) => billImage.estimate)
   billImages: BillImage[];

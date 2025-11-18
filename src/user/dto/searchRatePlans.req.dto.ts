@@ -17,4 +17,6 @@ export class searchRatePlansReqDto {
     example: 'SKT',
   })
   telecom: string;
+
+  agency_name: string;
 }

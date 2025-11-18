@@ -79,7 +79,7 @@ export class SearchedInfo {
     description: '삭제 시간',
     example: null,
   })
-  delete_time: Date | null;
+  delete_time: string;
 
   @OneToMany(() => Estimate, (estimate) => estimate.searchedInfo)
   estimates: Estimate[];

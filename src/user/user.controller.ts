@@ -33,15 +33,19 @@ import { cancelReservationResDto } from './dto/cancelReservation.res.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // @Post('searchedInfo')
-  // @ApiOperation({ summary: '유저 조건 입력' })
-  // @ApiResponse({ status: 201, description: '조건 입력 성공' })
-  // @ApiBadRequestResponse({ description: '조건 입력 실패' })
-  // async searchedInfo(
-  //   @Body() dto: searchedInfoReqDto,
-  // ): Promise<searchedInfoResDto> {
-  //   return this.userService.searchedInfo(dto);
-  // }
+  @Post('searchedInfo')
+  @ApiOperation({ summary: '유저 조건 입력' })
+  @ApiResponse({
+    status: 201,
+    description: '조건 입력 성공',
+    type: searchedInfoResDto,
+  })
+  @ApiBadRequestResponse({ description: '조건 입력 실패' })
+  async searchedInfo(
+    @Body() dto: searchedInfoReqDto,
+  ): Promise<searchedInfoResDto> {
+    return this.userService.searchedInfo(dto);
+  }
 
   @Post('kakaoLogin')
   @ApiOperation({ summary: '카카오 로그인' })

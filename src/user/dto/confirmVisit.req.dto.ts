@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class confirmVisitReqDto {
   @IsNumber()
@@ -17,4 +17,12 @@ export class confirmVisitReqDto {
     example: true,
   })
   is_visitable: boolean;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '판매점 방문 시간',
+    example: '14:00',
+  })
+  visit_time: string;
 }

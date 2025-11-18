@@ -50,5 +50,5 @@ export class FAQ {
     description: '삭제 시간',
     example: null,
   })
-  delete_time: Date | null;
+  delete_time: string;
 }

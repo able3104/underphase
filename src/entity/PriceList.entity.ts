@@ -10,6 +10,7 @@ import { Phone } from './Phone.entity';
 import { Telecom } from './Telecom.entity';
 import { Estimate } from './Estimate.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Rate } from './Rate.entity';
 
 @Entity()
 export class PriceList {
@@ -67,12 +68,8 @@ export class PriceList {
   })
   price: number;
 
-  @Column()
-  @ApiProperty({
-    description: '요금제 가격',
-    example: 70000,
-  })
-  rate: number;
+  @ManyToOne(() => Rate, (rate) => rate.pricelist)
+  rate: Rate;
 
   @Column()
   @ApiProperty({
@@ -86,7 +83,7 @@ export class PriceList {
     description: '삭제 시간',
     example: null,
   })
-  delete_time: Date | null;
+  delete_time: string;
 
   @OneToMany(() => Estimate, (estimate) => estimate.priceList)
   estimates: Estimate[];

@@ -5,18 +5,26 @@ export class searchAgenciesReqDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: '사용자 전화번호',
-    example: '010-1234-5678',
+    description: '휴대폰 기기명',
+    example: 'S25',
   })
-  phone_number: string;
+  phone_name: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: '사용자 휴대폰 제조사',
+    description: '휴대폰 제조사',
     example: 'Apple',
   })
   phone_brand: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '통신사',
+    example: 'SKT',
+  })
+  telecom: string;
 
   @IsBoolean()
   @IsNotEmpty()

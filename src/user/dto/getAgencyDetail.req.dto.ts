@@ -9,4 +9,6 @@ export class getAgencyDetailReqDto {
     example: 5,
   })
   id: number;
+
+  rating: number;
 }

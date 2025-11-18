@@ -24,7 +24,7 @@ export class refilterAgenciesReqDto {
     description: '핸드폰 기기명',
     example: '17',
   })
-  phone_name: number;
+  phone_name: string;
 
   @IsString()
   @IsNotEmpty()

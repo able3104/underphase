@@ -16,7 +16,7 @@ export class chooseAgencyReqDto {
     description: '원하는 핸드폰 기기 명',
     example: '17pro',
   })
-  phone_id: string;
+  phone_name: string;
 
   @IsString()
   @IsNotEmpty()
@@ -26,11 +26,13 @@ export class chooseAgencyReqDto {
   })
   phone_color: string;
 
-  @IsNumber()
-  @IsNotEmpty()
-  @ApiProperty({
-    description: '원하는 핸드폰 갯수',
-    example: 1,
-  })
-  count: number;
+  searchedInfo_id: number;
+
+  // @IsNumber()
+  // @IsNotEmpty()
+  // @ApiProperty({
+  //   description: '원하는 핸드폰 갯수',
+  //   example: 1,
+  // })
+  // count: number;
 }
