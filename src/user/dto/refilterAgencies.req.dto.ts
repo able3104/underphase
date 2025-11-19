@@ -6,7 +6,7 @@ export class refilterAgenciesReqDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '판매점과의 거리',
-    example: '15',
+    example: 15,
   })
   distance: number;
 
@@ -18,11 +18,11 @@ export class refilterAgenciesReqDto {
   })
   subscription_type: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   @ApiProperty({
     description: '핸드폰 기기명',
-    example: '17',
+    example: '17+',
   })
   phone_name: string;
 

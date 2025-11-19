@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class getAgencyDetailReqDto {
   @IsNumber()
@@ -8,7 +8,23 @@ export class getAgencyDetailReqDto {
     description: '판매점 고유 id',
     example: 5,
   })
-  id: number;
+  agency_id: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '휴대폰 기기명',
+    example: 'S25',
+  })
+  phone_name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '휴대폰 제조사명',
+    example: 'Galaxy',
+  })
+  phone_brand: string;
 
   @IsNumber()
   @IsNotEmpty()

@@ -192,7 +192,7 @@ export class AgencyController {
   @ApiBadRequestResponse({ description: '조회 실패' })
   @ApiNotFoundResponse({ description: '예약 없음' })
   async getAgencyReservations(
-    @Body() dto: getAgencyReservationsReqDto,
+    @Query() dto: getAgencyReservationsReqDto,
   ): Promise<getAgencyReservationsResDto> {
     return this.agencyService.getAgencyReservations(dto);
   }

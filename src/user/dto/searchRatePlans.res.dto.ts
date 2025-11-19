@@ -22,7 +22,7 @@ export class searchRatePlansResDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '매월 사용가능 데이터량',
-    example: '110GB',
+    example: 110,
   })
   data: number;
 

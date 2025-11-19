@@ -10,30 +10,39 @@ export class refilterAgenciesResDto {
       {
         id: 5,
         agency_name: '실버실버 대리점',
-        auth_tag: 'Yes',
-        address: '부산진구 개금동',
-        phone_number: '01012312355',
+        agency_address: '부산진구 개금동',
+        agency_phone_number: '01012312355',
+        phone_name: '17',
+        phone_brand: 'Apple',
+        phone_price: 500000,
         monthly_expenditure: 63000,
-        additional_benefit: 'No',
+        additional_benefit: false,
+        auth_tag: true,
       },
       {
         id: 17,
         agency_name: 'KT 대리점 가야점',
-        auth_tag: 'Yes',
-        address: '부산진구 가야동',
-        phone_number: '01015648569',
-        monthly_expenditure: 65000,
-        additional_benefit: 'Yes',
+        agency_address: '부산진구 가야동',
+        agency_phone_number: '01015648569',
+        phone_name: '17',
+        phone_brand: 'Apple',
+        phone_price: 550000,
+        monthly_expenditure: 66000,
+        additional_benefit: true,
+        auth_tag: true,
       },
     ],
   })
   agency: {
     id: number;
     agency_name: string;
-    auth_tag: boolean;
-    address: string;
-    phone_number: number;
+    agency_address: string;
+    agency_phone_number: string;
+    phone_name: string;
+    phone_brand: string;
+    phone_price: number;
     monthly_expenditure: number;
     additional_benefit: boolean;
+    auth_tag: boolean;
   }[];
 }

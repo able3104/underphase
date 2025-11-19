@@ -27,64 +27,123 @@ export class AgencyService {
   constructor() {}
 
   async agencyLogin(dto: agencyLoginReqDto): Promise<agencyLoginResDto> {
-    return 'Completed';
+    const response = new agencyLoginResDto();
+    response.authToken = 'ax234QW234';
+    return response;
   }
 
   async agencyPasswordReset(
     dto: agencyPasswordResetReqDto,
   ): Promise<agencyPasswordResetResDto> {
-    return 'Completed';
+    const response = new agencyPasswordResetResDto();
+    return response;
   }
 
   async enrollPriceList(
     dto: enrollPriceListReqDto,
   ): Promise<enrollPriceListResDto> {
-    return 'Completed';
+    const response = new enrollPriceListResDto();
+    return response;
   }
 
   async modifyPriceList(dto: modifyListReqDto): Promise<modifyListResDto> {
-    return 'Completed';
+    const priceList = [
+      {
+        phone_name: 'S25',
+        phone_brand: 'samsung',
+        telecom: 'SKT',
+        subscription_type: 'New',
+        rebatedPrice: 35,
+      },
+      {
+        phone_name: 'S25+',
+        phone_brand: 'samsung',
+        telecom: 'SKT',
+        subscription_type: 'New',
+        rebatedPrice: 55,
+      },
+    ];
+    const response = new modifyListResDto();
+    response.priceList = priceList;
+    return response;
   }
 
   async deletePriceList(
     dto: deletePriceListReqDto,
   ): Promise<deletePriceListResDto> {
-    return 'Completed';
+    const response = new deletePriceListResDto();
+    return response;
   }
 
   async registerRatePlan(
     dto: registerRatePlanReqDto,
   ): Promise<registerRatePlanResDto> {
-    return 'Completed';
+    const response = new registerRatePlanResDto();
+    return response;
   }
 
   async getAgencyRatePlans(
     dto: getAgencyRatePlansReqDto,
   ): Promise<getAgencyRatePlansResDto> {
-    return 'Completed';
+    const rate = [
+      {
+        plan_name: '5G 스탠다드',
+        price: 75000,
+        telecom: 'SKT',
+        data: 150,
+      },
+      {
+        plan_name: '5G 프리미엄',
+        price: 89000,
+        telecom: 'SKT',
+        data: 250,
+      },
+    ];
+    const response = new getAgencyRatePlansResDto();
+    response.rate = rate;
+    return response;
   }
 
   async getRatePlanDetail(
     dto: getRatePlanDetailReqDto,
   ): Promise<getRatePlanDetailResDto> {
-    return 'Completed';
+    const response = new getRatePlanDetailResDto();
+    response.plan_name = '5G 스탠다드';
+    response.telecom = 'SKT';
+    response.price = 75000;
+    response.data = 150;
+    return response;
   }
 
   async deleteRatePlan(
     dto: deleteRatePlanReqDto,
   ): Promise<deleteRatePlanResDto> {
-    return 'Completed';
+    const response = new deleteRatePlanResDto();
+    return response;
   }
 
   async checkReservations(
     dto: checkReservationReqDto,
   ): Promise<checkReservationResDto> {
-    return 'Completed';
+    const response = new checkReservationResDto();
+    response.approval_status = 'approved';
+    return response;
   }
 
   async getAgencyReservations(
     dto: getAgencyReservationsReqDto,
   ): Promise<getAgencyReservationsResDto> {
-    return 'Completed';
+    const reservation = [
+      {
+        user_id: 'user1',
+        phone_name: 'S25',
+        phone_brand: 'samsung',
+        auth_code: '1872536263',
+        status: 'Pending',
+      },
+    ];
+    const response = new getAgencyReservationsResDto();
+    response.reservation = reservation;
+    return response;
   }
 }

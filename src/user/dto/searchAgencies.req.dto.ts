@@ -14,7 +14,7 @@ export class searchAgenciesReqDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '휴대폰 제조사',
-    example: 'Apple',
+    example: 'Galaxy',
   })
   phone_brand: string;
 

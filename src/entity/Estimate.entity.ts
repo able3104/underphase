@@ -78,7 +78,7 @@ export class Estimate {
   @Column()
   @ApiProperty({
     description: '인증 코드',
-    example: 'ABC123DEF456',
+    example: '1872536263',
   })
   auth_code: string;
 
