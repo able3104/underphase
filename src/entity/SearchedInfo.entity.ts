@@ -78,10 +78,10 @@ export class SearchedInfo {
   @Column()
   @ApiProperty({
     description: '삭제 시간',
-    example: null,
-    default: null,
+    example: '',
+    default: '',
   })
-  delete_time: Date;
+  delete_time: string;
 
   @OneToMany(() => Estimate, (estimate) => estimate.searchedInfo)
   estimates: Estimate[];

@@ -33,19 +33,19 @@ import { cancelReservationResDto } from './dto/cancelReservation.res.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('searchedInfo')
-  @ApiOperation({ summary: '유저 조건 입력' })
-  @ApiResponse({
-    status: 201,
-    description: '조건 입력 성공',
-    type: searchedInfoResDto,
-  })
-  @ApiBadRequestResponse({ description: '조건 입력 실패' })
-  async searchedInfo(
-    @Body() dto: searchedInfoReqDto,
-  ): Promise<searchedInfoResDto> {
-    return this.userService.searchedInfo(dto);
-  }
+  // @Post('searchedInfo')
+  // @ApiOperation({ summary: '유저 조건 입력' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '조건 입력 성공',
+  //   type: searchedInfoResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '조건 입력 실패' })
+  // async searchedInfo(
+  //   @Body() dto: searchedInfoReqDto,
+  // ): Promise<searchedInfoResDto> {
+  //   return this.userService.searchedInfo(dto);
+  // }
 
   @Post('kakaoLogin')
   @ApiOperation({ summary: '카카오 로그인' })
@@ -82,6 +82,7 @@ export class UserController {
     description: '판매점 검색 성공',
     type: searchAgenciesResDto,
   })
+  // 리스트로 res 되게 변경
   @ApiBadRequestResponse({ description: '판매점 검색 실패' })
   @ApiNotFoundResponse({ description: '조건에 맞는 판매점 없음' })
   async searchAgencies(
@@ -90,20 +91,20 @@ export class UserController {
     return this.userService.searchAgencies(dto);
   }
 
-  @Post('refilterAgencies')
-  @ApiOperation({ summary: '판매점 재필터링' })
-  @ApiResponse({
-    status: 201,
-    description: '판매점 재필터링 성공',
-    type: refilterAgenciesResDto,
-  })
-  @ApiBadRequestResponse({ description: '판매점 재필터링 실패' })
-  @ApiNotFoundResponse({ description: '조건에 맞는 판매점 없음' })
-  async refilterAgencies(
-    @Body() dto: refilterAgenciesReqDto,
-  ): Promise<refilterAgenciesResDto> {
-    return this.userService.refilterAgencies(dto);
-  }
+  // @Post('refilterAgencies')
+  // @ApiOperation({ summary: '판매점 재필터링' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '판매점 재필터링 성공',
+  //   type: refilterAgenciesResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '판매점 재필터링 실패' })
+  // @ApiNotFoundResponse({ description: '조건에 맞는 판매점 없음' })
+  // async refilterAgencies(
+  //   @Body() dto: refilterAgenciesReqDto,
+  // ): Promise<refilterAgenciesResDto> {
+  //   return this.userService.refilterAgencies(dto);
+  // }
 
   @Post('getAgencyDetail')
   //get 으로 하면 id 취탈가능성 존재
@@ -138,6 +139,7 @@ export class UserController {
   }
 
   @Post('chooseAgency')
+  // 이름 변경
   @ApiOperation({ summary: '판매점 선택' })
   @ApiResponse({
     status: 201,
@@ -152,20 +154,20 @@ export class UserController {
     return this.userService.chooseAgency(dto);
   }
 
-  @Post('confirmVisit')
-  @ApiOperation({ summary: '방문 확정' })
-  @ApiResponse({
-    status: 201,
-    description: '방문 확정 성공',
-    type: confirmVisitResDto,
-  })
-  @ApiBadRequestResponse({ description: '방문 확정 실패' })
-  @ApiNotFoundResponse({ description: '해당 예약 없음' })
-  async confirmVisit(
-    @Body() dto: confirmVisitReqDto,
-  ): Promise<confirmVisitResDto> {
-    return this.userService.confirmVisit(dto);
-  }
+  // @Post('confirmVisit')
+  // @ApiOperation({ summary: '방문 확정' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '방문 확정 성공',
+  //   type: confirmVisitResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '방문 확정 실패' })
+  // @ApiNotFoundResponse({ description: '해당 예약 없음' })
+  // async confirmVisit(
+  //   @Body() dto: confirmVisitReqDto,
+  // ): Promise<confirmVisitResDto> {
+  //   return this.userService.confirmVisit(dto);
+  // }
 
   @Get('getUserReservations')
   @ApiOperation({ summary: '유저 예약 내역 조회' })

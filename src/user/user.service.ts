@@ -67,31 +67,84 @@ export class UserService {
   async searchAgencies(
     dto: searchAgenciesReqDto,
   ): Promise<searchAgenciesResDto> {
-    // const priceList = await this.priceListRepository.find({
-    //   where: {
-    //     telecom: { name: dto.telecom },
-    //     telecom_change: dto.can_change_telecom,
-    //     phone: { name: dto.phone_name },
-    //   },
-    //   relations: ['agency', 'phone', 'telecom'],
-    // });
+    const priceList = await this.priceListRepository.find({
+      where: {
+        telecom: { name: dto.telecom },
+        phone: { name: dto.phone_name },
+      },
+      relations: ['agency', 'phone', 'telecom'],
+    });
 
-    // if (priceList.length === 0) {
-    //   throw new NotFoundException();
-    // }
+    if (priceList.length === 0) {
+      throw new NotFoundException();
+    }
+
+    const agencyData = priceList.map((item) => {
+      // PriceList의 Rate 엔티티가 있다면 monthly_expenditure를 계산/가져와야 합니다.
+      // 여기서는 임시 데이터의 구조를 따르기 위해 Rate 엔티티는 제외하고 매핑합니다.
+
+      return {
+        id: item.agency.id, // Agency 엔티티 ID
+        agency_name: item.agency.name, // Agency 엔티티의 'name' 필드 가정
+        agency_address: item.agency.address, // Agency 엔티티의 'address' 필드 가정
+        agency_phone_number: item.agency.phone_number, // Agency 엔티티의 'phone_number' 필드 가정
+
+        phone_name: item.phone.name, // Phone 엔티티의 'name' 필드
+        phone_brand: item.phone.brand.name, // Phone 엔티티 안의 Brand 엔티티 'name' 필드 가정
+        phone_price: item.price, // PriceList 엔티티의 'price' 필드 (할인가)
+
+        telecom: item.telecom.name, // Telecom 엔티티의 'name' 필드
+
+        // Rate 엔티티에서 계산/가져와야 할 값 (현재는 더미 값이나 Rate 엔티티를 활용해야 함)
+        monthly_expenditure: 63000, // 임시값 (실제로는 Rate 엔티티와 연관)
+
+        // 추가 혜택 정보가 PriceList에 있다면 사용
+        additional_benefit: false, // 임시값 (실제 엔티티 필드 사용)
+      };
+    });
 
     // const response = new searchAgenciesResDto(priceList);
 
+    // const response = new searchAgenciesResDto();
+    // response.id = 1;
+    // response.agency_name = 'SKT 대리점 가야점';
+    // response.agency_address = '부산진구 가야동';
+    // response.agency_phone_number = '01012345678';
+    // response.phone_name = 'S25';
+    // response.phone_brand = 'Galaxy';
+    // response.phone_price = 300000;
+    // response.monthly_expenditure = 51000;
+    // response.additional_benefit = true;
+    // const agencyData = [
+    //   {
+    //     id: 5,
+    //     agency_name: '실버실버 대리점',
+    //     agency_address: '부산진구 개금동',
+    //     agency_phone_number: '01012312355',
+    //     phone_name: '17+',
+    //     phone_brand: 'Apple',
+    //     phone_price: 500000,
+    //     telecom: 'SKT',
+    //     monthly_expenditure: 63000,
+    //     additional_benefit: false,
+    //     auth_tag: true,
+    //   },
+    //   {
+    //     id: 17,
+    //     agency_name: 'KT 대리점 가야점',
+    //     agency_address: '부산진구 가야동',
+    //     agency_phone_number: '01015648569',
+    //     phone_name: '17+',
+    //     phone_brand: 'Apple',
+    //     phone_price: 550000,
+    //     telecom: 'KT',
+    //     monthly_expenditure: 66000,
+    //     additional_benefit: true,
+    //     auth_tag: true,
+    //   },
+    // ];
     const response = new searchAgenciesResDto();
-    response.id = 1;
-    response.agency_name = 'SKT 대리점 가야점';
-    response.agency_address = '부산진구 가야동';
-    response.agency_phone_number = '01012345678';
-    response.phone_name = 'S25';
-    response.phone_brand = 'Galaxy';
-    response.phone_price = 300000;
-    response.monthly_expenditure = 51000;
-    response.additional_benefit = true;
+    response.agency = agencyData;
 
     return response;
   }
@@ -132,6 +185,7 @@ export class UserService {
         phone_name: '17+',
         phone_brand: 'Apple',
         phone_price: 500000,
+        telecom: 'SKT',
         monthly_expenditure: 63000,
         additional_benefit: false,
         auth_tag: true,
@@ -143,6 +197,7 @@ export class UserService {
         agency_phone_number: '01015648569',
         phone_name: '17+',
         phone_brand: 'Apple',
+        telecom: 'KT',
         phone_price: 550000,
         monthly_expenditure: 66000,
         additional_benefit: true,
@@ -299,7 +354,7 @@ export class UserService {
     response.reservation_id = 123;
     response.agency_name = '실버실버 대리점';
     response.status = 'Pending';
-    response.visit_time = '2025-12-03 14:00';
+    // response.visit_time = '2025-12-03 14:00';
     return response;
   }
 

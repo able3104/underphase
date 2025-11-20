@@ -22,7 +22,7 @@ export class getAgencyDetailReqDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '휴대폰 제조사명',
-    example: 'Galaxy',
+    example: 'samsung',
   })
   phone_brand: string;
 

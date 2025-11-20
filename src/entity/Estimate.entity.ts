@@ -90,13 +90,13 @@ export class Estimate {
   })
   is_visitable: boolean;
 
-  @Column()
-  @ApiProperty({
-    description: '방문 시간',
-    example: '14:00',
-    default: null,
-  })
-  visit_time: string;
+  // @Column()
+  // @ApiProperty({
+  //   description: '방문 시간',
+  //   example: '14:00',
+  //   default: null,
+  // })
+  // visit_time: string;
 
   @CreateDateColumn()
   @ApiProperty({
@@ -108,10 +108,10 @@ export class Estimate {
   @Column()
   @ApiProperty({
     description: '삭제 시간',
-    example: null,
-    default: null,
+    example: '',
+    default: '',
   })
-  delete_time: Date;
+  delete_time: string;
 
   @OneToMany(() => BillImage, (billImage) => billImage.estimate)
   billImages: BillImage[];

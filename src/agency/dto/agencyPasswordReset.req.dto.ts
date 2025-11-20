@@ -13,6 +13,14 @@ export class agencyPasswordResetReqDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
+    description: '판매점 전화번호',
+    example: '0511234567',
+  })
+  phone_number: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
     description: '판매점 유저 이메일',
     example: 'agency1@example.com',
   })

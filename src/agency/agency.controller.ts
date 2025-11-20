@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AgencyService } from './agency.service';
 import { agencyLoginReqDto } from './dto/agencyLogin.req.dto';
 import { agencyLoginResDto } from './dto/agencyLogin.res.dto';
@@ -26,16 +35,26 @@ import { getRatePlanDetailReqDto } from './dto/getRatePlanDetail.req.dto';
 import { getRatePlanDetailResDto } from './dto/getRatePlanDetail.res.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
+import { AuthService } from 'src/auth/auth.service';
+import { agencyRegisterResDto } from './dto/agencyRegister.res.dto';
+import { Agency } from 'src/entity/Agency.entity';
+import { agencyRegisterReqDto } from './dto/agencyRegister.req.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('agency')
 export class AgencyController {
-  constructor(private readonly agencyService: AgencyService) {}
+  constructor(
+    private readonly agencyService: AgencyService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('agencyLogin')
+  @ApiBearerAuth()
   @ApiOperation({ summary: '판매점 로그인' })
   @ApiResponse({
     status: 201,
@@ -48,23 +67,42 @@ export class AgencyController {
     @Body() dto: agencyLoginReqDto,
   ): Promise<agencyLoginResDto> {
     return this.agencyService.agencyLogin(dto);
+    // return this.authService.validateAgency(dto);
+  }
+
+  @Post('agencyRegister')
+  @ApiOperation({ summary: '판매점 회원가입' })
+  @ApiResponse({
+    status: 201,
+    description: '회원가입 성공',
+    type: agencyRegisterResDto,
+  })
+  @ApiBadRequestResponse({ description: '회원가입 실패' })
+  async agencyRegister(
+    @Body() dto: agencyRegisterReqDto,
+  ): Promise<agencyRegisterResDto> {
+    return this.agencyService.agencyRegister(dto);
   }
 
   @Post('agencyPasswordReset')
+  @ApiBearerAuth()
   @ApiOperation({ summary: '판매점 비밀번호 찾기' })
   @ApiResponse({
     status: 201,
     description: '비밀번호 찾음',
     type: agencyPasswordResetResDto,
   })
-  @ApiBadRequestResponse({ description: '해당 판매점 아이디 보유 유저 없음' })
+  @ApiNotFoundResponse({ description: '해당 판매점 아이디 보유 유저 없음' })
   async agencyPasswordReset(
     @Body() dto: agencyPasswordResetReqDto,
+    @Req() req: Request,
   ): Promise<agencyPasswordResetResDto> {
-    return this.agencyService.agencyPasswordReset(dto);
+    const agency = req['agency'] as Agency;
+    return this.agencyService.agencyPasswordReset(dto, agency);
   }
 
   @Post('enrollPriceList')
+  @ApiBearerAuth()
   @ApiOperation({ summary: '가격 리스트 등록' })
   @ApiResponse({
     status: 201,
@@ -72,13 +110,17 @@ export class AgencyController {
     type: enrollPriceListResDto,
   })
   @ApiBadRequestResponse({ description: '등록 실패' })
+  @UseGuards(AuthGuard)
   async enrollPriceList(
     @Body() dto: enrollPriceListReqDto,
+    @Req() req: Request,
   ): Promise<enrollPriceListResDto> {
-    return this.agencyService.enrollPriceList(dto);
+    const agency = req['agency'] as Agency;
+    return this.agencyService.enrollPriceList(dto, agency);
   }
 
   @Post('modifyPriceList')
+  @ApiBearerAuth()
   @ApiOperation({ summary: '가격 리스트 수정' })
   @ApiResponse({
     status: 201,
@@ -89,8 +131,10 @@ export class AgencyController {
   @ApiNotFoundResponse({ description: '해당 정보 보유 가격 리스트 없음' })
   async modifyPriceList(
     @Body() dto: modifyListReqDto,
+    @Req() req: Request,
   ): Promise<modifyListResDto> {
-    return this.agencyService.modifyPriceList(dto);
+    const agency = req['agency'] as Agency;
+    return this.agencyService.modifyPriceList(dto, agency);
   }
 
   @Delete('deletePriceList')

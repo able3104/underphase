@@ -48,11 +48,11 @@ export class Rate {
   @Column()
   @ApiProperty({
     description: '삭제 시간',
-    example: null,
-    default: null,
+    example: '',
+    default: '',
   })
-  delete_time: Date;
+  delete_time: string;
 
-  @OneToMany(() => PriceList, (pricelist) => pricelist.rate)
-  pricelist: PriceList[];
+  //@OneToMany(() => PriceList, (pricelist) => pricelist.rate)
+  //pricelist: PriceList[];
 }

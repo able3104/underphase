@@ -48,11 +48,11 @@ export class Seller {
   @Column()
   @ApiProperty({
     description: '삭제 시간',
-    example: null,
-    default: null,
+    example: '',
+    default: '',
   })
-  delete_time: Date;
+  delete_time: string;
 
-  @OneToMany(() => Agency, (agency) => agency.seller)
-  agencies: Agency[];
+  // @OneToMany(() => Agency, (agency) => agency.seller)
+  // agencies: Agency[];
 }

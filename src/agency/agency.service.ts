@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { agencyLoginResDto } from './dto/agencyLogin.res.dto';
 import { agencyLoginReqDto } from './dto/agencyLogin.req.dto';
 import { agencyPasswordResetReqDto } from './dto/agencyPasswordReset.req.dto';
@@ -21,32 +25,181 @@ import { checkReservationReqDto } from './dto/checkReservation.req.dto';
 import { checkReservationResDto } from './dto/checkReservation.res.dto';
 import { getAgencyReservationsReqDto } from './dto/getAgencyReservations.req.dto';
 import { getAgencyReservationsResDto } from './dto/getAgencyReservations.res.dto';
+import { AuthService } from 'src/auth/auth.service';
+import { agencyRegisterResDto } from './dto/agencyRegister.res.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Seller } from 'src/entity/Seller.entity';
+import { Repository } from 'typeorm';
+import { Agency } from 'src/entity/Agency.entity';
+import { PriceList } from 'src/entity/PriceList.entity';
+import { Phone } from 'src/entity/Phone.entity';
+import { Telecom } from 'src/entity/Telecom.entity';
+import { agencyRegisterReqDto } from './dto/agencyRegister.req.dto';
+import { Brand } from 'src/entity/Brand.entity';
 
 @Injectable()
 export class AgencyService {
-  constructor() {}
+  constructor(
+    private readonly authService: AuthService,
+    @InjectRepository(Seller)
+    private sellerRepository: Repository<Seller>,
+    @InjectRepository(Agency)
+    private agencyRepository: Repository<Agency>,
+    @InjectRepository(PriceList)
+    private priceListRepository: Repository<PriceList>,
+    @InjectRepository(Phone)
+    private phoneRepository: Repository<Phone>,
+    @InjectRepository(Telecom)
+    private telecomRepository: Repository<Telecom>,
+    @InjectRepository(Brand)
+    private brandRepository: Repository<Brand>,
+  ) {}
 
   async agencyLogin(dto: agencyLoginReqDto): Promise<agencyLoginResDto> {
+    const login = await this.authService.validateAgency(dto);
     const response = new agencyLoginResDto();
-    response.authToken = 'ax234QW234';
+    // response.authToken = 'ax234QW234';
+    response.authToken = login.authToken;
+    return response;
+  }
+
+  async agencyRegister(
+    dto: agencyRegisterReqDto,
+  ): Promise<agencyRegisterResDto> {
+    // const seller = await this.sellerRepository.findOne({
+    //   where: { name: dto.seller_name },
+    // });
+    // if (!seller) {
+    //   throw new BadRequestException();
+    // }
+
+    const agency = await this.agencyRepository.findOne({
+      where: { user_id: dto.user_id },
+    });
+    if (agency) {
+      throw new BadRequestException();
+    }
+
+    const agencyEntity = new Agency();
+    agencyEntity.user_id = dto.user_id;
+    agencyEntity.password = dto.password;
+    agencyEntity.name = dto.name;
+    // agencyEntity.seller = seller;
+    agencyEntity.address = dto.address;
+    agencyEntity.phone_number = dto.phone_number;
+    agencyEntity.start_time = dto.start_time;
+    agencyEntity.end_time = dto.end_time;
+    agencyEntity.review_score = 5.0;
+    agencyEntity.reviews = 0;
+    agencyEntity.email = dto.email;
+    agencyEntity.image_URL = '';
+    agencyEntity.delete_time = '';
+    await this.agencyRepository.save(agencyEntity);
+
+    const response = new agencyLoginResDto();
     return response;
   }
 
   async agencyPasswordReset(
     dto: agencyPasswordResetReqDto,
+    agency: Agency,
   ): Promise<agencyPasswordResetResDto> {
+    const searchAgency = await this.agencyRepository.findOne({
+      where: {
+        user_id: dto.user_id,
+        phone_number: dto.phone_number,
+        email: dto.email,
+      },
+    });
+    if (!searchAgency) {
+      throw new NotFoundException();
+    }
+
+    const agencies: Agency = {
+      ...searchAgency,
+      password: dto.new_password,
+    };
+
+    await this.agencyRepository.save(agencies);
+
     const response = new agencyPasswordResetResDto();
     return response;
   }
 
   async enrollPriceList(
     dto: enrollPriceListReqDto,
+    agency: Agency,
   ): Promise<enrollPriceListResDto> {
+    const { priceList } = dto;
+
+    for (const item of priceList) {
+      const pricelistEntity = new PriceList();
+      const phone = await this.phoneRepository.findOne({
+        where: { name: item.phone_name },
+      });
+      if (!phone) {
+        // // const newBrand = new Brand();
+        // // newBrand.name = item.phone_brand;
+        // // newBrand.image_URL = '';
+        // // newBrand.delete_time = '';
+        // const brand = await this.brandRepository.findOne({
+        //   where: { name: item.phone_brand },
+        // });
+        // if (!brand) {
+        //   throw new BadRequestException();
+        // }
+
+        // const newPhone = new Phone();
+        // newPhone.name = item.phone_name;
+        // newPhone.volume = '256GB';
+        // newPhone.color = 'black';
+        // newPhone.image_URL = '';
+        // newPhone.delete_time = '';
+        // newPhone.brand = brand;
+
+        // // await this.brandRepository.save(newBrand);
+        // await this.phoneRepository.save(newPhone);
+
+        // const response = new enrollPriceListResDto();
+        // return response;
+        throw new BadRequestException();
+      }
+      const telecom = await this.telecomRepository.findOne({
+        where: { name: item.telecom },
+      });
+      if (!telecom) {
+        // const newTelecom = new Telecom();
+        // newTelecom.name = item.telecom;
+        // newTelecom.delete_time = '';
+        // await this.telecomRepository.save(newTelecom);
+
+        // const response = new enrollPriceListResDto();
+        // return response;
+        throw new BadRequestException();
+      }
+
+      if (!agency) {
+        throw new BadRequestException();
+      }
+      pricelistEntity.phone = phone;
+      pricelistEntity.agency = agency;
+      pricelistEntity.telecom = telecom;
+      pricelistEntity.subscription_type = item.subscription_type;
+      pricelistEntity.price = item.rebatedPrice;
+      pricelistEntity.delete_time = '';
+
+      await this.priceListRepository.create(pricelistEntity);
+    }
+
     const response = new enrollPriceListResDto();
     return response;
   }
 
-  async modifyPriceList(dto: modifyListReqDto): Promise<modifyListResDto> {
+  async modifyPriceList(
+    dto: modifyListReqDto,
+    agency: Agency,
+  ): Promise<modifyListResDto> {
+    /*
     const priceList = [
       {
         phone_name: 'S25',
@@ -63,8 +216,10 @@ export class AgencyService {
         rebatedPrice: 55,
       },
     ];
+    */
     const response = new modifyListResDto();
-    response.priceList = priceList;
+
+    //response.priceList = priceList;
     return response;
   }
 

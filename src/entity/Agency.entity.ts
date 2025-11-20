@@ -21,29 +21,44 @@ export class Agency {
 
   @Column()
   @ApiProperty({
+    description: '판매점 유저 아이디',
+    example: 'agency1',
+  })
+  user_id: string;
+
+  @Column()
+  @ApiProperty({
+    description: '판매점 유저 비밀번호',
+    example: 'agency1_password',
+  })
+  password: string;
+
+  @Column()
+  @ApiProperty({
     description: '판매점명',
     example: '가야 SKT 판매점',
   })
   name: string;
 
-  @ManyToOne(() => Seller, (seller) => seller.agencies)
-  @ApiProperty({
-    description: '대리점 정보',
-    example: {
-      id: 1,
-      name: 'SKT 대리점 가야점',
-      user_name: 'seller_gaya_skt',
-      password_hashed: '$2b$10$EixZaYV',
-      create_time: '2023-01-01T00:00:00.000Z',
-      delete_time: null,
-    },
-  })
-  seller: Seller;
+  // @ManyToOne(() => Seller, (seller) => seller.agencies)
+  // @ApiProperty({
+  //   description: '대리점 정보',
+  //   example: {
+  //     id: 1,
+  //     name: 'SKT 대리점 가야점',
+  //     user_name: 'seller_gaya_skt',
+  //     password_hashed: '$2b$10$EixZaYV',
+  //     create_time: '2023-01-01T00:00:00.000Z',
+  //     delete_time: null,
+  //   },
+  // })
+  // seller: Seller;
 
   @Column()
   @ApiProperty({
     description: '리뷰 점수',
     example: 4.5,
+    default: 0,
   })
   review_score: number;
 
@@ -51,6 +66,7 @@ export class Agency {
   @ApiProperty({
     description: '리뷰 수',
     example: 15,
+    default: 0,
   })
   reviews: number;
 
@@ -64,9 +80,16 @@ export class Agency {
   @Column()
   @ApiProperty({
     description: '판매점 전화번호',
-    example: '051-123-4567',
+    example: '0511234567',
   })
   phone_number: string;
+
+  @Column()
+  @ApiProperty({
+    description: '판매점 이메일',
+    example: 'agency1@example.com',
+  })
+  email: string;
 
   @Column()
   @ApiProperty({
@@ -86,6 +109,7 @@ export class Agency {
   @ApiProperty({
     description: '판매점 이미지 URL',
     example: 'http://under-phase.com/agency_image.jpg',
+    default: '',
   })
   image_URL: string;
 
@@ -99,10 +123,10 @@ export class Agency {
   @Column()
   @ApiProperty({
     description: '삭제 시간',
-    example: null,
-    default: null,
+    example: '',
+    default: '',
   })
-  delete_time: Date;
+  delete_time: string;
 
   @OneToMany(() => PriceList, (priceList) => priceList.agency)
   priceLists: PriceList[];

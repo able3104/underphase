@@ -26,11 +26,11 @@ export class getUserReservationsResDto {
   })
   status: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    description: '판매점 방문 시간',
-    example: '2025-12-03 14:00',
-  })
-  visit_time: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // @ApiProperty({
+  //   description: '판매점 방문 시간',
+  //   example: '2025-12-03 14:00',
+  // })
+  // visit_time: string;
 }

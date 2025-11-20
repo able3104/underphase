@@ -57,10 +57,10 @@ export class PriceList {
 
   @Column()
   @ApiProperty({
-    description: '통신사 변경 여부',
-    example: true,
+    description: '가압 유형',
+    example: 'New',
   })
-  telecom_change: boolean;
+  subscription_type: string;
 
   @Column()
   @ApiProperty({
@@ -69,8 +69,18 @@ export class PriceList {
   })
   price: number;
 
+  /*
   @ManyToOne(() => Rate, (rate) => rate.pricelist)
+  @ApiProperty({
+    description: '요금제 정보 (FK)',
+    example: {
+      id: 1,
+      name: '5G 프리미엄',
+      price: 89000,
+    },
+  })
   rate: Rate;
+  */
 
   @CreateDateColumn()
   @ApiProperty({
@@ -82,10 +92,10 @@ export class PriceList {
   @Column()
   @ApiProperty({
     description: '삭제 시간',
-    example: null,
-    default: null,
+    example: '',
+    default: '',
   })
-  delete_time: Date;
+  delete_time: string;
 
   @OneToMany(() => Estimate, (estimate) => estimate.priceList)
   estimates: Estimate[];
