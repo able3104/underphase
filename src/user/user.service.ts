@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { searchedInfoReqDto } from './dto/searchedInfo.req.dto';
@@ -22,12 +26,20 @@ import { getUserReservationsReqDto } from './dto/getUserReservations.req.dto';
 import { getUserReservationsResDto } from './dto/getUserReservations.res.dto';
 import { cancelReservationReqDto } from './dto/cancelReservation.req.dto';
 import { cancelReservationResDto } from './dto/cancelReservation.res.dto';
-import { searchAgenciesResDto } from './dto/searchAgencies.res.dto';
+import {
+  AgencySimpleDto,
+  searchAgenciesResDto,
+} from './dto/searchAgencies.res.dto';
 import { Agency } from 'src/entity/Agency.entity';
 import { KakaoUser } from 'src/entity/KakaoUser.entity';
 import { PriceList } from 'src/entity/PriceList.entity';
 import { Estimate } from 'src/entity/Estimate.entity';
 import { SearchedInfo } from 'src/entity/SearchedInfo.entity';
+import { Phone } from 'src/entity/Phone.entity';
+import { registerQuoteReqDto } from './dto/registerQuote.req.dto';
+import { resisterQuoteResDto } from './dto/registerQuote.res.dto';
+import { Telecom } from 'src/entity/Telecom.entity';
+import { Rate } from 'src/entity/Rate.entity';
 
 @Injectable()
 export class UserService {
@@ -42,12 +54,18 @@ export class UserService {
     private searchedInfoRepository: Repository<SearchedInfo>,
     @InjectRepository(Estimate)
     private estimateRepository: Repository<Estimate>,
+    @InjectRepository(Phone)
+    private phoneRepository: Repository<Phone>,
+    @InjectRepository(Telecom)
+    private telecomRepository: Repository<Telecom>,
+    @InjectRepository(Rate)
+    private rateRepository: Repository<Rate>,
   ) {}
 
-  async searchedInfo(dto: searchedInfoReqDto): Promise<searchedInfoResDto> {
-    const response = new searchedInfoResDto();
-    return response;
-  }
+  // async searchedInfo(dto: searchedInfoReqDto): Promise<searchedInfoResDto> {
+  //   const response = new searchedInfoResDto();
+  //   return response;
+  // }
 
   async kakaoLogin(dto: kakaoLoginReqDto): Promise<kakaoLoginResDto> {
     const response = new kakaoLoginResDto();
@@ -67,43 +85,39 @@ export class UserService {
   async searchAgencies(
     dto: searchAgenciesReqDto,
   ): Promise<searchAgenciesResDto> {
+    const { phone_name, phone_brand, telecom, can_change_telecom } = dto;
+
     const priceList = await this.priceListRepository.find({
       where: {
-        telecom: { name: dto.telecom },
-        phone: { name: dto.phone_name },
+        phone: {
+          name: phone_name,
+          brand: { name: phone_brand },
+        },
+        telecom: { name: telecom },
+        delete_time: '',
       },
-      relations: ['agency', 'phone', 'telecom'],
+      relations: ['agency', 'phone', 'telecom', 'phone.brand'],
     });
+    if (priceList.length === 0) throw new NotFoundException();
 
-    if (priceList.length === 0) {
-      throw new NotFoundException();
-    }
+    const agencySimpleDtos = priceList.map((pl) => {
+      const dtoInstance = new AgencySimpleDto();
+      dtoInstance.agency_id = pl.agency.id;
+      dtoInstance.agency_name = pl.agency.name;
+      dtoInstance.agency_address = pl.agency.address;
 
-    const agencyData = priceList.map((item) => {
-      // PriceList의 Rate 엔티티가 있다면 monthly_expenditure를 계산/가져와야 합니다.
-      // 여기서는 임시 데이터의 구조를 따르기 위해 Rate 엔티티는 제외하고 매핑합니다.
+      // dtoInstance.agency_rating = pl.agency.;
+      dtoInstance.telecom = pl.telecom.name;
+      dtoInstance.subscription_type = pl.subscription_type;
 
-      return {
-        id: item.agency.id, // Agency 엔티티 ID
-        agency_name: item.agency.name, // Agency 엔티티의 'name' 필드 가정
-        agency_address: item.agency.address, // Agency 엔티티의 'address' 필드 가정
-        agency_phone_number: item.agency.phone_number, // Agency 엔티티의 'phone_number' 필드 가정
+      dtoInstance.phome_brand = pl.phone.brand.name;
+      dtoInstance.phone_name = pl.phone.name;
+      dtoInstance.phone_price = pl.price;
 
-        phone_name: item.phone.name, // Phone 엔티티의 'name' 필드
-        phone_brand: item.phone.brand.name, // Phone 엔티티 안의 Brand 엔티티 'name' 필드 가정
-        phone_price: item.price, // PriceList 엔티티의 'price' 필드 (할인가)
+      dtoInstance.auth_tag = pl.agency.auth_tag;
 
-        telecom: item.telecom.name, // Telecom 엔티티의 'name' 필드
-
-        // Rate 엔티티에서 계산/가져와야 할 값 (현재는 더미 값이나 Rate 엔티티를 활용해야 함)
-        monthly_expenditure: 63000, // 임시값 (실제로는 Rate 엔티티와 연관)
-
-        // 추가 혜택 정보가 PriceList에 있다면 사용
-        additional_benefit: false, // 임시값 (실제 엔티티 필드 사용)
-      };
-    });
-
-    // const response = new searchAgenciesResDto(priceList);
+      return dtoInstance;
+    }); // const response = new searchAgenciesResDto(priceList);
 
     // const response = new searchAgenciesResDto();
     // response.id = 1;
@@ -144,7 +158,8 @@ export class UserService {
     //   },
     // ];
     const response = new searchAgenciesResDto();
-    response.agency = agencyData;
+    // response.agency = agencyData;
+    response.agency = agencySimpleDtos;
 
     return response;
   }
@@ -212,27 +227,58 @@ export class UserService {
   async getAgencyDetail(
     dto: getAgencyDetailReqDto,
   ): Promise<getAgencyDetailResDto> {
-    // const agencies = await this.agencyRepository.findOne({
-    //   where: { id: dto.id },
-    // });
-    // if (!agencies) {
-    //   throw new NotFoundException();
-    // }
+    const agencies = await this.agencyRepository.findOne({
+      where: { id: dto.agency_id },
+    });
+    if (!agencies) {
+      throw new NotFoundException();
+    }
 
-    // const response = new getAgencyDetailResDto(agencies);
-    // response.rating = dto.rating;
+    const phone = await this.phoneRepository.findOne({
+      where: { name: dto.phone_name, brand: { name: dto.phone_brand } },
+    });
+    if (!phone) {
+      throw new NotFoundException();
+    }
+
+    const priceList = await this.priceListRepository.findOne({
+      where: {
+        agency: { id: dto.agency_id },
+        phone: { id: phone.id },
+        telecom: { name: dto.telecom },
+        subscription_type: dto.subscription_type,
+      },
+      relations: ['agency', 'phone', 'telecom', 'phone.brand'],
+    });
+    if (!priceList) {
+      throw new NotFoundException();
+    }
 
     const response = new getAgencyDetailResDto();
+    response.agency_id = agencies.id;
+    response.agency_name = agencies.name;
+    response.agency_address = agencies.address;
+    response.agency_phone_number = agencies.phone_number;
 
-    response.id = 5;
-    response.agency_name = '실버실버 대리점';
-    response.agency_address = '부산진구 개금동';
-    response.agency_phone_number = '01012312355';
-    response.phone_name = 'S25';
-    response.phone_brand = 'Galaxy';
-    response.start_time = '11:00';
-    response.end_time = '19:00';
-    response.rating = 55000;
+    response.phone_name = phone.name;
+    response.phone_brand = phone.brand.name;
+    response.phone_price = priceList.price;
+    response.phone_original_price = priceList.original_price;
+
+    response.start_time = agencies.start_time;
+    response.end_time = agencies.end_time;
+
+    // const response = new getAgencyDetailResDto();
+
+    // response.id = 5;
+    // response.agency_name = '실버실버 대리점';
+    // response.agency_address = '부산진구 개금동';
+    // response.agency_phone_number = '01012312355';
+    // response.phone_name = 'S25';
+    // response.phone_brand = 'Galaxy';
+    // response.start_time = '11:00';
+    // response.end_time = '19:00';
+    // response.rating = 55000;
 
     return response;
   }
@@ -310,6 +356,85 @@ export class UserService {
     response.price = 300000;
     response.rating = 55000;
     response.auth_code = '1872536263';
+    return response;
+  }
+
+  async registerQuote(dto: registerQuoteReqDto): Promise<resisterQuoteResDto> {
+    const {
+      agency_id,
+      phone_name,
+      phone_brand,
+      phone_price,
+      phone_plan,
+      subscription_type,
+    } = dto;
+
+    const agency = await this.agencyRepository.findOne({
+      where: { id: agency_id },
+    });
+    if (!agency) throw new NotFoundException();
+    //console.log(agency);
+
+    const phone = await this.phoneRepository.findOne({
+      where: { name: phone_name, brand: { name: phone_brand } },
+    });
+    if (!phone) throw new NotFoundException();
+    //console.log(phone);
+
+    const telecom = await this.telecomRepository.findOne({
+      where: { name: dto.telecom },
+    });
+    if (!telecom) throw new NotFoundException();
+    //console.log(telecom);
+
+    // rate 더미 데이터 삽입
+    // const newRate = new Rate();
+    // newRate.name = phone_plan.name;
+    // newRate.price = phone_plan.price;
+    // newRate.telecom = telecom;
+    // newRate.data = 200;
+    // newRate.delete_time = '';
+    // await this.rateRepository.save(newRate);
+
+    const rate = await this.rateRepository.findOne({
+      where: {
+        name: phone_plan.name,
+        price: phone_plan.price,
+        telecom: { id: telecom.id },
+      },
+    });
+    if (!rate) throw new NotFoundException();
+    //console.log(rate);
+
+    const priceList = await this.priceListRepository.findOne({
+      where: {
+        agency: { id: agency_id },
+        phone: { id: phone.id },
+        subscription_type: subscription_type,
+        telecom: { id: telecom.id },
+      },
+      relations: ['agency', 'phone', 'telecom', 'phone.brand', 'telecom'],
+    });
+    if (!priceList) throw new NotFoundException();
+    //console.log(priceList);
+
+    const authCode = this.generateNumericCode(10);
+    const auth_code: string = await authCode;
+
+    const estimate = new Estimate();
+    estimate.phone = phone;
+    estimate.priceList = priceList;
+    estimate.price = phone_price;
+    estimate.rate = rate.price;
+    estimate.auth_code = auth_code;
+    estimate.subscription_type = subscription_type;
+    estimate.delete_time = '';
+
+    await this.estimateRepository.save(estimate);
+
+    const response = new resisterQuoteResDto();
+    response.quote_code = auth_code;
+
     return response;
   }
 

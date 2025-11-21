@@ -83,6 +83,6 @@ export class SearchedInfo {
   })
   delete_time: string;
 
-  @OneToMany(() => Estimate, (estimate) => estimate.searchedInfo)
-  estimates: Estimate[];
+  // @OneToMany(() => Estimate, (estimate) => estimate.searchedInfo)
+  // estimates: Estimate[];
 }

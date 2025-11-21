@@ -9,7 +9,7 @@ export class getAgencyDetailResDto {
     description: '판매점 고유 id',
     example: 5,
   })
-  id: number;
+  agency_id: number;
 
   @IsString()
   @IsNotEmpty()
@@ -51,6 +51,22 @@ export class getAgencyDetailResDto {
   })
   phone_brand: string;
 
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '휴대폰 가격',
+    example: 300000,
+  })
+  phone_price: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '휴대폰 원가',
+    example: 1000000,
+  })
+  phone_original_price: number;
+
   //운영시간을 시작 시간과 마감 시간으로 분리
   @IsString()
   @IsNotEmpty()
@@ -68,18 +84,18 @@ export class getAgencyDetailResDto {
   })
   end_time: string;
 
-  @IsNumber()
-  @IsNotEmpty()
-  @ApiProperty({
-    description: '요금제 금액',
-    example: 55000,
-  })
-  rating: number;
+  // @IsNumber()
+  // @IsNotEmpty()
+  // @ApiProperty({
+  //   description: '요금제 금액',
+  //   example: 55000,
+  // })
+  // rating: number;
 
   // desciption: string;
   // 이게 필요할까?
 
-  // constructor(agencies: Agency) {
+  // setter(agencies: Agency) {
   //   this.id = agencies.id;
   //   this.agency_name = agencies.name;
   //   this.address = agencies.address;

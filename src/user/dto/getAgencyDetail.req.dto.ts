@@ -26,11 +26,27 @@ export class getAgencyDetailReqDto {
   })
   phone_brand: string;
 
-  @IsNumber()
+  // @IsNumber()
+  // @IsNotEmpty()
+  // @ApiProperty({
+  //   description: '요금제 금액',
+  //   example: 55000,
+  // })
+  // rating: number;
+
+  @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: '요금제 금액',
-    example: 55000,
+    description: '통신사',
+    example: 'SKT',
   })
-  rating: number;
+  telecom: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '가입 유형',
+    example: 'New',
+  })
+  subscription_type: string;
 }

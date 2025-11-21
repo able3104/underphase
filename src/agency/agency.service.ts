@@ -36,6 +36,9 @@ import { Phone } from 'src/entity/Phone.entity';
 import { Telecom } from 'src/entity/Telecom.entity';
 import { agencyRegisterReqDto } from './dto/agencyRegister.req.dto';
 import { Brand } from 'src/entity/Brand.entity';
+import { payloadClass } from 'src/auth/payload.class';
+import { getAllPriceListReqDto } from './dto/getAllPriceList.req.dto';
+import { getAllPriceListResDto } from './dto/getAllPriceList.res.dto';
 
 @Injectable()
 export class AgencyService {
@@ -126,69 +129,100 @@ export class AgencyService {
     return response;
   }
 
+  /**여기*/
   async enrollPriceList(
     dto: enrollPriceListReqDto,
-    agency: Agency,
+    agency: payloadClass,
   ): Promise<enrollPriceListResDto> {
+    if (!agency) throw new BadRequestException();
+    // console.debug(`agency: ${JSON.stringify(agency)}`);
     const { priceList } = dto;
 
     for (const item of priceList) {
-      const pricelistEntity = new PriceList();
-      const phone = await this.phoneRepository.findOne({
+      const phone: Phone | null = await this.phoneRepository.findOne({
         where: { name: item.phone_name },
       });
-      if (!phone) {
-        // // const newBrand = new Brand();
-        // // newBrand.name = item.phone_brand;
-        // // newBrand.image_URL = '';
-        // // newBrand.delete_time = '';
-        // const brand = await this.brandRepository.findOne({
-        //   where: { name: item.phone_brand },
-        // });
-        // if (!brand) {
-        //   throw new BadRequestException();
-        // }
 
-        // const newPhone = new Phone();
-        // newPhone.name = item.phone_name;
-        // newPhone.volume = '256GB';
-        // newPhone.color = 'black';
-        // newPhone.image_URL = '';
-        // newPhone.delete_time = '';
-        // newPhone.brand = brand;
+      if (!phone) throw new BadRequestException();
 
-        // // await this.brandRepository.save(newBrand);
-        // await this.phoneRepository.save(newPhone);
+      // // const newBrand = new Brand();
+      // // newBrand.name = item.phone_brand;
+      // // newBrand.image_URL = '';
+      // // newBrand.delete_time = '';
+      // const brand = await this.brandRepository.findOne({
+      //   where: { name: item.phone_brand },
+      // });
+      // if (!brand) {
+      //   throw new BadRequestException();
+      // }
 
-        // const response = new enrollPriceListResDto();
-        // return response;
-        throw new BadRequestException();
-      }
-      const telecom = await this.telecomRepository.findOne({
+      // const newPhone = new Phone();
+      // newPhone.name = item.phone_name;
+      // newPhone.volume = '256GB';
+      // newPhone.color = 'black';
+      // newPhone.image_URL = '';
+      // newPhone.delete_time = '';
+      // newPhone.brand = brand;
+
+      // // await this.brandRepository.save(newBrand);
+      // await this.phoneRepository.save(newPhone);
+
+      // const response = new enrollPriceListResDto();
+      // return response;
+      const telecom: Telecom | null = await this.telecomRepository.findOne({
         where: { name: item.telecom },
       });
-      if (!telecom) {
-        // const newTelecom = new Telecom();
-        // newTelecom.name = item.telecom;
-        // newTelecom.delete_time = '';
-        // await this.telecomRepository.save(newTelecom);
 
-        // const response = new enrollPriceListResDto();
-        // return response;
-        throw new BadRequestException();
-      }
+      // const newTelecom = new Telecom();
+      // newTelecom.name = item.telecom;
+      // newTelecom.delete_time = '';
+      // await this.telecomRepository.save(newTelecom);
 
-      if (!agency) {
-        throw new BadRequestException();
-      }
-      pricelistEntity.phone = phone;
-      pricelistEntity.agency = agency;
-      pricelistEntity.telecom = telecom;
-      pricelistEntity.subscription_type = item.subscription_type;
-      pricelistEntity.price = item.rebatedPrice;
-      pricelistEntity.delete_time = '';
+      // const response = new enrollPriceListResDto();
+      // return response;
+      if (!telecom) throw new BadRequestException();
 
-      await this.priceListRepository.create(pricelistEntity);
+      // const pricelistEntity = new PriceList();
+      // pricelistEntity.phone = phone;
+      // pricelistEntity.agency = agency;
+      // pricelistEntity.telecom = telecom;
+      // pricelistEntity.subscription_type = item.subscription_type;
+      // pricelistEntity.price = item.rebatedPrice;
+      // pricelistEntity.delete_time = '';
+      // let pricelistEntity = await this.priceListRepository.findOne({
+      //   where: {
+      //     phone: { id: phone.id }, // ID를 사용하여 검색
+      //     agency: { id: agency.payload.id },
+      //     telecom: { id: telecom.id },
+      //     subscription_type: item.subscription_type,
+      //   },
+      // });
+
+      // console.debug(new Agency());
+      const new_agency = new Agency();
+      new_agency.id = agency.payload.id;
+
+      const new_data = PriceList.setter(
+        new_agency,
+        phone,
+        telecom,
+        item.subscription_type,
+        item.rebatedPrice,
+        '',
+      );
+
+      const find_priceList = await this.priceListRepository.find({
+        where: {
+          subscription_type: item.subscription_type,
+          agency: new_agency,
+          phone: phone,
+          telecom: telecom,
+        },
+      });
+      if (find_priceList) throw new NotFoundException();
+
+      // 4. save()를 사용하여 INSERT 또는 UPDATE를 적절하게 실행합니다.
+      await this.priceListRepository.save(new_data);
     }
 
     const response = new enrollPriceListResDto();
@@ -197,8 +231,61 @@ export class AgencyService {
 
   async modifyPriceList(
     dto: modifyListReqDto,
-    agency: Agency,
+    agency: payloadClass,
   ): Promise<modifyListResDto> {
+    const { priceList } = dto;
+
+    const agencyForSearch: Agency | null = await this.agencyRepository.findOne({
+      where: { id: agency.payload.id },
+    });
+    if (!agencyForSearch) throw new BadRequestException();
+    console.debug(agencyForSearch);
+
+    const updatePromises = priceList.map(async (item) => {
+      const phone: Phone | null = await this.phoneRepository.findOne({
+        where: { name: item.phone_name },
+      });
+      if (!phone) throw new BadRequestException();
+      console.debug(phone);
+
+      const telecom: Telecom | null = await this.telecomRepository.findOne({
+        where: { name: item.telecom },
+      });
+      if (!telecom) throw new BadRequestException();
+      console.debug(telecom);
+
+      const pricelistEntity: PriceList | null =
+        await this.priceListRepository.findOne({
+          where: {
+            agency: { id: agencyForSearch.id },
+            phone: { id: phone.id },
+            telecom: { id: telecom.id },
+            subscription_type: item.subscription_type,
+            delete_time: '',
+          },
+        });
+
+      if (!pricelistEntity) {
+        throw new NotFoundException('PriceList entry not found for update.');
+      }
+
+      pricelistEntity.price = item.rebatedPrice;
+
+      await this.priceListRepository.save(pricelistEntity);
+
+      return item;
+    });
+    try {
+      const updatedPriceList = await Promise.all(updatePromises);
+
+      const response = new modifyListResDto();
+      response.priceList = updatedPriceList;
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+
     /*
     const priceList = [
       {
@@ -217,9 +304,17 @@ export class AgencyService {
       },
     ];
     */
-    const response = new modifyListResDto();
+    // const response = new modifyListResDto();
 
-    //response.priceList = priceList;
+    // //response.priceList = priceList;
+    // return response;
+  }
+
+  async getAllPriceList(
+    dto: getAllPriceListReqDto,
+    agency: payloadClass,
+  ): Promise<getAllPriceListResDto> {
+    const response = new getAllPriceListResDto();
     return response;
   }
 

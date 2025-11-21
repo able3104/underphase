@@ -66,14 +66,21 @@ export class Estimate {
   })
   rate: number;
 
-  @ManyToOne(() => SearchedInfo, (searchedInfo) => searchedInfo.estimates)
+  // @ManyToOne(() => SearchedInfo, (searchedInfo) => searchedInfo.estimates)
+  // @ApiProperty({
+  //   description: '유저 검색 정보 (FK)',
+  //   example: {
+  //     id: 1,
+  //   },
+  // })
+  // searchedInfo: SearchedInfo;
+
+  @Column()
   @ApiProperty({
-    description: '유저 검색 정보 (FK)',
-    example: {
-      id: 1,
-    },
+    description: '가입 유형',
+    example: 'New',
   })
-  searchedInfo: SearchedInfo;
+  subscription_type: string;
 
   @Column()
   @ApiProperty({
@@ -82,13 +89,13 @@ export class Estimate {
   })
   auth_code: string;
 
-  @Column()
-  @ApiProperty({
-    description: '방문 확정 여부',
-    example: true,
-    default: false,
-  })
-  is_visitable: boolean;
+  // @Column()
+  // @ApiProperty({
+  //   description: '방문 확정 여부',
+  //   example: true,
+  //   default: false,
+  // })
+  // is_visitable: boolean;
 
   // @Column()
   // @ApiProperty({

@@ -22,10 +22,25 @@ export class Rate {
   })
   id: number;
 
+  @Column()
+  @ApiProperty({
+    description: '요금제 명',
+    example: '115',
+  })
   name: string;
 
+  @Column()
+  @ApiProperty({
+    description: '요금제 가격',
+    example: 115000,
+  })
   price: number;
 
+  @Column()
+  @ApiProperty({
+    description: '요금제 데이터 용량(GB)',
+    example: 200,
+  })
   data: number;
 
   @ManyToOne(() => Telecom, (telecom) => telecom.priceLists)

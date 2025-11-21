@@ -69,6 +69,13 @@ export class PriceList {
   })
   price: number;
 
+  @Column()
+  @ApiProperty({
+    description: '기기 원가',
+    example: 1500000,
+  })
+  original_price: number;
+
   /*
   @ManyToOne(() => Rate, (rate) => rate.pricelist)
   @ApiProperty({
@@ -99,4 +106,41 @@ export class PriceList {
 
   @OneToMany(() => Estimate, (estimate) => estimate.priceList)
   estimates: Estimate[];
+
+  init(
+    _agency: Agency,
+    _phone: Phone,
+    _telecom: Telecom,
+    _subscription_type: string,
+    _price: number,
+    _delete_time: string,
+    _id?: number,
+  ) {
+    this.agency = _agency;
+    this.phone = _phone;
+    this.telecom = _telecom;
+    this.subscription_type = _subscription_type;
+    this.price = _price;
+    this.delete_time = _delete_time;
+    if (_id) this.id = _id;
+    return this;
+  }
+
+  static setter(
+    _agency: Agency,
+    _phone: Phone,
+    _telecom: Telecom,
+    _subscription_type: string,
+    _price: number,
+    _delete_time: string,
+  ) {
+    return new PriceList().init(
+      _agency,
+      _phone,
+      _telecom,
+      _subscription_type,
+      _price,
+      _delete_time,
+    ); //.init();
+  }
 }

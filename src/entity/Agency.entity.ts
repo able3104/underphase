@@ -113,6 +113,14 @@ export class Agency {
   })
   image_URL: string;
 
+  @Column()
+  @ApiProperty({
+    description: '인증 태그',
+    example: true,
+    default: false,
+  })
+  auth_tag: boolean;
+
   @CreateDateColumn()
   @ApiProperty({
     description: '생성 시간',

@@ -8,6 +8,9 @@ import { Agency } from 'src/entity/Agency.entity';
 import { Estimate } from 'src/entity/Estimate.entity';
 import { SearchedInfo } from 'src/entity/SearchedInfo.entity';
 import { AgencyModule } from 'src/agency/agency.module';
+import { Phone } from 'src/entity/Phone.entity';
+import { Telecom } from 'src/entity/Telecom.entity';
+import { Rate } from 'src/entity/Rate.entity';
 
 @Module({
   imports: [
@@ -19,6 +22,9 @@ import { AgencyModule } from 'src/agency/agency.module';
       Agency,
       Estimate,
       SearchedInfo,
+      Phone,
+      Telecom,
+      Rate,
     ]),
   ],
   providers: [UserService],

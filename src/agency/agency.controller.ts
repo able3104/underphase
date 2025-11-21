@@ -45,6 +45,9 @@ import { agencyRegisterResDto } from './dto/agencyRegister.res.dto';
 import { Agency } from 'src/entity/Agency.entity';
 import { agencyRegisterReqDto } from './dto/agencyRegister.req.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { payloadClass } from 'src/auth/payload.class';
+import { getAllPriceListReqDto } from './dto/getAllPriceList.req.dto';
+import { getAllPriceListResDto } from './dto/getAllPriceList.res.dto';
 
 @Controller('agency')
 export class AgencyController {
@@ -110,12 +113,15 @@ export class AgencyController {
     type: enrollPriceListResDto,
   })
   @ApiBadRequestResponse({ description: '등록 실패' })
+  @ApiNotFoundResponse({
+    description: '중복되는 가격 리스트 정보 존재함',
+  })
   @UseGuards(AuthGuard)
   async enrollPriceList(
     @Body() dto: enrollPriceListReqDto,
     @Req() req: Request,
   ): Promise<enrollPriceListResDto> {
-    const agency = req['agency'] as Agency;
+    const agency: payloadClass = req['agency'];
     return this.agencyService.enrollPriceList(dto, agency);
   }
 
@@ -129,12 +135,23 @@ export class AgencyController {
   })
   @ApiBadRequestResponse({ description: '수정 실패' })
   @ApiNotFoundResponse({ description: '해당 정보 보유 가격 리스트 없음' })
+  @UseGuards(AuthGuard)
   async modifyPriceList(
     @Body() dto: modifyListReqDto,
     @Req() req: Request,
   ): Promise<modifyListResDto> {
-    const agency = req['agency'] as Agency;
+    const agency: payloadClass = req['agency'];
     return this.agencyService.modifyPriceList(dto, agency);
+  }
+
+  @Get('getAllPriceList')
+  @ApiBearerAuth()
+  async getAllPriceList(
+    @Body() dto: getAllPriceListReqDto,
+    @Req() req: Request,
+  ): Promise<getAllPriceListResDto> {
+    const agency: payloadClass = req['agency'];
+    return this.agencyService.getAllPriceList(dto, agency);
   }
 
   @Delete('deletePriceList')
