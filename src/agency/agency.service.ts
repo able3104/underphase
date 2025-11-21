@@ -211,6 +211,7 @@ export class AgencyService {
         item.rebatedPrice,
         '',
       );
+      console.debug(new_data);
 
       const find_priceList = await this.priceListRepository.find({
         where: {
