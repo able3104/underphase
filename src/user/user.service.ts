@@ -233,13 +233,16 @@ export class UserService {
     if (!agencies) {
       throw new NotFoundException();
     }
+    console.log(agencies);
 
     const phone = await this.phoneRepository.findOne({
       where: { name: dto.phone_name, brand: { name: dto.phone_brand } },
+      relations: ['brand'],
     });
     if (!phone) {
       throw new NotFoundException();
     }
+    console.log(phone);
 
     const priceList = await this.priceListRepository.findOne({
       where: {
@@ -248,11 +251,12 @@ export class UserService {
         telecom: { name: dto.telecom },
         subscription_type: dto.subscription_type,
       },
-      relations: ['agency', 'phone', 'telecom', 'phone.brand'],
+      relations: ['agency', 'phone', 'telecom', 'phone.brand', 'telecom'],
     });
     if (!priceList) {
       throw new NotFoundException();
     }
+    console.log(priceList);
 
     const response = new getAgencyDetailResDto();
     response.agency_id = agencies.id;
@@ -262,7 +266,7 @@ export class UserService {
 
     response.phone_name = phone.name;
     response.phone_brand = phone.brand.name;
-    response.phone_price = priceList.price;
+    response.phone_price = priceList.price * 10000;
     response.phone_original_price = priceList.original_price;
 
     response.start_time = agencies.start_time;

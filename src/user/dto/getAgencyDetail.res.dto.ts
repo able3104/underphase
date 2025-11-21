@@ -7,7 +7,7 @@ export class getAgencyDetailResDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '판매점 고유 id',
-    example: 5,
+    example: 1,
   })
   agency_id: number;
 
@@ -15,7 +15,7 @@ export class getAgencyDetailResDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '판매점명',
-    example: '실버실버 대리점',
+    example: '가야 SKT 판매점',
   })
   agency_name: string;
 
@@ -23,7 +23,7 @@ export class getAgencyDetailResDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '판매점 주소',
-    example: '부산진구 개금동',
+    example: '부산광역시 가야동',
   })
   agency_address: string;
 
@@ -31,7 +31,7 @@ export class getAgencyDetailResDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '대리점 전화번호',
-    example: '01012312355',
+    example: '0511234567',
   })
   agency_phone_number: string;
 

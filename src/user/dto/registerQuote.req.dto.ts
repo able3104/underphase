@@ -26,7 +26,7 @@ export class registerQuoteReqDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '판매점 고유 id',
-    example: 5,
+    example: 1,
   })
   agency_id: number;
 

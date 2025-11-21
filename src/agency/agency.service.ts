@@ -97,6 +97,7 @@ export class AgencyService {
     agencyEntity.email = dto.email;
     agencyEntity.image_URL = '';
     agencyEntity.delete_time = '';
+    agencyEntity.auth_tag = true;
     await this.agencyRepository.save(agencyEntity);
 
     const response = new agencyLoginResDto();
