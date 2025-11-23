@@ -8,6 +8,7 @@ export class discountSimpleDto {
   @ApiProperty({
     description: '추가 할인명',
     example: '추가 할인',
+    default: '추가 할인',
   })
   name: string;
 

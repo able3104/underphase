@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { SearchedInfo } from './SearchedInfo.entity';
 import { CSLog } from './CSLog.entity';
+import { Estimate } from './Estimate.entity';
 
 @Entity()
 export class KakaoUser {
@@ -44,7 +45,7 @@ export class KakaoUser {
     description: '카카오 유저 전화번호',
     example: '01012345678',
   })
-  phone_number: number;
+  phone_number: string;
 
   @Column()
   @ApiProperty({
@@ -82,9 +83,12 @@ export class KakaoUser {
   })
   delete_time: string;
 
-  @OneToMany(() => SearchedInfo, (searchedInfo) => searchedInfo.kakaoUser)
-  searchedInfos: SearchedInfo[];
+  // @OneToMany(() => SearchedInfo, (searchedInfo) => searchedInfo.kakaoUser)
+  // searchedInfos: SearchedInfo[];
 
   @OneToMany(() => CSLog, (csLog) => csLog.kakaoUser)
   csLogs: CSLog[];
+
+  @OneToMany(() => Estimate, (estimate) => estimate.kakaoUser)
+  estimates: Estimate[];
 }

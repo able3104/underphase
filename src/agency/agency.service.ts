@@ -29,7 +29,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { agencyRegisterResDto } from './dto/agencyRegister.res.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Seller } from 'src/entity/Seller.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Agency } from 'src/entity/Agency.entity';
 import { PriceList } from 'src/entity/PriceList.entity';
 import { Phone } from 'src/entity/Phone.entity';
@@ -39,6 +39,7 @@ import { Brand } from 'src/entity/Brand.entity';
 import { payloadClass } from 'src/auth/payload.class';
 import { getAllPriceListReqDto } from './dto/getAllPriceList.req.dto';
 import { getAllPriceListResDto } from './dto/getAllPriceList.res.dto';
+import { Rate } from 'src/entity/Rate.entity';
 
 @Injectable()
 export class AgencyService {
@@ -56,6 +57,8 @@ export class AgencyService {
     private telecomRepository: Repository<Telecom>,
     @InjectRepository(Brand)
     private brandRepository: Repository<Brand>,
+    @InjectRepository(Rate)
+    private rateRepository: Repository<Rate>,
   ) {}
 
   async agencyLogin(dto: agencyLoginReqDto): Promise<agencyLoginResDto> {
@@ -200,6 +203,19 @@ export class AgencyService {
       // });
 
       // console.debug(new Agency());
+      // const newRate = new Rate();
+      // newRate.name = item.phone_plan.name;
+      // newRate.price = item.phone_plan.price;
+      // newRate.data = 200;
+      // newRate.telecom = telecom;
+      // newRate.delete_time = '';
+      // await this.rateRepository.save(newRate);
+
+      const rate = await this.rateRepository.findOne({
+        where: { name: item.phone_plan.name },
+      });
+      if (!rate) throw new BadRequestException();
+
       const new_agency = new Agency();
       new_agency.id = agency.payload.id;
 
@@ -208,8 +224,12 @@ export class AgencyService {
         phone,
         telecom,
         item.subscription_type,
-        item.rebatedPrice,
+        item.phone_price,
+        phone.price,
+        item.discount.name,
+        item.discount.price,
         '',
+        rate,
       );
       console.debug(new_data);
 
@@ -219,6 +239,10 @@ export class AgencyService {
           agency: new_agency,
           phone: phone,
           telecom: telecom,
+          // discount_name: item.discount.name,
+          // discount_price: item.discount.price,
+          rate: rate,
+          delete_time: '',
         },
       });
       if (find_priceList) throw new NotFoundException();
@@ -237,11 +261,13 @@ export class AgencyService {
   ): Promise<modifyListResDto> {
     const { priceList } = dto;
 
-    const agencyForSearch: Agency | null = await this.agencyRepository.findOne({
-      where: { id: agency.payload.id },
-    });
-    if (!agencyForSearch) throw new BadRequestException();
-    console.debug(agencyForSearch);
+    // const agencyForSearch: Agency | null = await this.agencyRepository.findOne({
+    //   where: { id: agency.payload.id },
+    // });
+    // if (!agencyForSearch) throw new BadRequestException();
+    // console.debug(agencyForSearch);
+    const agencyForSearch = new Agency();
+    agencyForSearch.id = agency.payload.id;
 
     const updatePromises = priceList.map(async (item) => {
       const phone: Phone | null = await this.phoneRepository.findOne({
@@ -256,23 +282,30 @@ export class AgencyService {
       if (!telecom) throw new BadRequestException();
       console.debug(telecom);
 
+      const rate: Rate | null = await this.rateRepository.findOne({
+        where: { name: item.phone_plan.name },
+      });
+      if (!rate) throw new BadRequestException();
+      console.debug(rate);
+
       const pricelistEntity: PriceList | null =
         await this.priceListRepository.findOne({
           where: {
-            agency: { id: agencyForSearch.id },
+            subscription_type: item.subscription_type,
+
+            agency: { id: agency.payload.id },
             phone: { id: phone.id },
             telecom: { id: telecom.id },
-            subscription_type: item.subscription_type,
+            rate: { id: rate.id },
             delete_time: '',
           },
         });
-
       if (!pricelistEntity) {
-        throw new NotFoundException('PriceList entry not found for update.');
+        throw new NotFoundException();
       }
+      console.debug(pricelistEntity);
 
-      pricelistEntity.price = item.rebatedPrice;
-
+      pricelistEntity.price = item.phone_price;
       await this.priceListRepository.save(pricelistEntity);
 
       return item;

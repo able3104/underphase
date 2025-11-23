@@ -1,6 +1,4 @@
-// src/auth/auth.module.ts
-
-import { forwardRef, Module } from '@nestjs/common';
+import { forwardRef, Module, Search } from '@nestjs/common';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
@@ -10,11 +8,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Agency } from 'src/entity/Agency.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AgencyModule } from 'src/agency/agency.module';
+import { HttpModule } from '@nestjs/axios';
+import { UserService } from 'src/user/user.service';
+import { UserModule } from 'src/user/user.module';
+import { PriceList } from 'src/entity/PriceList.entity';
+import { SearchedInfo } from 'src/entity/SearchedInfo.entity';
+import { Estimate } from 'src/entity/Estimate.entity';
+import { Phone } from 'src/entity/Phone.entity';
+import { Telecom } from 'src/entity/Telecom.entity';
+import { Rate } from 'src/entity/Rate.entity';
 
 @Module({
   imports: [
     forwardRef(() => AgencyModule),
+    forwardRef(() => UserModule),
     TypeOrmModule.forFeature([Agency]),
+    HttpModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     // JWT 설정 (시크릿 키와 만료 시간 설정)
     JwtModule.registerAsync({

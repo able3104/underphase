@@ -56,6 +56,14 @@ export class Phone {
 
   @Column()
   @ApiProperty({
+    description: '기기 가격',
+    example: 1500000,
+    default: 0,
+  })
+  price: number;
+
+  @Column()
+  @ApiProperty({
     description: '기기 이미지 URL',
     example: 'http://apple.com/iphone13_black.png',
   })

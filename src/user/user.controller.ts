@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  Post,
+  Query,
+  Res,
+  Response,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import {
   ApiBadRequestResponse,
@@ -30,6 +42,9 @@ import { cancelReservationReqDto } from './dto/cancelReservation.req.dto';
 import { cancelReservationResDto } from './dto/cancelReservation.res.dto';
 import { registerQuoteReqDto } from './dto/registerQuote.req.dto';
 import { resisterQuoteResDto } from './dto/registerQuote.res.dto';
+import { getQuoteReqDto } from './dto/getQuote.req.dto';
+import { getQuoteResDto } from './dto/getQuote.res.dto';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('user')
 export class UserController {
@@ -49,33 +64,35 @@ export class UserController {
   //   return this.userService.searchedInfo(dto);
   // }
 
-  @Post('kakaoLogin')
-  @ApiOperation({ summary: '카카오 로그인' })
-  @ApiResponse({
-    status: 201,
-    description: '로그인 성공',
-    type: kakaoLoginResDto,
-  })
-  @ApiBadRequestResponse({ description: '로그인 실패' })
-  @ApiNotFoundResponse({ description: '해당 카카오 아이디 보유 유저 없음' })
-  async kakaoLogin(@Body() dto: kakaoLoginReqDto): Promise<kakaoLoginResDto> {
-    return this.userService.kakaoLogin(dto);
-  }
+  // @Post('kakaoLogin')
+  // @ApiOperation({ summary: '카카오 로그인' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '로그인 성공',
+  //   type: kakaoLoginResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '로그인 실패' })
+  // @ApiNotFoundResponse({ description: '해당 카카오 아이디 보유 유저 없음' })
+  // async kakaoLogin(@Body() dto: kakaoLoginReqDto): Promise<kakaoLoginResDto> {
+  //   return this.userService.kakaoLogin(dto);
+  // }
 
-  @Post('kakaoSignupCallback')
-  @ApiOperation({ summary: '카카오 회원가입 콜백' })
-  @ApiResponse({
-    status: 201,
-    description: '회원가입 콜백 성공',
-    type: kakaoSignupCallbackResDto,
-  })
-  @ApiBadRequestResponse({ description: '회원가입 콜백 실패' })
-  @ApiNotFoundResponse({ description: '해당 카카오 아이디 보유 유저 없음' })
-  async kakaoSignupCallback(
-    @Body() dto: kakaoSignupCallbackReqDto,
-  ): Promise<kakaoSignupCallbackResDto> {
-    return this.userService.kakaoSignupCallback(dto);
-  }
+  // @Get('kakaoSignupCallback')
+  // @ApiOperation({ summary: '카카오 회원가입 콜백' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '회원가입 콜백 성공',
+  //   type: kakaoSignupCallbackResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '회원가입 콜백 실패' })
+  // @ApiNotFoundResponse({ description: '해당 카카오 아이디 보유 유저 없음' })
+  // async kakaoSignupCallback(@Query('code') code: string, @Res() res: Response) {
+  //   try {
+  //     const token = await this.authService.getKakaoAccessToken(code);
+  //   } catch {
+  //     return new HttpException('kakao login failed', 500);
+  //   }
+  // }
 
   @Post('searchAgencies')
   @ApiOperation({ summary: '판매점 검색' })
@@ -161,12 +178,26 @@ export class UserController {
   @ApiResponse({
     status: 201,
     description: '견적서 등록 성공',
+    type: resisterQuoteResDto,
   })
   @ApiBadRequestResponse({ description: '견적서 등록 실패' })
   async registerQuote(
     @Body() dto: registerQuoteReqDto,
   ): Promise<resisterQuoteResDto> {
     return this.userService.registerQuote(dto);
+  }
+
+  @Get('getQuote')
+  @ApiOperation({ summary: '견적서 조회' })
+  @ApiResponse({
+    status: 201,
+    description: '견적서 조회 성공',
+    type: getQuoteResDto,
+  })
+  @ApiBadRequestResponse({ description: '견적서 조회 실패' })
+  @ApiNotFoundResponse({ description: '해당 견적서 없음' })
+  async getQuote(@Query() dto: getQuoteReqDto): Promise<getQuoteResDto> {
+    return this.userService.getQuote(dto);
   }
 
   // @Post('confirmVisit')

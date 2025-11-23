@@ -76,7 +76,6 @@ export class PriceList {
   })
   original_price: number;
 
-  /*
   @ManyToOne(() => Rate, (rate) => rate.pricelist)
   @ApiProperty({
     description: '요금제 정보 (FK)',
@@ -87,7 +86,22 @@ export class PriceList {
     },
   })
   rate: Rate;
-  */
+
+  @Column()
+  @ApiProperty({
+    description: '추가 할인명',
+    example: '추가 할인',
+    default: '추가 할인',
+  })
+  discount_name: string;
+
+  @Column()
+  @ApiProperty({
+    description: '추가 할인 가격',
+    example: 10000,
+    default: 10000,
+  })
+  discount_price: number;
 
   @CreateDateColumn()
   @ApiProperty({
@@ -113,7 +127,11 @@ export class PriceList {
     _telecom: Telecom,
     _subscription_type: string,
     _price: number,
+    _original_price: number,
+    _discount_name: string,
+    _discount_price: number,
     _delete_time: string,
+    _rate: Rate,
     _id?: number,
   ) {
     this.agency = _agency;
@@ -121,7 +139,11 @@ export class PriceList {
     this.telecom = _telecom;
     this.subscription_type = _subscription_type;
     this.price = _price;
+    this.original_price = _original_price;
+    this.discount_name = _discount_name;
+    this.discount_price = _discount_price;
     this.delete_time = _delete_time;
+    this.rate = _rate;
     if (_id) this.id = _id;
     return this;
   }
@@ -132,7 +154,12 @@ export class PriceList {
     _telecom: Telecom,
     _subscription_type: string,
     _price: number,
+    _original_price: number,
+    _discount_name: string,
+    _discount_price: number,
     _delete_time: string,
+    _rate: Rate,
+    _id?: number,
   ) {
     return new PriceList().init(
       _agency,
@@ -140,7 +167,12 @@ export class PriceList {
       _telecom,
       _subscription_type,
       _price,
+      _original_price,
+      _discount_name,
+      _discount_price,
       _delete_time,
+      _rate,
+      _id,
     ); //.init();
   }
 }

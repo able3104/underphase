@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -40,6 +42,10 @@ import { registerQuoteReqDto } from './dto/registerQuote.req.dto';
 import { resisterQuoteResDto } from './dto/registerQuote.res.dto';
 import { Telecom } from 'src/entity/Telecom.entity';
 import { Rate } from 'src/entity/Rate.entity';
+import { getQuoteReqDto } from './dto/getQuote.req.dto';
+import { benefitSimpleDto, getQuoteResDto } from './dto/getQuote.res.dto';
+import { config } from 'process';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class UserService {
@@ -67,12 +73,12 @@ export class UserService {
   //   return response;
   // }
 
-  async kakaoLogin(dto: kakaoLoginReqDto): Promise<kakaoLoginResDto> {
-    const response = new kakaoLoginResDto();
-    response.authtoken = 'XZ@12HR12J87';
-    response.is_new_user = true;
-    return response;
-  }
+  // async kakaoLogin(dto: kakaoLoginReqDto): Promise<kakaoLoginResDto> {
+  //   const response = new kakaoLoginResDto();
+  //   response.authtoken = 'XZ@12HR12J87';
+  //   response.is_new_user = true;
+  //   return response;
+  // }
 
   async kakaoSignupCallback(
     dto: kakaoSignupCallbackReqDto,
@@ -449,6 +455,83 @@ export class UserService {
       code += Math.floor(Math.random() * 10).toString();
     }
     return code;
+  }
+  // const newUser = new KakaoUser();
+  // newUser.user_number = 987654321;
+  // newUser.name = '박민준';
+  // newUser.nickname = '민준띠';
+  // newUser.phone_number = '01098765432';
+  // newUser.profile_image = '';
+  // newUser.gender = 'male';
+  // newUser.email = 'minjun@example.com';
+  // newUser.delete_time = '';
+  // await this.kakaoUserRepository.save(newUser);
+
+  async getQuote(dto: getQuoteReqDto): Promise<getQuoteResDto> {
+    const estimate = await this.estimateRepository.findOne({
+      where: { auth_code: dto.quoteCode },
+      // 필요한 모든 관계를 로드합니다. (agency, phone, brand 등)
+      relations: [
+        'priceList',
+        'priceList.agency',
+        'phone',
+        'priceList.rate',
+        'phone.brand',
+      ],
+    });
+
+    // 2. estimate가 없으면 예외 처리
+    if (!estimate) {
+      throw new BadRequestException();
+    }
+
+    console.log(estimate);
+
+    // 3. (중요 수정) agencyRepository.findOne 중복 쿼리 제거
+    //    priceList.agency가 이미 로드되었으므로 별도의 쿼리가 필요 없습니다.
+
+    // 4. 응답 DTO 구성
+    const response = new getQuoteResDto();
+
+    // 5. 필요한 데이터 구조 분해 및 안전한 접근을 위한 변수 할당
+    //    (코드를 읽기 쉽게 만듭니다.)
+    const { priceList, phone } = estimate;
+
+    // priceList와 agency는 relations로 로드되었으므로 null/undefined 체크를 추가하는 것이 안전합니다.
+    if (!priceList || !priceList.agency || !phone || !phone.brand) {
+      throw new NotFoundException();
+    }
+    const agency = priceList.agency;
+    const brand = phone.brand;
+
+    // 데이터 할당
+    response.customer_name = '박민준'; // 고정값 또는 다른 로직 필요
+
+    response.agency_name = agency.name;
+    response.agency_rating = agency.review_score;
+    response.agency_address = agency.address;
+    response.agency_phone_number = agency.phone_number;
+
+    response.phone_name = phone.name;
+    response.phone_brand = brand.name;
+    response.phone_price = estimate.price;
+    response.phone_original_price = priceList.original_price;
+    response.phone_plan = priceList.rate; // priceList.rate 엔티티가 로드된 경우 사용
+
+    response.discount.name = priceList.discount_name;
+    response.discount.price = priceList.discount_price;
+
+    response.subscription_type = estimate.subscription_type;
+
+    // 혜택 데이터는 그대로 유지
+    const benefit = [
+      { description: '스마트폰 케이스 쇼핑몰 5,000원 할인' },
+      { description: '요정 서비스 이용 시 5만원 추가 할인' },
+      { description: '대리점 방문했는데 가격이 다르다면? 차액 보장!' },
+    ];
+    response.benefits = benefit;
+
+    return response;
   }
 
   async confirmVisit(dto: confirmVisitReqDto): Promise<confirmVisitResDto> {

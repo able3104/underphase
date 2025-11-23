@@ -21,21 +21,21 @@ export class SearchedInfo {
   })
   id: number;
 
-  @ManyToOne(() => KakaoUser, (kakaoUser) => kakaoUser.searchedInfos)
-  @ApiProperty({
-    description: '카카오 유저 정보 (FK)',
-    example: {
-      id: 1,
-      user_number: 999888777,
-      name: '홍길동',
-      nickname: '길동이',
-      phone_number: '01012345678',
-      profile_image: 'http://kakao.com/profile_image.jpg',
-      gender: 'male',
-      email: 'user123@gmail.com',
-    },
-  })
-  kakaoUser: KakaoUser;
+  // @ManyToOne(() => KakaoUser, (kakaoUser) => kakaoUser.searchedInfos)
+  // @ApiProperty({
+  //   description: '카카오 유저 정보 (FK)',
+  //   example: {
+  //     id: 1,
+  //     user_number: 999888777,
+  //     name: '홍길동',
+  //     nickname: '길동이',
+  //     phone_number: '01012345678',
+  //     profile_image: 'http://kakao.com/profile_image.jpg',
+  //     gender: 'male',
+  //     email: 'user123@gmail.com',
+  //   },
+  // })
+  // kakaoUser: KakaoUser;
 
   @ManyToOne(() => Phone, (phone) => phone.searchedInfos)
   @ApiProperty({

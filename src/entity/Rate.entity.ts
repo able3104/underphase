@@ -68,6 +68,6 @@ export class Rate {
   })
   delete_time: string;
 
-  //@OneToMany(() => PriceList, (pricelist) => pricelist.rate)
-  //pricelist: PriceList[];
+  @OneToMany(() => PriceList, (pricelist) => pricelist.rate)
+  pricelist: PriceList[];
 }

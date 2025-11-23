@@ -12,6 +12,7 @@ import { PriceList } from './PriceList.entity';
 import { SearchedInfo } from './SearchedInfo.entity';
 import { BillImage } from './BillImage.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { KakaoUser } from './KakaoUser.entity';
 
 @Entity()
 export class Estimate {
@@ -74,6 +75,16 @@ export class Estimate {
   //   },
   // })
   // searchedInfo: SearchedInfo;
+
+  @ManyToOne(() => KakaoUser, (kakaoUser) => kakaoUser.estimates)
+  @ApiProperty({
+    description: '유저 검색 정보 (FK)',
+    example: {
+      id: 1,
+      name: '박민준',
+    },
+  })
+  kakaoUser: KakaoUser;
 
   @Column()
   @ApiProperty({

@@ -23,6 +23,7 @@ import { Brand } from 'src/entity/Brand.entity';
       Seller,
       Telecom,
       Brand,
+      Rate,
     ]),
     forwardRef(() => UserModule),
     forwardRef(() => AuthModule),
