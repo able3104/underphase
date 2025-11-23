@@ -148,6 +148,7 @@ export class AgencyService {
       });
 
       if (!phone) throw new BadRequestException();
+      await this.phoneRepository.save(phone);
 
       // // const newBrand = new Brand();
       // // newBrand.name = item.phone_brand;
@@ -247,7 +248,6 @@ export class AgencyService {
       });
       if (find_priceList) throw new NotFoundException();
 
-      // 4. save()를 사용하여 INSERT 또는 UPDATE를 적절하게 실행합니다.
       await this.priceListRepository.save(new_data);
     }
 
