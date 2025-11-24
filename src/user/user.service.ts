@@ -7,25 +7,17 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { searchedInfoReqDto } from './dto/searchedInfo.req.dto';
-import { searchedInfoResDto } from './dto/searchedInfo.res.dto';
 import { kakaoLoginReqDto } from './dto/kakaoLogin.req.dto';
 import { kakaoLoginResDto } from './dto/kakaoLogin.res.dto';
 import { kakaoSignupCallbackReqDto } from './dto/kakaoSignupCallback.req.dto';
 import { kakaoSignupCallbackResDto } from './dto/kakaoSignupCallback.res.dto';
 import { searchAgenciesReqDto } from './dto/searchAgencies.req.dto';
-import { searchRatePlansResDto } from './dto/searchRatePlans.res.dto';
-import { refilterAgenciesReqDto } from './dto/refilterAgencies.req.dto';
-import { refilterAgenciesResDto } from './dto/refilterAgencies.res.dto';
 import { getAgencyDetailReqDto } from './dto/getAgencyDetail.req.dto';
 import { getAgencyDetailResDto } from './dto/getAgencyDetail.res.dto';
-import { searchRatePlansReqDto } from './dto/searchRatePlans.req.dto';
 import { chooseAgencyReqDto } from './dto/chooseAgency.req.dto';
 import { chooseAgencyResDto } from './dto/chooseAgency.res.dto';
 import { confirmVisitReqDto } from './dto/confirmVisit.req.dto';
 import { confirmVisitResDto } from './dto/confirmVisit.res.dto';
-import { getUserReservationsReqDto } from './dto/getUserReservations.req.dto';
-import { getUserReservationsResDto } from './dto/getUserReservations.res.dto';
 import { cancelReservationReqDto } from './dto/cancelReservation.req.dto';
 import { cancelReservationResDto } from './dto/cancelReservation.res.dto';
 import {
@@ -129,6 +121,7 @@ export class UserService {
         agency_id: 1,
         agency_name: '가야 SKT 판매점',
         agency_address: '부산광역시 가야동',
+        agency_rating: 4.5,
         telecom: 'SKT',
         subscription_type: 'New',
         phome_brand: 'samsung',
@@ -140,6 +133,7 @@ export class UserService {
         agency_id: 1,
         agency_name: '가야 SKT 판매점',
         agency_address: '부산광역시 가야동',
+        agency_rating: 4.5,
         telecom: 'SKT',
         subscription_type: 'Change_device',
         phome_brand: 'samsung',
@@ -148,83 +142,10 @@ export class UserService {
         auth_tag: true,
       },
     ];
-    const list = {
-      id: 5,
-      agency_name: '실버실버 대리점',
-      agency_address: '부산진구 개금동',
-      agency_phone_number: '01012312355',
-      phone_name: '17+',
-      phone_brand: 'Apple',
-      phone_price: 500000,
-      telecom: 'SKT',
-      monthly_expenditure: 63000,
-      additional_benefit: false,
-      auth_tag: true,
-    };
     const response = new searchAgenciesResDto();
     response.setter(agencyData);
     // response.agency = agencySimpleDtos;
 
-    return response;
-  }
-
-  async refilterAgencies(
-    dto: refilterAgenciesReqDto,
-  ): Promise<refilterAgenciesResDto> {
-    // const filteredPriceLists = await this.priceListRepository.find({
-    //   where: {
-    //     phone: {
-    //       name: dto.phone_name,
-    //       brand: { name: dto.phone_brand },
-    //     },
-    //   },
-    //   relations: ['agency', 'phone', 'phone.brand'],
-    // });
-
-    // if (filteredPriceLists.length === 0) {
-    //   throw new NotFoundException(
-    //     '추가 필터링 조건에 맞는 판매점 가격표를 찾을 수 없습니다.',
-    //   );
-    // }
-
-    // const agenciesMap = new Map<number, Agency>();
-    // for (const list of filteredPriceLists) {
-    //   if (list.agency && !agenciesMap.has(list.agency.id)) {
-    //     agenciesMap.set(list.agency.id, list.agency);
-    //   }
-    // }
-    // const filteredAgencies = Array.from(agenciesMap.values());
-
-    const agencyData = [
-      {
-        id: 5,
-        agency_name: '실버실버 대리점',
-        agency_address: '부산진구 개금동',
-        agency_phone_number: '01012312355',
-        phone_name: '17+',
-        phone_brand: 'Apple',
-        phone_price: 500000,
-        telecom: 'SKT',
-        monthly_expenditure: 63000,
-        additional_benefit: false,
-        auth_tag: true,
-      },
-      {
-        id: 17,
-        agency_name: 'KT 대리점 가야점',
-        agency_address: '부산진구 가야동',
-        agency_phone_number: '01015648569',
-        phone_name: '17+',
-        phone_brand: 'Apple',
-        telecom: 'KT',
-        phone_price: 550000,
-        monthly_expenditure: 66000,
-        additional_benefit: true,
-        auth_tag: true,
-      },
-    ];
-    const response = new refilterAgenciesResDto();
-    response.agency = agencyData;
     return response;
   }
 
@@ -281,88 +202,14 @@ export class UserService {
     response.agency_name = '가야 SKT 판매점';
     response.agency_address = '부산광역시 가야동';
     response.agency_phone_number = '0511234567';
+    response.agency_rating = 4.5;
     response.phone_name = 'S25';
     response.phone_brand = 'samsung';
     response.phone_price = 300000;
     response.phone_original_price = 1000000;
-    response.start_time = '11:00';
-    response.end_time = '19:00';
-    return response;
-  }
-
-  async searchRatePlans(
-    dto: searchRatePlansReqDto,
-  ): Promise<searchRatePlansResDto> {
-    // const searchedPriceList = await this.priceListRepository.findOne({
-    //   where: {
-    //     phone: { name: dto.phone_name },
-    //     telecom: { name: dto.telecom },
-    //     agency: { name: dto.agency_name },
-    //   },
-    // });
-
-    // if (!searchedPriceList) {
-    //   throw new NotFoundException();
-    // }
-
-    // const response = new searchRatePlansResDto();
-    // response.plan_name = searchedPriceList.rate.name;
-    // response.price = searchedPriceList.rate.price;
-    // response.data = searchedPriceList.rate.data;
-    // response.telecom = searchedPriceList.rate.telecom.name;
-
-    const response = new searchRatePlansResDto();
-    response.plan_name = '5G Slim';
-    response.price = 55000;
-    response.data = 110;
-    response.telecom = 'SKT';
-
-    return response;
-  }
-
-  async chooseAgency(dto: chooseAgencyReqDto): Promise<chooseAgencyResDto> {
-    // const priceList = await this.priceListRepository.findOne({
-    //   where: {
-    //     agency: { name: dto.agency_name },
-    //     phone: { name: dto.phone_name },
-    //   },
-    // });
-
-    // if (!priceList) {
-    //   throw new NotFoundException();
-    // }
-
-    // const estimate = new Estimate();
-    // estimate.phone = priceList.phone;
-    // estimate.priceList = priceList;
-    // estimate.price = priceList.price;
-    // estimate.rate = priceList.rate.price;
-
-    // const searchedInfo = await this.searchedInfoRepository.findOne({
-    //   where: {
-    //     id: dto.searchedInfo_id,
-    //   },
-    // });
-    // if (!searchedInfo) {
-    //   throw new NotFoundException();
-    // }
-
-    // estimate.searchedInfo = searchedInfo;
-    // //searchedInfo_id를 계속 들고 있어야 하나?
-    // //이거를 인증 id 로 쓰자.
-
-    // const authCode = this.generateNumericCode(10);
-    // const auth_code: string = await authCode;
-    // estimate.auth_code = auth_code;
-
-    // await this.estimateRepository.save(estimate);
-
-    const response = new chooseAgencyResDto();
-    response.phone_name = 'S25';
-    response.phone_brand = 'Galaxy';
-    response.price = 300000;
-    response.rating = 55000;
-    response.auth_code = '1872536263';
+    response.phone_image = '/images/device/galaxy/galaxy_s25.png';
+    // response.start_time = '11:00';
+    // response.end_time = '19:00';
     return response;
   }
 
@@ -455,16 +302,6 @@ export class UserService {
     }
     return code;
   }
-  // const newUser = new KakaoUser();
-  // newUser.user_number = 987654321;
-  // newUser.name = '박민준';
-  // newUser.nickname = '민준띠';
-  // newUser.phone_number = '01098765432';
-  // newUser.profile_image = '';
-  // newUser.gender = 'male';
-  // newUser.email = 'minjun@example.com';
-  // newUser.delete_time = '';
-  // await this.kakaoUserRepository.save(newUser);
 
   async getQuote(dto: getQuoteReqDto): Promise<getQuoteResDto> {
     // const estimate = await this.estimateRepository.findOne({
@@ -568,37 +405,6 @@ export class UserService {
     response.reservation_id = 123;
     response.is_visitable = true;
     response.visit_time = '2025-12-03 14:00';
-    return response;
-  }
-
-  //auth 필요
-  //auth 가드 구현후 작성하자
-  async getUserReservations(
-    dto: getUserReservationsReqDto,
-  ): Promise<getUserReservationsResDto> {
-    const response = new getUserReservationsResDto();
-    response.reservation_id = 123;
-    response.agency_name = '실버실버 대리점';
-    response.status = 'Pending';
-    // response.visit_time = '2025-12-03 14:00';
-    return response;
-  }
-
-  async cancelReservation(
-    dto: cancelReservationReqDto,
-  ): Promise<cancelReservationResDto> {
-    // const estimate = await this.estimateRepository.findOne({
-    //   where: { id: dto.reservation_id },
-    // });
-    // if (!estimate) {
-    //   throw new NotFoundException();
-    // }
-
-    // const currentTime: Date = new Date();
-
-    // estimate.delete_time = currentTime;
-
-    const response = new cancelReservationResDto();
     return response;
   }
 }

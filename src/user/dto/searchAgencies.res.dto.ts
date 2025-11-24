@@ -30,7 +30,7 @@ export class AgencySimpleDto {
     example: '부산광역시 부산진구 가야동',
   })
   agency_address: string;
-  // agency_rating: number;
+  agency_rating: number;
 
   telecom: string;
   subscription_type: string;
@@ -53,6 +53,7 @@ export class searchAgenciesResDto {
         agency_id: 1,
         agency_name: '가야 SKT 판매점',
         agency_address: '부산광역시 가야동',
+        agency_rating: 4.5,
         telecom: 'SKT',
         subscription_type: 'New',
         phome_brand: 'samsung',
@@ -64,6 +65,7 @@ export class searchAgenciesResDto {
         agency_id: 1,
         agency_name: '가야 SKT 판매점',
         agency_address: '부산광역시 가야동',
+        agency_rating: 4.5,
         telecom: 'SKT',
         subscription_type: 'Change_device',
         phome_brand: 'samsung',

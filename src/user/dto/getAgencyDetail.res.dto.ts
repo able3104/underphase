@@ -35,6 +35,14 @@ export class getAgencyDetailResDto {
   })
   agency_phone_number: string;
 
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '판매점 리뷰 평점',
+    example: 4.5,
+  })
+  agency_rating: number;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
@@ -67,22 +75,30 @@ export class getAgencyDetailResDto {
   })
   phone_original_price: number;
 
-  //운영시간을 시작 시간과 마감 시간으로 분리
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: '오픈 시간',
-    example: '11:00',
+    description: '휴대폰 이미지 경로',
+    example: '/images/device/galaxy/galaxy_s25.png',
   })
-  start_time: string;
+  phone_image: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    description: '클로즈 시간',
-    example: '19:00',
-  })
-  end_time: string;
+  // //운영시간을 시작 시간과 마감 시간으로 분리
+  // @IsString()
+  // @IsNotEmpty()
+  // @ApiProperty({
+  //   description: '오픈 시간',
+  //   example: '11:00',
+  // })
+  // start_time: string;
+
+  // @IsString()
+  // @IsNotEmpty()
+  // @ApiProperty({
+  //   description: '클로즈 시간',
+  //   example: '19:00',
+  // })
+  // end_time: string;
 
   // @IsNumber()
   // @IsNotEmpty()
