@@ -231,63 +231,62 @@ export class UserService {
   async getAgencyDetail(
     dto: getAgencyDetailReqDto,
   ): Promise<getAgencyDetailResDto> {
-    const agencies = await this.agencyRepository.findOne({
-      where: { id: dto.agency_id },
-    });
-    if (!agencies) {
-      throw new NotFoundException();
-    }
-    console.log(agencies);
+    // const agencies = await this.agencyRepository.findOne({
+    //   where: { id: dto.agency_id },
+    // });
+    // if (!agencies) {
+    //   throw new NotFoundException();
+    // }
+    // console.log(agencies);
 
-    const phone = await this.phoneRepository.findOne({
-      where: { name: dto.phone_name, brand: { name: dto.phone_brand } },
-      relations: ['brand'],
-    });
-    if (!phone) {
-      throw new NotFoundException();
-    }
-    console.log(phone);
+    // const phone = await this.phoneRepository.findOne({
+    //   where: { name: dto.phone_name, brand: { name: dto.phone_brand } },
+    //   relations: ['brand'],
+    // });
+    // if (!phone) {
+    //   throw new NotFoundException();
+    // }
+    // console.log(phone);
 
-    const priceList = await this.priceListRepository.findOne({
-      where: {
-        agency: { id: dto.agency_id },
-        phone: { id: phone.id },
-        telecom: { name: dto.telecom },
-        subscription_type: dto.subscription_type,
-      },
-      relations: ['agency', 'phone', 'telecom', 'phone.brand', 'telecom'],
-    });
-    if (!priceList) {
-      throw new NotFoundException();
-    }
-    console.log(priceList);
-
-    const response = new getAgencyDetailResDto();
-    response.agency_id = agencies.id;
-    response.agency_name = agencies.name;
-    response.agency_address = agencies.address;
-    response.agency_phone_number = agencies.phone_number;
-
-    response.phone_name = phone.name;
-    response.phone_brand = phone.brand.name;
-    response.phone_price = priceList.price;
-    response.phone_original_price = priceList.original_price;
-
-    response.start_time = agencies.start_time;
-    response.end_time = agencies.end_time;
+    // const priceList = await this.priceListRepository.findOne({
+    //   where: {
+    //     agency: { id: dto.agency_id },
+    //     phone: { id: phone.id },
+    //     telecom: { name: dto.telecom },
+    //     subscription_type: dto.subscription_type,
+    //   },
+    //   relations: ['agency', 'phone', 'telecom', 'phone.brand', 'telecom'],
+    // });
+    // if (!priceList) {
+    //   throw new NotFoundException();
+    // }
+    // console.log(priceList);
 
     // const response = new getAgencyDetailResDto();
+    // response.agency_id = agencies.id;
+    // response.agency_name = agencies.name;
+    // response.agency_address = agencies.address;
+    // response.agency_phone_number = agencies.phone_number;
 
-    // response.id = 5;
-    // response.agency_name = '실버실버 대리점';
-    // response.agency_address = '부산진구 개금동';
-    // response.agency_phone_number = '01012312355';
-    // response.phone_name = 'S25';
-    // response.phone_brand = 'Galaxy';
-    // response.start_time = '11:00';
-    // response.end_time = '19:00';
-    // response.rating = 55000;
+    // response.phone_name = phone.name;
+    // response.phone_brand = phone.brand.name;
+    // response.phone_price = priceList.price;
+    // response.phone_original_price = priceList.original_price;
 
+    // response.start_time = agencies.start_time;
+    // response.end_time = agencies.end_time;
+
+    const response = new getAgencyDetailResDto();
+    response.agency_id = 1;
+    response.agency_name = '가야 SKT 판매점';
+    response.agency_address = '부산광역시 가야동';
+    response.agency_phone_number = '0511234567';
+    response.phone_name = 'S25';
+    response.phone_brand = 'samsung';
+    response.phone_price = 300000;
+    response.phone_original_price = 1000000;
+    response.start_time = '11:00';
+    response.end_time = '19:00';
     return response;
   }
 
