@@ -376,71 +376,73 @@ export class UserService {
       subscription_type,
     } = dto;
 
-    const agency = await this.agencyRepository.findOne({
-      where: { id: agency_id },
-    });
-    if (!agency) throw new NotFoundException();
-    //console.log(agency);
+    // const agency = await this.agencyRepository.findOne({
+    //   where: { id: agency_id },
+    // });
+    // if (!agency) throw new NotFoundException();
+    // //console.log(agency);
 
-    const phone = await this.phoneRepository.findOne({
-      where: { name: phone_name, brand: { name: phone_brand } },
-    });
-    if (!phone) throw new NotFoundException();
-    //console.log(phone);
+    // const phone = await this.phoneRepository.findOne({
+    //   where: { name: phone_name, brand: { name: phone_brand } },
+    // });
+    // if (!phone) throw new NotFoundException();
+    // //console.log(phone);
 
-    const telecom = await this.telecomRepository.findOne({
-      where: { name: dto.telecom },
-    });
-    if (!telecom) throw new NotFoundException();
-    //console.log(telecom);
+    // const telecom = await this.telecomRepository.findOne({
+    //   where: { name: dto.telecom },
+    // });
+    // if (!telecom) throw new NotFoundException();
+    // //console.log(telecom);
 
-    // rate 더미 데이터 삽입
-    // const newRate = new Rate();
-    // newRate.name = phone_plan.name;
-    // newRate.price = phone_plan.price;
-    // newRate.telecom = telecom;
-    // newRate.data = 200;
-    // newRate.delete_time = '';
-    // await this.rateRepository.save(newRate);
+    // // rate 더미 데이터 삽입
+    // // const newRate = new Rate();
+    // // newRate.name = phone_plan.name;
+    // // newRate.price = phone_plan.price;
+    // // newRate.telecom = telecom;
+    // // newRate.data = 200;
+    // // newRate.delete_time = '';
+    // // await this.rateRepository.save(newRate);
 
-    const rate = await this.rateRepository.findOne({
-      where: {
-        name: phone_plan.name,
-        price: phone_plan.price,
-        telecom: { id: telecom.id },
-      },
-    });
-    if (!rate) throw new NotFoundException();
-    //console.log(rate);
+    // const rate = await this.rateRepository.findOne({
+    //   where: {
+    //     name: phone_plan.name,
+    //     price: phone_plan.price,
+    //     telecom: { id: telecom.id },
+    //   },
+    // });
+    // if (!rate) throw new NotFoundException();
+    // //console.log(rate);
 
-    const priceList = await this.priceListRepository.findOne({
-      where: {
-        agency: { id: agency_id },
-        phone: { id: phone.id },
-        subscription_type: subscription_type,
-        telecom: { id: telecom.id },
-      },
-      relations: ['agency', 'phone', 'telecom', 'phone.brand', 'telecom'],
-    });
-    if (!priceList) throw new NotFoundException();
-    //console.log(priceList);
+    // const priceList = await this.priceListRepository.findOne({
+    //   where: {
+    //     agency: { id: agency_id },
+    //     phone: { id: phone.id },
+    //     subscription_type: subscription_type,
+    //     telecom: { id: telecom.id },
+    //   },
+    //   relations: ['agency', 'phone', 'telecom', 'phone.brand', 'telecom'],
+    // });
+    // if (!priceList) throw new NotFoundException();
+    // //console.log(priceList);
 
-    const authCode = this.generateNumericCode(10);
-    const auth_code: string = await authCode;
+    // const authCode = this.generateNumericCode(10);
+    // const auth_code: string = await authCode;
 
-    const estimate = new Estimate();
-    estimate.phone = phone;
-    estimate.priceList = priceList;
-    estimate.price = phone_price;
-    estimate.rate = rate.price;
-    estimate.auth_code = auth_code;
-    estimate.subscription_type = subscription_type;
-    estimate.delete_time = '';
+    // const estimate = new Estimate();
+    // estimate.phone = phone;
+    // estimate.priceList = priceList;
+    // estimate.price = phone_price;
+    // estimate.rate = rate.price;
+    // estimate.auth_code = auth_code;
+    // estimate.subscription_type = subscription_type;
+    // estimate.delete_time = '';
 
-    await this.estimateRepository.save(estimate);
+    // await this.estimateRepository.save(estimate);
 
+    // const response = new resisterQuoteResDto();
+    // response.quote_code = auth_code;
     const response = new resisterQuoteResDto();
-    response.quote_code = auth_code;
+    response.quote_code = '1872536263';
 
     return response;
   }
