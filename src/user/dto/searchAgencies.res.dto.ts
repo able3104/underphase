@@ -58,7 +58,7 @@ export class searchAgenciesResDto {
         phome_brand: 'samsung',
         phone_name: 'S25',
         phone_price: 35,
-        auth_tag: false,
+        auth_tag: true,
       },
       {
         agency_id: 1,
@@ -69,9 +69,12 @@ export class searchAgenciesResDto {
         phome_brand: 'samsung',
         phone_name: 'S25',
         phone_price: 30,
-        auth_tag: false,
+        auth_tag: true,
       },
     ],
   })
   agency: AgencySimpleDto[];
+  setter(list: AgencySimpleDto[]) {
+    this.agency = list;
+  }
 }

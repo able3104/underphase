@@ -346,10 +346,39 @@ export class AgencyService {
   }
 
   async getAllPriceList(
-    dto: getAllPriceListReqDto,
+    // dto: getAllPriceListReqDto,
     agency: payloadClass,
   ): Promise<getAllPriceListResDto> {
+    // const searchAgency = await this.agencyRepository.findOne({
+    //   where: { id: agency.payload.id },
+    // });
+    // if (!searchAgency) throw new BadRequestException();
+
+    // const priceList = await this.priceListRepository.find({
+    //   where: { agency: { id: searchAgency.id }, delete_time: '' },
+    //   relations: ['phone', 'telecom', 'rate'],
+    // });
+    // if (!priceList) throw new NotFoundException();
+    // console.debug(priceList);
+
     const response = new getAllPriceListResDto();
+    // response.priceList = priceList.map((item) => ({
+    //   agecny_id: item.agency.id,
+    //   phone_name: item.phone.name,
+    //   phone_brand: item.phone.brand.name,
+    //   phone_price: item.price,
+    //   phone_plan: {
+    //     name: item.rate.name,
+    //     price: item.rate.price,
+    //   },
+    //   discount: {
+    //     name: item.discount_name,
+    //     price: item.discount_price,
+    //   },
+    //   subscription_type: item.subscription_type,
+    //   telecom: item.telecom.name,
+    // }));
+
     return response;
   }
 

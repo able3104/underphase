@@ -93,79 +93,77 @@ export class UserService {
   ): Promise<searchAgenciesResDto> {
     const { phone_name, phone_brand, telecom, can_change_telecom } = dto;
 
-    const priceList = await this.priceListRepository.find({
-      where: {
-        phone: {
-          name: phone_name,
-          brand: { name: phone_brand },
-        },
-        telecom: { name: telecom },
-        delete_time: '',
+    // const priceList = await this.priceListRepository.find({
+    //   where: {
+    //     phone: {
+    //       name: phone_name,
+    //       brand: { name: phone_brand },
+    //     },
+    //     telecom: { name: telecom },
+    //     delete_time: '',
+    //   },
+    //   relations: ['agency', 'phone', 'telecom', 'phone.brand'],
+    // });
+    // if (priceList.length === 0) throw new NotFoundException();
+
+    // const agencySimpleDtos = priceList.map((pl) => {
+    //   const dtoInstance = new AgencySimpleDto();
+    //   dtoInstance.agency_id = pl.agency.id;
+    //   dtoInstance.agency_name = pl.agency.name;
+    //   dtoInstance.agency_address = pl.agency.address;
+
+    //   // dtoInstance.agency_rating = pl.agency.;
+    //   dtoInstance.telecom = pl.telecom.name;
+    //   dtoInstance.subscription_type = pl.subscription_type;
+
+    //   dtoInstance.phome_brand = pl.phone.brand.name;
+    //   dtoInstance.phone_name = pl.phone.name;
+    //   dtoInstance.phone_price = pl.price;
+
+    //   dtoInstance.auth_tag = pl.agency.auth_tag;
+
+    //   return dtoInstance;
+    // });
+    const agencyData: AgencySimpleDto[] = [
+      {
+        agency_id: 1,
+        agency_name: '가야 SKT 판매점',
+        agency_address: '부산광역시 가야동',
+        telecom: 'SKT',
+        subscription_type: 'New',
+        phome_brand: 'samsung',
+        phone_name: 'S25',
+        phone_price: 35,
+        auth_tag: true,
       },
-      relations: ['agency', 'phone', 'telecom', 'phone.brand'],
-    });
-    if (priceList.length === 0) throw new NotFoundException();
-
-    const agencySimpleDtos = priceList.map((pl) => {
-      const dtoInstance = new AgencySimpleDto();
-      dtoInstance.agency_id = pl.agency.id;
-      dtoInstance.agency_name = pl.agency.name;
-      dtoInstance.agency_address = pl.agency.address;
-
-      // dtoInstance.agency_rating = pl.agency.;
-      dtoInstance.telecom = pl.telecom.name;
-      dtoInstance.subscription_type = pl.subscription_type;
-
-      dtoInstance.phome_brand = pl.phone.brand.name;
-      dtoInstance.phone_name = pl.phone.name;
-      dtoInstance.phone_price = pl.price;
-
-      dtoInstance.auth_tag = pl.agency.auth_tag;
-
-      return dtoInstance;
-    }); // const response = new searchAgenciesResDto(priceList);
-
-    // const response = new searchAgenciesResDto();
-    // response.id = 1;
-    // response.agency_name = 'SKT 대리점 가야점';
-    // response.agency_address = '부산진구 가야동';
-    // response.agency_phone_number = '01012345678';
-    // response.phone_name = 'S25';
-    // response.phone_brand = 'Galaxy';
-    // response.phone_price = 300000;
-    // response.monthly_expenditure = 51000;
-    // response.additional_benefit = true;
-    // const agencyData = [
-    //   {
-    //     id: 5,
-    //     agency_name: '실버실버 대리점',
-    //     agency_address: '부산진구 개금동',
-    //     agency_phone_number: '01012312355',
-    //     phone_name: '17+',
-    //     phone_brand: 'Apple',
-    //     phone_price: 500000,
-    //     telecom: 'SKT',
-    //     monthly_expenditure: 63000,
-    //     additional_benefit: false,
-    //     auth_tag: true,
-    //   },
-    //   {
-    //     id: 17,
-    //     agency_name: 'KT 대리점 가야점',
-    //     agency_address: '부산진구 가야동',
-    //     agency_phone_number: '01015648569',
-    //     phone_name: '17+',
-    //     phone_brand: 'Apple',
-    //     phone_price: 550000,
-    //     telecom: 'KT',
-    //     monthly_expenditure: 66000,
-    //     additional_benefit: true,
-    //     auth_tag: true,
-    //   },
-    // ];
+      {
+        agency_id: 1,
+        agency_name: '가야 SKT 판매점',
+        agency_address: '부산광역시 가야동',
+        telecom: 'SKT',
+        subscription_type: 'Change_device',
+        phome_brand: 'samsung',
+        phone_name: 'S25',
+        phone_price: 30,
+        auth_tag: true,
+      },
+    ];
+    const list = {
+      id: 5,
+      agency_name: '실버실버 대리점',
+      agency_address: '부산진구 개금동',
+      agency_phone_number: '01012312355',
+      phone_name: '17+',
+      phone_brand: 'Apple',
+      phone_price: 500000,
+      telecom: 'SKT',
+      monthly_expenditure: 63000,
+      additional_benefit: false,
+      auth_tag: true,
+    };
     const response = new searchAgenciesResDto();
-    // response.agency = agencyData;
-    response.agency = agencySimpleDtos;
+    response.setter(agencyData);
+    // response.agency = agencySimpleDtos;
 
     return response;
   }

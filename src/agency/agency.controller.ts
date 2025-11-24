@@ -145,13 +145,21 @@ export class AgencyController {
   }
 
   @Get('getAllPriceList')
+  @ApiOperation({ summary: '등록된 모든 가격 리스트 조회' })
+  @ApiResponse({
+    status: 201,
+    description: '조회 성공',
+    type: getAllPriceListResDto,
+  })
+  @ApiBadRequestResponse({ description: '' })
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   async getAllPriceList(
-    @Body() dto: getAllPriceListReqDto,
+    // @Query() dto: getAllPriceListReqDto,
     @Req() req: Request,
   ): Promise<getAllPriceListResDto> {
     const agency: payloadClass = req['agency'];
-    return this.agencyService.getAllPriceList(dto, agency);
+    return this.agencyService.getAllPriceList(agency);
   }
 
   @Delete('deletePriceList')
