@@ -13,6 +13,23 @@ export class benefitSimpleDto {
   description: string;
 }
 
+export class rateSimpleDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '요금제명',
+    example: '115',
+  })
+  name: string;
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '요금제 가격',
+    example: 115000,
+  })
+  price: number;
+}
+
 export class getQuoteResDto {
   @IsNumber()
   @IsNotEmpty()
@@ -33,7 +50,7 @@ export class getQuoteResDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '판매점 리뷰 평점',
-    example: 115000,
+    example: 4.5,
   })
   agency_rating: number;
   @IsString()
@@ -88,7 +105,7 @@ export class getQuoteResDto {
       price: 115000,
     },
   })
-  phone_plan: Rate;
+  phone_plan: rateSimpleDto;
   @IsNotEmpty()
   @ApiProperty({
     description: '할인 정보',

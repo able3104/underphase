@@ -467,52 +467,78 @@ export class UserService {
   // await this.kakaoUserRepository.save(newUser);
 
   async getQuote(dto: getQuoteReqDto): Promise<getQuoteResDto> {
-    const estimate = await this.estimateRepository.findOne({
-      where: { auth_code: dto.quoteCode },
-      relations: [
-        'priceList',
-        'priceList.agency',
-        'phone',
-        'priceList.rate',
-        'phone.brand',
-      ],
-    });
+    // const estimate = await this.estimateRepository.findOne({
+    //   where: { auth_code: dto.quoteCode },
+    //   relations: [
+    //     'priceList',
+    //     'priceList.agency',
+    //     'phone',
+    //     'priceList.rate',
+    //     'phone.brand',
+    //   ],
+    // });
 
-    if (!estimate) {
-      throw new BadRequestException();
-    }
+    // if (!estimate) {
+    //   throw new BadRequestException();
+    // }
 
-    console.log(estimate);
+    // console.log(estimate);
+
+    // const response = new getQuoteResDto();
+
+    // const { priceList, phone } = estimate;
+
+    // if (!priceList || !priceList.agency || !phone || !phone.brand) {
+    //   throw new NotFoundException();
+    // }
+    // const agency = priceList.agency;
+    // const brand = phone.brand;
+
+    // response.customer_name = '박민준';
+
+    // response.agency_name = agency.name;
+    // response.agency_rating = agency.review_score;
+    // response.agency_address = agency.address;
+    // response.agency_phone_number = agency.phone_number;
+
+    // response.phone_name = phone.name;
+    // response.phone_brand = brand.name;
+    // response.phone_price = estimate.price;
+    // response.phone_original_price = priceList.original_price;
+    // response.phone_plan = priceList.rate;
+
+    // response.discount.name = priceList.discount_name;
+    // response.discount.price = priceList.discount_price;
+
+    // response.subscription_type = estimate.subscription_type;
+
+    // const benefit = [
+    //   { description: '스마트폰 케이스 쇼핑몰 5,000원 할인' },
+    //   { description: '요정 서비스 이용 시 5만원 추가 할인' },
+    //   { description: '대리점 방문했는데 가격이 다르다면? 차액 보장!' },
+    // ];
+    // response.benefits = benefit;
 
     const response = new getQuoteResDto();
-
-    const { priceList, phone } = estimate;
-
-    if (!priceList || !priceList.agency || !phone || !phone.brand) {
-      throw new NotFoundException();
-    }
-    const agency = priceList.agency;
-    const brand = phone.brand;
-
     response.customer_name = '박민준';
-
-    response.agency_name = agency.name;
-    response.agency_rating = agency.review_score;
-    response.agency_address = agency.address;
-    response.agency_phone_number = agency.phone_number;
-
-    response.phone_name = phone.name;
-    response.phone_brand = brand.name;
-    response.phone_price = estimate.price;
-    response.phone_original_price = priceList.original_price;
-    response.phone_plan = priceList.rate;
-
-    response.discount.name = priceList.discount_name;
-    response.discount.price = priceList.discount_price;
-
-    response.subscription_type = estimate.subscription_type;
-
-    const benefit = [
+    response.agency_name = '가야 SKT 판매점';
+    response.agency_rating = 4.5;
+    response.agency_address = '부산광역시 가야동';
+    response.agency_phone_number = '0511234567';
+    response.phone_brand = 'samsung';
+    response.phone_name = 'S25';
+    response.phone_price = 300000;
+    response.phone_original_price = 1000000;
+    response.phone_plan = {
+      name: '115',
+      price: 115000,
+    };
+    response.subscription_type = 'New';
+    response.discount = {
+      name: '추가 할인',
+      price: 10000,
+    };
+    const benefit: benefitSimpleDto[] = [
       { description: '스마트폰 케이스 쇼핑몰 5,000원 할인' },
       { description: '요정 서비스 이용 시 5만원 추가 할인' },
       { description: '대리점 방문했는데 가격이 다르다면? 차액 보장!' },
