@@ -48,7 +48,7 @@ import { UserAuthModule } from './user-auth/user-auth.module';
     UserModule,
     AgencyModule,
     AuthModule,
-    UserAuthModule,
+    // UserAuthModule,
     // OauthModule,
   ],
   controllers: [], // AppController가 있다면 유지

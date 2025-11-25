@@ -361,6 +361,8 @@ export class UserService {
     // ];
     // response.benefits = benefit;
 
+    // phone entity 에  phone_image auth_tag 추가해야 됨.
+
     const response = new getQuoteResDto();
     response.customer_name = '박민준';
     response.agency_name = '가야 SKT 판매점';
@@ -377,6 +379,7 @@ export class UserService {
     };
     response.phone_image = '/images/device/galaxy/galaxy_s25.png';
     response.subscription_type = 'New';
+    response.auth_tag = true;
     response.discount = {
       name: '추가 할인',
       price: 10000,

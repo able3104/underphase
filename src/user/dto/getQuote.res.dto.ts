@@ -1,6 +1,6 @@
 import { Rate } from 'src/entity/Rate.entity';
 import { discountSimpleDto } from './registerQuote.req.dto';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class benefitSimpleDto {
@@ -122,6 +122,14 @@ export class getQuoteResDto {
     example: 'New',
   })
   subscription_type: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '인증 여부',
+    example: true,
+  })
+  auth_tag: boolean;
 
   @IsNotEmpty()
   @ApiProperty({
