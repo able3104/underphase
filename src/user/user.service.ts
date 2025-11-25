@@ -375,6 +375,7 @@ export class UserService {
       name: '115',
       price: 115000,
     };
+    response.phone_image = '/images/device/galaxy/galaxy_s25.png';
     response.subscription_type = 'New';
     response.discount = {
       name: '추가 할인',
@@ -382,9 +383,7 @@ export class UserService {
     };
     const benefit = [
       '스마트폰 케이스 쇼핑몰 5,000원 할인',
-
       '요정 서비스 이용 시 5만원 추가 할인',
-
       '대리점 방문했는데 가격이 다르다면? 차액 보장!',
     ];
     response.benefits = benefit;

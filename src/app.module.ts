@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { OauthModule } from './oauth/oauth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { UserAuthModule } from './user-auth/user-auth.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { JwtModule } from '@nestjs/jwt';
     UserModule,
     AgencyModule,
     AuthModule,
+    UserAuthModule,
     // OauthModule,
   ],
   controllers: [], // AppController가 있다면 유지

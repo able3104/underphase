@@ -106,6 +106,23 @@ export class getQuoteResDto {
     },
   })
   phone_plan: rateSimpleDto;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '이미지 경로',
+    example: '/images/device/galaxy/galaxy_s25.png',
+  })
+  phone_image: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '가입 유형',
+    example: 'New',
+  })
+  subscription_type: string;
+
   @IsNotEmpty()
   @ApiProperty({
     description: '할인 정보',
@@ -119,13 +136,6 @@ export class getQuoteResDto {
     },
   })
   discount: discountSimpleDto;
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    description: '가입 유형',
-    example: 'New',
-  })
-  subscription_type: string;
 
   @IsNotEmpty()
   @ApiProperty({
