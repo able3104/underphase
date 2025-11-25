@@ -1,13 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { OauthService } from './oauth.service';
 import { ConfigService } from '@nestjs/config';
 import { Profile, Strategy } from 'passport-kakao';
+import { KakaoService } from './kakao.service';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   constructor(
-    private readonly oauthService: OauthService,
+    private readonly kakaoService: KakaoService,
     private readonly configService: ConfigService,
   ) {
     // 💡 1. super()를 먼저 호출하며 this.configService를 인라인으로 사용하여 TS17009 오류 해결

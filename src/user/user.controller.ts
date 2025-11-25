@@ -7,13 +7,16 @@ import {
   HttpException,
   Post,
   Query,
+  Req,
   Res,
   Response,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
@@ -39,6 +42,9 @@ import { getQuoteResDto } from './dto/getQuote.res.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { getSubsidyReqDto } from './dto/getSubsidy.req.dto';
 import { getSubsidyResDto } from './dto/getSubsidy.res.dto';
+import { UserAuthGuard } from 'src/user-auth/user-auth.guard';
+import { userPayloadClass } from 'src/user-auth/userPayload.class';
+import { UserPayload } from 'src/user-auth/userPayload';
 
 @Controller('user')
 export class UserController {
@@ -108,6 +114,7 @@ export class UserController {
   }
 
   @Post('registerQuote')
+  @ApiBearerAuth()
   @ApiOperation({ summary: '견적서 등록' })
   @ApiResponse({
     status: 201,
@@ -115,10 +122,20 @@ export class UserController {
     type: resisterQuoteResDto,
   })
   @ApiBadRequestResponse({ description: '견적서 등록 실패' })
+  @UseGuards(UserAuthGuard)
   async registerQuote(
     @Body() dto: registerQuoteReqDto,
+    @Req() req: Request,
   ): Promise<resisterQuoteResDto> {
-    return this.userService.registerQuote(dto);
+    const kakaoUser: UserPayload = req['user'];
+    // console.debug(kakaoUser);
+
+    const authHeader = req.headers['authorization'];
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('인증 토큰(Bearer)이 필요합니다.');
+    }
+    const token = authHeader.split(' ')[1].trim();
+    return this.userService.registerQuote(dto, kakaoUser, token);
   }
 
   @Get('getQuote')

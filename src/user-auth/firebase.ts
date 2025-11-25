@@ -12,7 +12,7 @@ import {
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: 'AIzaSyCmALbQalg2FiH8BAZIdjLuX5ovhYsFX6I',
   authDomain: 'underphase-ad033.firebaseapp.com',
   projectId: 'underphase-ad033',
@@ -22,6 +22,7 @@ const firebaseConfig = {
   measurementId: 'G-LJ6BG3877X',
 };
 
+export class file {}
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);

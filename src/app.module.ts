@@ -6,9 +6,9 @@ import { AgencyModule } from './agency/agency.module';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // ConfigService를 직접 import
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { OauthModule } from './oauth/oauth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { UserAuthModule } from './user-auth/user-auth.module';
+import { KakaoModule } from './kakao/kakao.module';
 
 @Module({
   imports: [
@@ -48,8 +48,8 @@ import { UserAuthModule } from './user-auth/user-auth.module';
     UserModule,
     AgencyModule,
     AuthModule,
-    // UserAuthModule,
-    // OauthModule,
+    UserAuthModule,
+    // KakaoModule,
   ],
   controllers: [], // AppController가 있다면 유지
   providers: [], // AppService가 있다면 유지

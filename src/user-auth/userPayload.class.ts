@@ -5,7 +5,9 @@ export class userPayloadClass {
 
   constructor() {
     this.userPayload = {
-      token: '',
+      kakaoId: '',
+      firebaseUid: '',
+      email: '',
     };
   }
 }

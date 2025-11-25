@@ -1,3 +1,5 @@
 export interface UserPayload {
-  token: string;
+  kakaoId: string;
+  firebaseUid: string;
+  email: string;
 }

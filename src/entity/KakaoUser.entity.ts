@@ -22,44 +22,44 @@ export class KakaoUser {
   @Column()
   @ApiProperty({
     description: '카카오 유저 회원 번호',
-    example: 999888777,
+    example: '999888777',
   })
-  user_number: number;
+  kakaoId: string;
 
-  @Column()
-  @ApiProperty({
-    description: '카카오 유저 이름',
-    example: '홍길동',
-  })
-  name: string;
+  // @Column()
+  // @ApiProperty({
+  //   description: '카카오 유저 이름',
+  //   example: '홍길동',
+  // })
+  // name: string;
 
-  @Column()
-  @ApiProperty({
-    description: '카카오 유저 닉네임',
-    example: '길동이',
-  })
-  nickname: string;
+  // @Column()
+  // @ApiProperty({
+  //   description: '카카오 유저 닉네임',
+  //   example: '길동이',
+  // })
+  // nickname: string;
 
-  @Column()
-  @ApiProperty({
-    description: '카카오 유저 전화번호',
-    example: '01012345678',
-  })
-  phone_number: string;
+  // @Column()
+  // @ApiProperty({
+  //   description: '카카오 유저 전화번호',
+  //   example: '01012345678',
+  // })
+  // phone_number: string;
 
-  @Column()
-  @ApiProperty({
-    description: '카카오 유저 프로필 이미지 URL',
-    example: 'http://kakao.com/profile_image.jpg',
-  })
-  profile_image: string;
+  // @Column()
+  // @ApiProperty({
+  //   description: '카카오 유저 프로필 이미지 URL',
+  //   example: 'http://kakao.com/profile_image.jpg',
+  // })
+  // profile_image: string;
 
-  @Column()
-  @ApiProperty({
-    description: '카카오 유저 성별',
-    example: 'male',
-  })
-  gender: string;
+  // @Column()
+  // @ApiProperty({
+  //   description: '카카오 유저 성별',
+  //   example: 'male',
+  // })
+  // gender: string;
 
   @Column()
   @ApiProperty({
@@ -67,6 +67,13 @@ export class KakaoUser {
     example: 'user123@gmail.com',
   })
   email: string;
+
+  @Column()
+  @ApiProperty({
+    description: 'firebaseUid',
+    example: '',
+  })
+  firebaseUid: string;
 
   @CreateDateColumn()
   @ApiProperty({
