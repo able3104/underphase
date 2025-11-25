@@ -149,41 +149,6 @@ export class UserAuthService {
     }
   }
 
-  async getKakaoUserInfo(accessToken: string): Promise<any> {
-    try {
-      this.logger.debug(
-        `[Kakao API] Attempting to fetch user info with token...`,
-      );
-
-      // 1. 카카오 API로 GET 요청 전송
-      const response = await firstValueFrom(
-        this.httpService.get(this.KAKAO_API_URL, {
-          headers: {
-            // 공식 문서에 명시된 대로 Authorization 헤더에 Bearer 타입으로 토큰 전달
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }),
-      );
-
-      // 2. 성공 시 응답 데이터 반환
-      this.logger.debug(`[Kakao API] Success! User ID: ${response.data.id}`);
-      return response.data; // 카카오 사용자 정보 (id, kakao_account 등)
-    } catch (error) {
-      // 3. API 호출 실패 처리 (토큰 만료, 잘못된 토큰 등)
-      // 카카오 서버의 응답 코드가 200이 아니면 여기에 걸립니다.
-      const kakaoError = error.response?.data;
-      const errorMessage = kakaoError?.msg || error.message;
-
-      this.logger.error(`[Kakao API] Call Error: ${errorMessage}`);
-
-      // 유효하지 않은 토큰에 대해 HTTP 401 예외 발생
-      throw new UnauthorizedException(
-        `카카오 Access Token 검증 실패: (${errorMessage})`,
-      );
-    }
-  }
-
   async getKakaoOidcUserInfo(accessToken: string): Promise<any> {
     try {
       this.logger.debug(
