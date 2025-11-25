@@ -40,6 +40,9 @@ import { payloadClass } from 'src/auth/payload.class';
 import { getAllPriceListReqDto } from './dto/getAllPriceList.req.dto';
 import { getAllPriceListResDto } from './dto/getAllPriceList.res.dto';
 import { Rate } from 'src/entity/Rate.entity';
+import { SubsidyByTelecom } from 'src/entity/SubsidyByTelecom.entity';
+import { enrollSubsidyReqDto } from './dto/enrollSubsidy.req.dto';
+import { enrollSubsidyResDto } from './dto/enrollSubsidy.res.dto';
 
 @Injectable()
 export class AgencyService {
@@ -59,6 +62,8 @@ export class AgencyService {
     private brandRepository: Repository<Brand>,
     @InjectRepository(Rate)
     private rateRepository: Repository<Rate>,
+    @InjectRepository(SubsidyByTelecom)
+    private subsidyRepository: Repository<SubsidyByTelecom>,
   ) {}
 
   async agencyLogin(dto: agencyLoginReqDto): Promise<agencyLoginResDto> {
@@ -458,6 +463,29 @@ export class AgencyService {
     ];
     const response = new getAgencyReservationsResDto();
     response.reservation = reservation;
+    return response;
+  }
+
+  async enrollSubsidy(
+    dto: enrollSubsidyReqDto,
+    agency: payloadClass,
+  ): Promise<enrollSubsidyResDto> {
+    const agencyForSearch = new Agency();
+    agencyForSearch.id = agency.payload.id;
+
+    const newSubsidy: SubsidyByTelecom | null =
+      await this.subsidyRepository.findOne({
+        where: { telecom: dto.telecom },
+      });
+    if (newSubsidy) throw new NotFoundException();
+
+    const subsidyEntity = new SubsidyByTelecom();
+    subsidyEntity.value = dto.subsidy_value;
+    subsidyEntity.telecom = dto.telecom;
+
+    await this.subsidyRepository.save(subsidyEntity);
+
+    const response = new enrollSubsidyResDto();
     return response;
   }
 }

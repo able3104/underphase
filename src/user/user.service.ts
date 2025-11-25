@@ -38,6 +38,9 @@ import { getQuoteReqDto } from './dto/getQuote.req.dto';
 import { benefitSimpleDto, getQuoteResDto } from './dto/getQuote.res.dto';
 import { config } from 'process';
 import { firstValueFrom } from 'rxjs';
+import { getSubsidyReqDto } from './dto/getSubsidy.req.dto';
+import { getSubsidyResDto } from './dto/getSubsidy.res.dto';
+import { SubsidyByTelecom } from 'src/entity/SubsidyByTelecom.entity';
 
 @Injectable()
 export class UserService {
@@ -58,6 +61,8 @@ export class UserService {
     private telecomRepository: Repository<Telecom>,
     @InjectRepository(Rate)
     private rateRepository: Repository<Rate>,
+    @InjectRepository(SubsidyByTelecom)
+    private subsidyRepository: Repository<SubsidyByTelecom>,
   ) {}
 
   // async searchedInfo(dto: searchedInfoReqDto): Promise<searchedInfoResDto> {
@@ -407,6 +412,18 @@ export class UserService {
     response.reservation_id = 123;
     response.is_visitable = true;
     response.visit_time = '2025-12-03 14:00';
+    return response;
+  }
+
+  async getSubsidy(dto: getSubsidyReqDto): Promise<getSubsidyResDto> {
+    // const subsidy = await this.subsidyRepository.findOne({
+    //   where: { telecom: dto.telecom },
+    // });
+    // if (!subsidy) throw new BadRequestException();
+
+    const response = new getSubsidyResDto();
+    // response.subsidy_value = subsidy.value;
+    response.subsidy_value = 500000;
     return response;
   }
 }

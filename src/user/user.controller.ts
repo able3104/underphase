@@ -37,6 +37,8 @@ import { resisterQuoteResDto } from './dto/registerQuote.res.dto';
 import { getQuoteReqDto } from './dto/getQuote.req.dto';
 import { getQuoteResDto } from './dto/getQuote.res.dto';
 import { AuthService } from 'src/auth/auth.service';
+import { getSubsidyReqDto } from './dto/getSubsidy.req.dto';
+import { getSubsidyResDto } from './dto/getSubsidy.res.dto';
 
 @Controller('user')
 export class UserController {
@@ -130,5 +132,17 @@ export class UserController {
   @ApiNotFoundResponse({ description: '해당 견적서 없음' })
   async getQuote(@Query() dto: getQuoteReqDto): Promise<getQuoteResDto> {
     return this.userService.getQuote(dto);
+  }
+
+  @Get('getSubsidy')
+  @ApiOperation({ summary: '공통지원금 조회' })
+  @ApiResponse({
+    status: 201,
+    description: '지원금 조회 성공',
+    type: getSubsidyResDto,
+  })
+  @ApiBadRequestResponse({ description: '지원금 조회 실패' })
+  async getSubsidy(@Query() dto: getSubsidyReqDto): Promise<getSubsidyResDto> {
+    return this.userService.getSubsidy(dto);
   }
 }

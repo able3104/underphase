@@ -48,6 +48,8 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { payloadClass } from 'src/auth/payload.class';
 import { getAllPriceListReqDto } from './dto/getAllPriceList.req.dto';
 import { getAllPriceListResDto } from './dto/getAllPriceList.res.dto';
+import { enrollSubsidyReqDto } from './dto/enrollSubsidy.req.dto';
+import { enrollSubsidyResDto } from './dto/enrollSubsidy.res.dto';
 
 @Controller('agency')
 export class AgencyController {
@@ -264,5 +266,24 @@ export class AgencyController {
     @Query() dto: getAgencyReservationsReqDto,
   ): Promise<getAgencyReservationsResDto> {
     return this.agencyService.getAgencyReservations(dto);
+  }
+
+  @Post('enrollSubsidy')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '공통지원금 등록' })
+  @ApiResponse({
+    status: 201,
+    description: '등록 성공',
+    type: enrollSubsidyResDto,
+  })
+  @ApiBadRequestResponse({ description: '등록 실패' })
+  @ApiNotFoundResponse({ description: '이미 등록되있음' })
+  @UseGuards(AuthGuard)
+  async enrollSubsidy(
+    @Body() dto: enrollSubsidyReqDto,
+    @Req() req: Request,
+  ): Promise<enrollSubsidyResDto> {
+    const agency: payloadClass = req['agency'];
+    return this.agencyService.enrollSubsidy(dto, agency);
   }
 }

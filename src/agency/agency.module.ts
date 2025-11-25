@@ -12,6 +12,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Seller } from 'src/entity/Seller.entity';
 import { Telecom } from 'src/entity/Telecom.entity';
 import { Brand } from 'src/entity/Brand.entity';
+import { SubsidyByTelecom } from 'src/entity/SubsidyByTelecom.entity';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { Brand } from 'src/entity/Brand.entity';
       Telecom,
       Brand,
       Rate,
+      SubsidyByTelecom,
     ]),
     forwardRef(() => UserModule),
     forwardRef(() => AuthModule),

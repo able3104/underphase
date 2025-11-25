@@ -11,6 +11,7 @@ import { AgencyModule } from 'src/agency/agency.module';
 import { Phone } from 'src/entity/Phone.entity';
 import { Telecom } from 'src/entity/Telecom.entity';
 import { Rate } from 'src/entity/Rate.entity';
+import { SubsidyByTelecom } from 'src/entity/SubsidyByTelecom.entity';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { Rate } from 'src/entity/Rate.entity';
       Phone,
       Telecom,
       Rate,
+      SubsidyByTelecom,
     ]),
   ],
   providers: [UserService],
