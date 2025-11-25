@@ -48,7 +48,7 @@ import { JwtModule } from '@nestjs/jwt';
     UserModule,
     AgencyModule,
     AuthModule,
-    OauthModule,
+    //OauthModule,
   ],
   controllers: [], // AppController가 있다면 유지
   providers: [], // AppService가 있다면 유지
