@@ -375,10 +375,12 @@ export class UserService {
       name: '추가 할인',
       price: 10000,
     };
-    const benefit: benefitSimpleDto[] = [
-      { description: '스마트폰 케이스 쇼핑몰 5,000원 할인' },
-      { description: '요정 서비스 이용 시 5만원 추가 할인' },
-      { description: '대리점 방문했는데 가격이 다르다면? 차액 보장!' },
+    const benefit = [
+      '스마트폰 케이스 쇼핑몰 5,000원 할인',
+
+      '요정 서비스 이용 시 5만원 추가 할인',
+
+      '대리점 방문했는데 가격이 다르다면? 차액 보장!',
     ];
     response.benefits = benefit;
 

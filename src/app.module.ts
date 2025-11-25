@@ -6,6 +6,8 @@ import { AgencyModule } from './agency/agency.module';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // ConfigService를 직접 import
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { OauthModule } from './oauth/oauth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -30,13 +32,23 @@ import { AuthModule } from './auth/auth.module';
         // 🚨 수정 2: 엔티티 경로를 명확하게 지정
         // TypeORM 0.3.x 이상에서는 autoLoadEntities를 true로 설정하는 것이 모범 사례입니다.
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        // autoLoadEntities: true,
         synchronize: true,
       }),
+    }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule], // 설정 값을 가져올 모듈 (예: ConfigModule)을 imports에 추가
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '60m' },
+      }),
+      inject: [ConfigService], // ConfigService가 useFactory에서 사용되므로 inject 배열에 포함
     }),
 
     UserModule,
     AgencyModule,
     AuthModule,
+    OauthModule,
   ],
   controllers: [], // AppController가 있다면 유지
   providers: [], // AppService가 있다면 유지
