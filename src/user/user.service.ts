@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -226,8 +227,8 @@ export class UserService {
 
   async registerQuote(
     dto: registerQuoteReqDto,
-    // kakaoUser: UserPayload,
-    // token: string,
+    kakaoUser: UserPayload,
+    token: string,
   ): Promise<resisterQuoteResDto> {
     const {
       agency_id,
@@ -237,43 +238,69 @@ export class UserService {
       phone_plan,
       subscription_type,
     } = dto;
-    // const kakaoId = kakaoUser.kakaoId;
-    // const kakaoUserData = await this.kakaoUserRepository.findOne({
-    //   where: { kakaoId: kakaoId },
-    // });
+    const { kakaoId, email, firebaseUid } = kakaoUser;
+    const kakaoUserData = await this.kakaoUserRepository.findOne({
+      where: { kakaoId: kakaoId },
+    });
+
+    if (!kakaoUserData) {
+      console.debug('🚨 DB에 사용자 정보 없음. OIDC API 호출 및 저장 시도...');
+
+      try {
+        const oidcUserInfo =
+          await this.userAuthService.getKakaoOidcUserInfo(token);
+        console.debug(oidcUserInfo);
+
+        const newUser = new KakaoUser();
+        newUser.kakaoId = oidcUserInfo.sub;
+        newUser.email = oidcUserInfo.email ?? email;
+        newUser.firebaseUid = firebaseUid;
+        newUser.delete_time = '';
+
+        await this.kakaoUserRepository.save(newUser);
+        console.debug('✅ 새로운 카카오 사용자 DB에 OIDC 정보로 저장 완료.');
+      } catch (error) {
+        console.error(
+          'OIDC API 호출 실패. Guard 정보로 대체 저장 시도:',
+          error.message,
+        );
+
+        const newUser = new KakaoUser();
+        newUser.kakaoId = kakaoId;
+        newUser.email = email;
+        newUser.firebaseUid = firebaseUid;
+        newUser.delete_time = '';
+
+        await this.kakaoUserRepository.save(newUser);
+        console.debug(
+          '✅ 새로운 카카오 사용자 DB에 Guard 정보로 대체 저장 완료.',
+        );
+      }
+    } else {
+      console.debug('✅ DB에 사용자 정보 존재. 견적서 등록 계속.');
+    }
     // if (!kakaoUserData) {
-    //   // 사용자 정보 조회 해서 DB에 저장후 사용
+    //   console.debug('🚨 DB에 사용자 정보 없음. Guard Payload로 저장 시도...');
+
     //   try {
-    //     // 이 호출이 성공하려면, 'token'은 반드시 카카오 Access Token이어야 합니다.
-    //     // 현재 토큰이 Firebase ID Token이라면 이 호출은 실패할 수 있습니다.
-    //     const oidcUserInfo =
-    //       await this.userAuthService.getKakaoOidcUserInfo(token);
+    //     // 💡 이전에 OIDC API를 호출하는 로직을 제거하고,
+    //     // Guard에서 받은 kakaoUser 정보를 사용하여 Entity 생성
 
-    //     // 3. API 응답 데이터로 DB 레코드 생성
-    //     const newUser = this.kakaoUserRepository.create({
-    //       kakaoId: oidcUserInfo.sub, // OIDC 응답의 sub를 사용
-    //       email: oidcUserInfo.email ?? kakaoUser.email,
-    //       // 필요한 다른 필드도 여기에 추가
-    //     });
+    //     const newUser = new KakaoUser();
+    //     newUser.kakaoId = kakaoUser.kakaoId;
+    //     newUser.email = kakaoUser.email;
+    //     newUser.firebaseUid = kakaoUser.firebaseUid;
+    //     newUser.delete_time = '';
+
     //     await this.kakaoUserRepository.save(newUser);
-
-    //     console.debug('✅ 새로운 카카오 사용자 DB에 OIDC 정보로 저장 완료.');
+    //     console.debug('✅ 새로운 카카오 사용자 DB에 Guard 정보로 저장 완료.');
     //   } catch (error) {
-    //     // 만약 OIDC API 호출이 실패했다면 (토큰 오류, 만료 등), Guard에서 받은 최소 정보로 저장 시도
-    //     console.error(
-    //       'OIDC API 호출 실패. Guard 정보로 대체 저장 시도:',
-    //       error.message,
-    //     );
-
-    //     const newUser = this.kakaoUserRepository.create({
-    //       kakaoId: kakaoId, // Guard에서 가져온 kakaoId (Firebase 페이로드) 사용
-    //       email: kakaoUser.email,
-    //     });
-    //     await this.kakaoUserRepository.save(newUser);
+    //     // DB 저장 실패 시의 예외 처리 (예: 중복 키 오류 등)
+    //     console.error('사용자 DB 저장 실패:', error.message);
+    //     // 필요하다면 여기서 throw 처리
+    //     throw new InternalServerErrorException('사용자 정보 저장 중 오류 발생');
     //   }
-    // }
-    // if (kakaoUserData) {
-    //   // DB에서 불러와서 사용
+    // } else {
     //   console.debug('✅ DB에 사용자 정보 존재. 견적서 등록 계속.');
     // }
 

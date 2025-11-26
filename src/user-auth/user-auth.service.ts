@@ -161,7 +161,6 @@ export class UserAuthService {
           headers: {
             // 공식 문서에 명시된 대로 Authorization 헤더에 Bearer 타입으로 토큰 전달
             Authorization: `Bearer ${accessToken}`,
-            // 'Content-Type': 'application/json', // OIDC UserInfo 엔드포인트에서는 필수는 아님
           },
         }),
       );
@@ -180,7 +179,7 @@ export class UserAuthService {
 
       // 유효하지 않은 토큰에 대해 HTTP 401 예외 발생
       throw new UnauthorizedException(
-        `카카오 OIDC Access Token 검증 실패: (${errorMessage})`,
+        `카카오 OIDC Access Token 검증 실패: (${JSON.stringify(kakaoError)})`,
       );
     }
   }

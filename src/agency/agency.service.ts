@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { agencyLoginResDto } from './dto/agencyLogin.res.dto';
 import { agencyLoginReqDto } from './dto/agencyLogin.req.dto';
@@ -43,6 +44,9 @@ import { Rate } from 'src/entity/Rate.entity';
 import { SubsidyByTelecom } from 'src/entity/SubsidyByTelecom.entity';
 import { enrollSubsidyReqDto } from './dto/enrollSubsidy.req.dto';
 import { enrollSubsidyResDto } from './dto/enrollSubsidy.res.dto';
+import { getStatusAgencyReqDto } from './dto/getStatusAgency.req.dto';
+import { getStatusAgencyResDto } from './dto/getStatusAgency.res.dto';
+import { StatusAgency } from 'src/entity/StatusAgency.entity';
 
 @Injectable()
 export class AgencyService {
@@ -64,6 +68,8 @@ export class AgencyService {
     private rateRepository: Repository<Rate>,
     @InjectRepository(SubsidyByTelecom)
     private subsidyRepository: Repository<SubsidyByTelecom>,
+    @InjectRepository(StatusAgency)
+    private statusAgencyRepository: Repository<StatusAgency>,
   ) {}
 
   async agencyLogin(dto: agencyLoginReqDto): Promise<agencyLoginResDto> {
@@ -486,6 +492,39 @@ export class AgencyService {
     await this.subsidyRepository.save(subsidyEntity);
 
     const response = new enrollSubsidyResDto();
+    return response;
+  }
+
+  async getStatusAgency(
+    dto: getStatusAgencyReqDto,
+    agency: payloadClass,
+  ): Promise<getStatusAgencyResDto> {
+    const agencyForSearch = await this.agencyRepository.findOne({
+      where: { id: agency.payload.id },
+    });
+    if (!agencyForSearch) throw new UnauthorizedException();
+    console.debug(agencyForSearch);
+
+    const statusAgencyForSearch = await this.statusAgencyRepository.findOne({
+      where: { agency: agencyForSearch },
+    });
+    if (!statusAgencyForSearch) {
+      const statusAgencyEntity = new StatusAgency();
+      statusAgencyEntity.agency = agencyForSearch;
+      statusAgencyEntity.complete_quote_count = 0;
+      statusAgencyEntity.quote_count = 0;
+      statusAgencyEntity.delete_time = '';
+
+      await this.statusAgencyRepository.save(statusAgencyEntity);
+    }
+    const statusAgency = await this.statusAgencyRepository.findOne({
+      where: { agency: agencyForSearch },
+    });
+    if (!statusAgency) throw new NotFoundException();
+
+    const response = new getStatusAgencyResDto();
+    response.complete_quote_count = statusAgency.complete_quote_count;
+    response.quote_count = statusAgency.quote_count;
     return response;
   }
 }

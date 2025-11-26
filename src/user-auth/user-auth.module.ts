@@ -62,9 +62,9 @@ export class UserAuthModule implements OnModuleInit {
         // 1. 서비스 계정 JSON 파일 경로 설정 (프로젝트 루트 기준)
         const serviceAccountPath = path.resolve(
           cwd(), // 프로젝트 루트 경로
-          'src',
-          'user-auth',
-          'underphase-ad033-firebase-adminsdk-fbsvc-bb04af1b26.json',
+          // 'src',
+          // 'user-auth',
+          'firebase_authj copy.json',
         );
 
         // console.log(

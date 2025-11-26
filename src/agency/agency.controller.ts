@@ -50,6 +50,10 @@ import { getAllPriceListReqDto } from './dto/getAllPriceList.req.dto';
 import { getAllPriceListResDto } from './dto/getAllPriceList.res.dto';
 import { enrollSubsidyReqDto } from './dto/enrollSubsidy.req.dto';
 import { enrollSubsidyResDto } from './dto/enrollSubsidy.res.dto';
+import { getSubsidyReqDto } from 'src/user/dto/getSubsidy.req.dto';
+import { getSubsidyResDto } from 'src/user/dto/getSubsidy.res.dto';
+import { getStatusAgencyResDto } from './dto/getStatusAgency.res.dto';
+import { getStatusAgencyReqDto } from './dto/getStatusAgency.req.dto';
 
 @Controller('agency')
 export class AgencyController {
@@ -179,94 +183,94 @@ export class AgencyController {
     return this.agencyService.deletePriceList(dto);
   }
 
-  @Post('registerRatePlan')
-  @ApiOperation({ summary: '요금제 등록' })
-  @ApiResponse({
-    status: 201,
-    description: '등록 성공',
-    type: registerRatePlanResDto,
-  })
-  @ApiBadRequestResponse({ description: '등록 실패' })
-  async registerRatePlan(
-    @Body() dto: registerRatePlanReqDto,
-  ): Promise<registerRatePlanResDto> {
-    return this.agencyService.registerRatePlan(dto);
-  }
+  // @Post('registerRatePlan')
+  // @ApiOperation({ summary: '요금제 등록' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '등록 성공',
+  //   type: registerRatePlanResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '등록 실패' })
+  // async registerRatePlan(
+  //   @Body() dto: registerRatePlanReqDto,
+  // ): Promise<registerRatePlanResDto> {
+  //   return this.agencyService.registerRatePlan(dto);
+  // }
 
-  @Get('getAgencyRatePlans')
-  @ApiOperation({ summary: '요금제 리스트 조회' })
-  @ApiResponse({
-    status: 201,
-    description: '조회 성공',
-    type: getAgencyRatePlansResDto,
-  })
-  @ApiBadRequestResponse({ description: '조회 실패' })
-  @ApiNotFoundResponse({ description: '해당 정보 보유 요금제 리스트 없음' })
-  async getAgencyRatePlans(
-    @Query() dto: getAgencyRatePlansReqDto,
-  ): Promise<getAgencyRatePlansResDto> {
-    return this.agencyService.getAgencyRatePlans(dto);
-  }
+  // @Get('getAgencyRatePlans')
+  // @ApiOperation({ summary: '요금제 리스트 조회' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '조회 성공',
+  //   type: getAgencyRatePlansResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '조회 실패' })
+  // @ApiNotFoundResponse({ description: '해당 정보 보유 요금제 리스트 없음' })
+  // async getAgencyRatePlans(
+  //   @Query() dto: getAgencyRatePlansReqDto,
+  // ): Promise<getAgencyRatePlansResDto> {
+  //   return this.agencyService.getAgencyRatePlans(dto);
+  // }
 
-  @Get('getRatePlanDetail')
-  @ApiOperation({ summary: '요금제 상세 정보 단건 조회' })
-  @ApiResponse({
-    status: 201,
-    description: '상세 조회 성공',
-    type: getRatePlanDetailResDto,
-  })
-  @ApiBadRequestResponse({ description: '상세 조회 실패' })
-  @ApiNotFoundResponse({ description: '해당 정보 보유 요금제 리스트 없음' })
-  async getRatePlanDetail(
-    @Query() dto: getRatePlanDetailReqDto,
-  ): Promise<getRatePlanDetailResDto> {
-    return this.agencyService.getRatePlanDetail(dto);
-  }
+  // @Get('getRatePlanDetail')
+  // @ApiOperation({ summary: '요금제 상세 정보 단건 조회' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '상세 조회 성공',
+  //   type: getRatePlanDetailResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '상세 조회 실패' })
+  // @ApiNotFoundResponse({ description: '해당 정보 보유 요금제 리스트 없음' })
+  // async getRatePlanDetail(
+  //   @Query() dto: getRatePlanDetailReqDto,
+  // ): Promise<getRatePlanDetailResDto> {
+  //   return this.agencyService.getRatePlanDetail(dto);
+  // }
 
-  @Delete('deleteRatePlan')
-  @ApiOperation({ summary: '요금제 리스트 삭제' })
-  @ApiResponse({
-    status: 201,
-    description: '삭제 성공',
-    type: deleteRatePlanResDto,
-  })
-  @ApiBadRequestResponse({ description: '삭제 실패' })
-  @ApiNotFoundResponse({ description: '해당 정보 보유 요금제 리스트 없음' })
-  async deleteRatePlan(
-    @Body() dto: deleteRatePlanReqDto,
-  ): Promise<deleteRatePlanResDto> {
-    return this.agencyService.deleteRatePlan(dto);
-  }
+  // @Delete('deleteRatePlan')
+  // @ApiOperation({ summary: '요금제 리스트 삭제' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '삭제 성공',
+  //   type: deleteRatePlanResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '삭제 실패' })
+  // @ApiNotFoundResponse({ description: '해당 정보 보유 요금제 리스트 없음' })
+  // async deleteRatePlan(
+  //   @Body() dto: deleteRatePlanReqDto,
+  // ): Promise<deleteRatePlanResDto> {
+  //   return this.agencyService.deleteRatePlan(dto);
+  // }
 
-  @Post('checkReservation')
-  @ApiOperation({ summary: '개통 예약 요청 건 처리' })
-  @ApiResponse({
-    status: 201,
-    description: '예약 상태 처리 성공',
-    type: checkReservationResDto,
-  })
-  @ApiBadRequestResponse({ description: '예약 상태 처리 실패' })
-  @ApiNotFoundResponse({ description: '해당 정보 보유 예약 없음' })
-  async checkReservations(
-    @Body() dto: checkReservationReqDto,
-  ): Promise<checkReservationResDto> {
-    return this.agencyService.checkReservations(dto);
-  }
+  // @Post('checkReservation')
+  // @ApiOperation({ summary: '개통 예약 요청 건 처리' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '예약 상태 처리 성공',
+  //   type: checkReservationResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '예약 상태 처리 실패' })
+  // @ApiNotFoundResponse({ description: '해당 정보 보유 예약 없음' })
+  // async checkReservations(
+  //   @Body() dto: checkReservationReqDto,
+  // ): Promise<checkReservationResDto> {
+  //   return this.agencyService.checkReservations(dto);
+  // }
 
-  @Get('getAgencyReservations')
-  @ApiOperation({ summary: '해당 판매점의 모든 예약 내역 조회' })
-  @ApiResponse({
-    status: 201,
-    description: '조회 성공',
-    type: getAgencyReservationsResDto,
-  })
-  @ApiBadRequestResponse({ description: '조회 실패' })
-  @ApiNotFoundResponse({ description: '예약 없음' })
-  async getAgencyReservations(
-    @Query() dto: getAgencyReservationsReqDto,
-  ): Promise<getAgencyReservationsResDto> {
-    return this.agencyService.getAgencyReservations(dto);
-  }
+  // @Get('getAgencyReservations')
+  // @ApiOperation({ summary: '해당 판매점의 모든 예약 내역 조회' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '조회 성공',
+  //   type: getAgencyReservationsResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '조회 실패' })
+  // @ApiNotFoundResponse({ description: '예약 없음' })
+  // async getAgencyReservations(
+  //   @Query() dto: getAgencyReservationsReqDto,
+  // ): Promise<getAgencyReservationsResDto> {
+  //   return this.agencyService.getAgencyReservations(dto);
+  // }
 
   @Post('enrollSubsidy')
   @ApiBearerAuth()
@@ -285,5 +289,24 @@ export class AgencyController {
   ): Promise<enrollSubsidyResDto> {
     const agency: payloadClass = req['agency'];
     return this.agencyService.enrollSubsidy(dto, agency);
+  }
+
+  @Get('getStatusAgency')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '견적 현황 조회' })
+  @ApiResponse({
+    status: 201,
+    description: '조회 성공',
+    type: getStatusAgencyResDto,
+  })
+  @ApiBadRequestResponse({ description: '조회 실패' })
+  @ApiNotFoundResponse({ description: '없음' })
+  @UseGuards(AuthGuard)
+  getStatusAgency(
+    @Query() dto: getStatusAgencyReqDto,
+    @Req() req: Request,
+  ): Promise<getStatusAgencyResDto> {
+    const agency: payloadClass = req['agency'];
+    return this.agencyService.getStatusAgency(dto, agency);
   }
 }
