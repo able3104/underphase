@@ -48,7 +48,7 @@ import { KakaoModule } from './kakao/kakao.module';
     UserModule,
     AgencyModule,
     AuthModule,
-    UserAuthModule,
+    // UserAuthModule,
     // KakaoModule,
   ],
   controllers: [], // AppController가 있다면 유지

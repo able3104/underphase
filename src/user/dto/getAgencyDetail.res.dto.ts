@@ -83,6 +83,14 @@ export class getAgencyDetailResDto {
   })
   phone_image: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '통신사 명',
+    example: 'SKT',
+  })
+  telecom: string;
+
   // //운영시간을 시작 시간과 마감 시간으로 분리
   // @IsString()
   // @IsNotEmpty()

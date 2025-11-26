@@ -218,6 +218,7 @@ export class UserService {
     response.phone_price = 300000;
     response.phone_original_price = 1000000;
     response.phone_image = '/images/device/galaxy/galaxy_s25.png';
+    response.telecom = 'SKT';
     // response.start_time = '11:00';
     // response.end_time = '19:00';
     return response;
@@ -225,8 +226,8 @@ export class UserService {
 
   async registerQuote(
     dto: registerQuoteReqDto,
-    kakaoUser: UserPayload,
-    token: string,
+    // kakaoUser: UserPayload,
+    // token: string,
   ): Promise<resisterQuoteResDto> {
     const {
       agency_id,
@@ -236,7 +237,7 @@ export class UserService {
       phone_plan,
       subscription_type,
     } = dto;
-    const kakaoId = kakaoUser.kakaoId;
+    // const kakaoId = kakaoUser.kakaoId;
     // const kakaoUserData = await this.kakaoUserRepository.findOne({
     //   where: { kakaoId: kakaoId },
     // });

@@ -122,20 +122,21 @@ export class UserController {
     type: resisterQuoteResDto,
   })
   @ApiBadRequestResponse({ description: '견적서 등록 실패' })
-  @UseGuards(UserAuthGuard)
+  // @UseGuards(UserAuthGuard)
   async registerQuote(
     @Body() dto: registerQuoteReqDto,
-    @Req() req: Request,
+    // @Req() req: Request,
   ): Promise<resisterQuoteResDto> {
-    const kakaoUser: UserPayload = req['user'];
+    // const kakaoUser: UserPayload = req['user'];
     // console.debug(kakaoUser);
 
-    const authHeader = req.headers['authorization'];
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('인증 토큰(Bearer)이 필요합니다.');
-    }
-    const token = authHeader.split(' ')[1].trim();
-    return this.userService.registerQuote(dto, kakaoUser, token);
+    // const authHeader = req.headers['authorization'];
+    // if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    //   throw new UnauthorizedException('인증 토큰(Bearer)이 필요합니다.');
+    // }
+    // const token = authHeader.split(' ')[1].trim();
+    // return this.userService.registerQuote(dto, kakaoUser, token);
+    return this.userService.registerQuote(dto);
   }
 
   @Get('getQuote')
