@@ -30,7 +30,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { agencyRegisterResDto } from './dto/agencyRegister.res.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Seller } from 'src/entity/Seller.entity';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { Agency } from 'src/entity/Agency.entity';
 import { PriceList } from 'src/entity/PriceList.entity';
 import { Phone } from 'src/entity/Phone.entity';
@@ -50,6 +50,12 @@ import { StatusAgency } from 'src/entity/StatusAgency.entity';
 import { getStatusQuoteReqDto } from './dto/getStatusQuote.req.dto';
 import { getStatusQuoteResDto } from './dto/getStatusQuote.res.dto';
 import { Estimate } from 'src/entity/Estimate.entity';
+import { getQuoteDetailReqDto } from './dto/getQuoteDetail.req.dto';
+import { getQuoteDetailResDto } from './dto/getQuoteDetail.res.dto';
+import { KakaoUser } from 'src/entity/KakaoUser.entity';
+import { ifError } from 'assert';
+import { getPriceListByPhoneReqDto } from './dto/getPriceListByPhone.req.dto';
+import { getPriceListByPhoneResDto } from './dto/getPriceListByPhone.res.dto';
 
 @Injectable()
 export class AgencyService {
@@ -70,11 +76,13 @@ export class AgencyService {
     @InjectRepository(Rate)
     private rateRepository: Repository<Rate>,
     @InjectRepository(SubsidyByTelecom)
-    private subsidyRepository: Repository<SubsidyByTelecom>,
+    private subsidyBytTelecomRepository: Repository<SubsidyByTelecom>,
     @InjectRepository(StatusAgency)
     private statusAgencyRepository: Repository<StatusAgency>,
     @InjectRepository(Estimate)
     private estimateRepository: Repository<Estimate>,
+    @InjectRepository(KakaoUser)
+    private kakaoUserRepository: Repository<KakaoUser>,
   ) {}
 
   async agencyLogin(dto: agencyLoginReqDto): Promise<agencyLoginResDto> {
@@ -159,6 +167,21 @@ export class AgencyService {
     const { priceList } = dto;
 
     for (const item of priceList) {
+      const priceListForSearch = await this.priceListRepository.findOne({
+        where: {
+          agency: { id: item.agecny_id, delete_time: '' },
+          phone: {
+            name: item.phone_name,
+            brand: { name: item.phone_brand, delete_time: '' },
+            delete_time: '',
+          },
+          rate: { name: item.phone_plan.name, delete_time: '' },
+          telecom: { name: item.telecom, delete_time: '' },
+          delete_time: '',
+        },
+      });
+      if (priceListForSearch) throw new BadRequestException();
+
       const phone: Phone | null = await this.phoneRepository.findOne({
         where: { name: item.phone_name },
       });
@@ -249,20 +272,21 @@ export class AgencyService {
         rate,
       );
       console.debug(new_data);
+      new_data.subsidy_by_agency = 300000;
 
-      const find_priceList = await this.priceListRepository.find({
-        where: {
-          subscription_type: item.subscription_type,
-          agency: new_agency,
-          phone: phone,
-          telecom: telecom,
-          // discount_name: item.discount.name,
-          // discount_price: item.discount.price,
-          rate: rate,
-          delete_time: '',
-        },
-      });
-      if (find_priceList) throw new NotFoundException();
+      // const find_priceList = await this.priceListRepository.find({
+      //   where: {
+      //     subscription_type: item.subscription_type,
+      //     agency: new_agency,
+      //     phone: phone,
+      //     telecom: telecom,
+      //     // discount_name: item.discount.name,
+      //     // discount_price: item.discount.price,
+      //     rate: rate,
+      //     delete_time: '',
+      //   },
+      // });
+      // if (find_priceList) throw new NotFoundException();
 
       await this.priceListRepository.save(new_data);
     }
@@ -485,7 +509,7 @@ export class AgencyService {
     agencyForSearch.id = agency.payload.id;
 
     const newSubsidy: SubsidyByTelecom | null =
-      await this.subsidyRepository.findOne({
+      await this.subsidyBytTelecomRepository.findOne({
         where: { telecom: dto.telecom },
       });
     if (newSubsidy) throw new NotFoundException();
@@ -494,7 +518,7 @@ export class AgencyService {
     subsidyEntity.value = dto.subsidy_value;
     subsidyEntity.telecom = dto.telecom;
 
-    await this.subsidyRepository.save(subsidyEntity);
+    await this.subsidyBytTelecomRepository.save(subsidyEntity);
 
     const response = new enrollSubsidyResDto();
     return response;
@@ -546,15 +570,33 @@ export class AgencyService {
     dto: getStatusQuoteReqDto,
     agency: payloadClass,
   ): Promise<getStatusQuoteResDto> {
-    const estimateExample = await this.estimateRepository.find({
+    const estimateExample = await this.estimateRepository.findOne({
       where: {
         auth_code: dto.auth_code,
         delete_time: '',
       },
+      relations: ['priceList', 'kakaoUser', 'priceList.agency'],
     });
     if (!estimateExample) throw new BadRequestException();
+    console.debug(estimateExample);
+
+    const priceListForSearch = await this.priceListRepository.findOne({
+      where: {
+        id: estimateExample.priceList.id,
+        delete_time: '',
+      },
+      relations: ['agency'],
+    });
+    if (!priceListForSearch) throw new NotFoundException();
+
+    // const agencyForSearch = await this.agencyRepository.findOne({
+    //   where:{id}
+    // })
 
     const response = new getStatusQuoteResDto();
+    response.agency_phone_number = priceListForSearch.agency.phone_number;
+    response.is_user_visit = estimateExample.is_user_visit;
+    response.user_name = estimateExample.kakaoUser.name;
 
     // //더미 데이터 넣기
     // const response = new getStatusQuoteResDto();
@@ -562,6 +604,70 @@ export class AgencyService {
     // response.agency_phone_number = '01012345678';
     // response.is_user_visit = false;
 
+    return response;
+  }
+
+  async getQuoteDetail(
+    dto: getQuoteDetailReqDto,
+    agency: payloadClass,
+  ): Promise<getQuoteDetailResDto> {
+    if (!agency) throw new UnauthorizedException();
+
+    const newAgency = new Agency();
+    newAgency.id = agency.payload.id;
+    const agencyForSearch = await this.agencyRepository.findOne({
+      where: {
+        id: newAgency.id,
+        delete_time: '',
+      },
+    });
+    if (!agencyForSearch) throw new UnauthorizedException();
+
+    const estimateData = await this.estimateRepository.findOne({
+      where: {
+        priceList: {
+          agency: { id: newAgency.id, delete_time: '' },
+          delete_time: '',
+        },
+        delete_time: '',
+      },
+      relations: [
+        'kakaoUser',
+        'priceList',
+        'priceList.agency',
+        'phone',
+        'phone.brand',
+        'priceList.telecom',
+      ],
+    });
+    if (!estimateData) throw new NotFoundException();
+
+    const subsidy_by_telecom = await this.subsidyBytTelecomRepository.findOne({
+      where: {
+        telecom: estimateData.priceList.telecom.name,
+      },
+    });
+    if (!subsidy_by_telecom) throw new NotFoundException();
+
+    const response = new getQuoteDetailResDto();
+    response.is_phone_activate = estimateData.is_user_visit;
+    response.customer_name = estimateData.kakaoUser.name;
+    response.customer_email = estimateData.kakaoUser.email;
+    response.phone_brand = estimateData.phone.brand.name;
+    response.phone_name = estimateData.phone.name;
+    response.phone_volume = estimateData.phone.volume;
+    response.subscription_type = estimateData.subscription_type;
+    response.subsidy_by_telecom = subsidy_by_telecom.value;
+    response.subsidy_by_agency = estimateData.priceList.discount_price;
+
+    return response;
+  }
+
+  async getPriceListByPhone(
+    dto: getPriceListByPhoneReqDto,
+    agency: payloadClass,
+  ): Promise<getPriceListByPhoneResDto> {
+    const response = new getPriceListByPhoneResDto();
     return response;
   }
 }

@@ -140,6 +140,7 @@ export class UserController {
   }
 
   @Get('getQuote')
+  @ApiBearerAuth()
   @ApiOperation({ summary: '견적서 조회' })
   @ApiResponse({
     status: 201,
@@ -148,6 +149,7 @@ export class UserController {
   })
   @ApiBadRequestResponse({ description: '견적서 조회 실패' })
   @ApiNotFoundResponse({ description: '해당 견적서 없음' })
+  @UseGuards(UserAuthGuard)
   async getQuote(@Query() dto: getQuoteReqDto): Promise<getQuoteResDto> {
     return this.userService.getQuote(dto);
   }

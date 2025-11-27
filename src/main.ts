@@ -3,55 +3,43 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as admin from 'firebase-admin'; // 👈 Firebase Admin SDK 임포트
-import * as path from 'path';
+import * as path from 'path'; // path와 fs는 더 이상 사용하지 않지만 일단 남겨둡니다.
 import * as fs from 'fs';
 import { cwd } from 'process';
 
 async function bootstrap() {
   // ----------------------------------------------------
-  // 🔑 Firebase Admin SDK 초기화 로직 추가
+  // 🔑 Firebase Admin SDK 초기화 로직 수정
   // ----------------------------------------------------
   if (admin.apps.length === 0) {
     try {
-      // 💡 환경 변수를 사용하여 서비스 계정 키 파일 경로를 설정합니다.
-      // 예: SERVICE_ACCOUNT_KEY_PATH=config/firebase-keys/underphase-ad033-admin-key.json
-      const serviceAccountPath = process.env.SERVICE_ACCOUNT_KEY_PATH;
-
-      if (!serviceAccountPath) {
-        throw new Error(
-          '환경 변수 SERVICE_ACCOUNT_KEY_PATH가 설정되지 않았습니다.',
-        );
-      }
-
-      const absolutePath = path.resolve(cwd(), serviceAccountPath);
-
-      console.log(
-        `[DEBUG] Attempting to load Firebase Service Account from: ${absolutePath}`,
-      );
-
-      // 파일 내용을 동기적으로 읽기
-      const serviceAccountJson = fs.readFileSync(absolutePath, 'utf8');
-      const serviceAccount = JSON.parse(serviceAccountJson);
-
-      // Admin SDK 초기화
+      // 1. 환경 변수에서 JSON 객체 구성
+      const config = {
+        type: process.env.type,
+        project_id: process.env.project_id,
+        private_key_id: process.env.private_key_id, // ⚠️ 핵심 수정: private_key 내의 \n 문자열을 실제 개행 문자로 치환
+        private_key: process.env.private_key?.replace(/\\n/g, '\n'),
+        client_email: process.env.client_email,
+        client_id: process.env.client_id,
+        auth_uri: process.env.auth_uri,
+        token_uri: process.env.token_uri,
+        auth_provider_x509_cert_url: process.env.auth_provider_x509_cert_url,
+        client_x509_cert_url: process.env.client_x509_cert_url,
+        universe_domain: process.env.universe_domain,
+      };
       admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
+        credential: admin.credential.cert(config as admin.ServiceAccount), // config 객체 자체를 사용
       });
       console.log('✅ Firebase Admin SDK initialized successfully in main.ts.');
     } catch (e) {
       console.error('❌ Firebase Admin SDK initialization critical failure:');
       console.error(`Error details: ${e.message}`);
       console.error(
-        'Check if SERVICE_ACCOUNT_KEY_PATH is correct and the file exists.',
+        '환경 변수가 올바르게 설정되었는지, 특히 private_key가 정확한지 확인하세요.',
       );
-      // 초기화 실패 시 앱 시작을 중단할지 결정할 수 있습니다.
-      // throw e;
     }
   }
-  // ----------------------------------------------------
-
-  const app = await NestFactory.create(AppModule, { cors: true });
-  // const whitelist = ['http://localhost:3001'];
+  const app = await NestFactory.create(AppModule, { cors: true }); // const whitelist = ['http://localhost:3001'];
   // app.enableCors({
   //   origin: function (origin, callback) {
   //     if (!origin || whitelist.indexOf(origin) !== -1) {

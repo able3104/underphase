@@ -26,12 +26,12 @@ export class KakaoUser {
   })
   kakaoId: string;
 
-  // @Column()
-  // @ApiProperty({
-  //   description: '카카오 유저 이름',
-  //   example: '홍길동',
-  // })
-  // name: string;
+  @Column()
+  @ApiProperty({
+    description: '카카오 유저 이름',
+    example: '홍길동',
+  })
+  name: string;
 
   // @Column()
   // @ApiProperty({

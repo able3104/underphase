@@ -90,4 +90,12 @@ export class registerQuoteReqDto {
     example: 'SKT',
   })
   telecom: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '사용자 이름',
+    example: '박민준',
+  })
+  user_name: string;
 }

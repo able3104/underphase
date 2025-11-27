@@ -76,6 +76,13 @@ export class PriceList {
   })
   original_price: number;
 
+  @Column()
+  @ApiProperty({
+    description: '추가 지원금',
+    example: 300000,
+  })
+  subsidy_by_agency: number;
+
   @ManyToOne(() => Rate, (rate) => rate.pricelist)
   @ApiProperty({
     description: '요금제 정보 (FK)',

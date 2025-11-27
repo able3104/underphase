@@ -72,6 +72,8 @@ export class UserAuthModule implements OnModuleInit {
         universe_domain: process.env.universe_domain,
       };
       const json = JSON.stringify(config);
+      console.debug(config);
+      console.debug(json);
       try {
         // 1. 서비스 계정 JSON 파일 경로 설정 (프로젝트 루트 기준)
         const serviceAccountPath = path.resolve(json);
