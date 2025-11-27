@@ -64,7 +64,7 @@ export class UserAuthModule implements OnModuleInit {
           cwd(), // 프로젝트 루트 경로
           // 'src',
           // 'user-auth',
-          'firebase_authj 1.json',
+          'firebase_auth_example.json',
         );
 
         // console.log(
