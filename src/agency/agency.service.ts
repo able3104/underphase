@@ -47,6 +47,8 @@ import { enrollSubsidyResDto } from './dto/enrollSubsidy.res.dto';
 import { getStatusAgencyReqDto } from './dto/getStatusAgency.req.dto';
 import { getStatusAgencyResDto } from './dto/getStatusAgency.res.dto';
 import { StatusAgency } from 'src/entity/StatusAgency.entity';
+import { getStatusQuoteReqDto } from './dto/getStatusQuote.req.dto';
+import { getStatusQuoteResDto } from './dto/getStatusQuote.res.dto';
 
 @Injectable()
 export class AgencyService {
@@ -499,16 +501,20 @@ export class AgencyService {
     dto: getStatusAgencyReqDto,
     agency: payloadClass,
   ): Promise<getStatusAgencyResDto> {
-    const agencyForSearch = await this.agencyRepository.findOne({
+    const agencyForSearch: Agency | null = await this.agencyRepository.findOne({
       where: { id: agency.payload.id },
     });
     if (!agencyForSearch) throw new UnauthorizedException();
     console.debug(agencyForSearch);
 
-    const statusAgencyForSearch = await this.statusAgencyRepository.findOne({
-      where: { agency: agencyForSearch },
+    const statusAgencyForSearch = await this.statusAgencyRepository.find({
+      where: {
+        agency: { id: agencyForSearch.id },
+        delete_time: '',
+      },
     });
-    if (!statusAgencyForSearch) {
+    if (statusAgencyForSearch) {
+    } else if (!statusAgencyForSearch) {
       const statusAgencyEntity = new StatusAgency();
       statusAgencyEntity.agency = agencyForSearch;
       statusAgencyEntity.complete_quote_count = 0;
@@ -517,14 +523,27 @@ export class AgencyService {
 
       await this.statusAgencyRepository.save(statusAgencyEntity);
     }
-    const statusAgency = await this.statusAgencyRepository.findOne({
-      where: { agency: agencyForSearch },
-    });
+    console.debug(statusAgencyForSearch);
+    const statusAgency: StatusAgency | null =
+      await this.statusAgencyRepository.findOne({
+        where: {
+          agency: { id: agencyForSearch.id },
+          delete_time: '',
+        },
+      });
     if (!statusAgency) throw new NotFoundException();
 
     const response = new getStatusAgencyResDto();
     response.complete_quote_count = statusAgency.complete_quote_count;
     response.quote_count = statusAgency.quote_count;
+    return response;
+  }
+
+  async getStatusQuote(
+    dto: getStatusQuoteReqDto,
+    agency: payloadClass,
+  ): Promise<getStatusQuoteResDto> {
+    const response = new getStatusQuoteResDto();
     return response;
   }
 }

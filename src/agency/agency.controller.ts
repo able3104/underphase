@@ -54,6 +54,8 @@ import { getSubsidyReqDto } from 'src/user/dto/getSubsidy.req.dto';
 import { getSubsidyResDto } from 'src/user/dto/getSubsidy.res.dto';
 import { getStatusAgencyResDto } from './dto/getStatusAgency.res.dto';
 import { getStatusAgencyReqDto } from './dto/getStatusAgency.req.dto';
+import { getStatusQuoteReqDto } from './dto/getStatusQuote.req.dto';
+import { getStatusQuoteResDto } from './dto/getStatusQuote.res.dto';
 
 @Controller('agency')
 export class AgencyController {
@@ -308,5 +310,24 @@ export class AgencyController {
   ): Promise<getStatusAgencyResDto> {
     const agency: payloadClass = req['agency'];
     return this.agencyService.getStatusAgency(dto, agency);
+  }
+
+  @Get('getStatusQuote')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '발급 견적 현황 조회' })
+  @ApiResponse({
+    status: 201,
+    description: '조회 성공',
+    type: getStatusAgencyResDto,
+  })
+  @ApiBadRequestResponse({ description: '조회 실패' })
+  @ApiNotFoundResponse({ description: '없음' })
+  @UseGuards(AuthGuard)
+  getStatusQuote(
+    @Query() dto: getStatusQuoteReqDto,
+    @Req() req: Request,
+  ): Promise<getStatusQuoteResDto> {
+    const agency: payloadClass = req['agency'];
+    return this.agencyService.getStatusQuote(dto, agency);
   }
 }
