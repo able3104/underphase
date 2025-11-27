@@ -14,6 +14,7 @@ import { Telecom } from 'src/entity/Telecom.entity';
 import { Brand } from 'src/entity/Brand.entity';
 import { SubsidyByTelecom } from 'src/entity/SubsidyByTelecom.entity';
 import { StatusAgency } from 'src/entity/StatusAgency.entity';
+import { Estimate } from 'src/entity/Estimate.entity';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { StatusAgency } from 'src/entity/StatusAgency.entity';
       Rate,
       SubsidyByTelecom,
       StatusAgency,
+      Estimate,
     ]),
     forwardRef(() => UserModule),
     forwardRef(() => AuthModule),

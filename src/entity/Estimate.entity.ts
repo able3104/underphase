@@ -100,6 +100,13 @@ export class Estimate {
   })
   auth_code: string;
 
+  @Column()
+  @ApiProperty({
+    description: '방문 척도',
+    example: true,
+  })
+  is_user_visit: boolean;
+
   // @Column()
   // @ApiProperty({
   //   description: '방문 확정 여부',

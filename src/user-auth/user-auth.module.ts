@@ -58,14 +58,23 @@ import { cwd } from 'process';
 export class UserAuthModule implements OnModuleInit {
   onModuleInit() {
     if (admin.apps.length === 0) {
+      const config = {
+        type: process.env.type,
+        project_id: process.env.project_id,
+        private_key_id: process.env.private_key_id,
+        private_key: process.env.private_key,
+        client_email: process.env.client_email,
+        client_id: process.env.client_id,
+        auth_uri: process.env.auth_uri,
+        token_uri: process.env.token_uri,
+        auth_provider_x509_cert_url: process.env.auth_provider_x509_cert_url,
+        client_x509_cert_url: process.env.client_x509_cert_url,
+        universe_domain: process.env.universe_domain,
+      };
+      const json = JSON.stringify(config);
       try {
         // 1. 서비스 계정 JSON 파일 경로 설정 (프로젝트 루트 기준)
-        const serviceAccountPath = path.resolve(
-          cwd(), // 프로젝트 루트 경로
-          // 'src',
-          // 'user-auth',
-          'firebase_auth_example.json',
-        );
+        const serviceAccountPath = path.resolve(json);
 
         // console.log(
         //   `[DEBUG/ModuleInit] Resolved Firebase Key Path: ${serviceAccountPath}`,

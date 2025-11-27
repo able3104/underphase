@@ -324,14 +324,14 @@ export class UserService {
     // if (!telecom) throw new NotFoundException();
     // //console.log(telecom);
 
-    // // rate 더미 데이터 삽입
-    // // const newRate = new Rate();
-    // // newRate.name = phone_plan.name;
-    // // newRate.price = phone_plan.price;
-    // // newRate.telecom = telecom;
-    // // newRate.data = 200;
-    // // newRate.delete_time = '';
-    // // await this.rateRepository.save(newRate);
+    // // // rate 더미 데이터 삽입
+    // // // const newRate = new Rate();
+    // // // newRate.name = phone_plan.name;
+    // // // newRate.price = phone_plan.price;
+    // // // newRate.telecom = telecom;
+    // // // newRate.data = 200;
+    // // // newRate.delete_time = '';
+    // // // await this.rateRepository.save(newRate);
 
     // const rate = await this.rateRepository.findOne({
     //   where: {
@@ -353,10 +353,12 @@ export class UserService {
     //   relations: ['agency', 'phone', 'telecom', 'phone.brand', 'telecom'],
     // });
     // if (!priceList) throw new NotFoundException();
-    // //console.log(priceList);
+    // // //console.log(priceList);
 
     // const authCode = this.generateNumericCode(10);
     // const auth_code: string = await authCode;
+
+    // if (!kakaoUserData) throw new NotFoundException();
 
     // const estimate = new Estimate();
     // estimate.phone = phone;
@@ -366,6 +368,8 @@ export class UserService {
     // estimate.auth_code = auth_code;
     // estimate.subscription_type = subscription_type;
     // estimate.delete_time = '';
+    // estimate.is_user_visit = false;
+    // estimate.kakaoUser = kakaoUserData;
 
     // await this.estimateRepository.save(estimate);
 

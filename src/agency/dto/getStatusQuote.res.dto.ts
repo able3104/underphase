@@ -13,10 +13,10 @@ export class getStatusQuoteResDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: '사용자 전화 번호',
+    description: '대리점 전화 번호',
     example: '01012345678',
   })
-  user_phone_number: string;
+  agency_phone_number: string;
 
   @IsString()
   @IsNotEmpty()

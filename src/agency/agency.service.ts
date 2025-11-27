@@ -49,6 +49,7 @@ import { getStatusAgencyResDto } from './dto/getStatusAgency.res.dto';
 import { StatusAgency } from 'src/entity/StatusAgency.entity';
 import { getStatusQuoteReqDto } from './dto/getStatusQuote.req.dto';
 import { getStatusQuoteResDto } from './dto/getStatusQuote.res.dto';
+import { Estimate } from 'src/entity/Estimate.entity';
 
 @Injectable()
 export class AgencyService {
@@ -72,6 +73,8 @@ export class AgencyService {
     private subsidyRepository: Repository<SubsidyByTelecom>,
     @InjectRepository(StatusAgency)
     private statusAgencyRepository: Repository<StatusAgency>,
+    @InjectRepository(Estimate)
+    private estimateRepository: Repository<Estimate>,
   ) {}
 
   async agencyLogin(dto: agencyLoginReqDto): Promise<agencyLoginResDto> {
@@ -543,7 +546,22 @@ export class AgencyService {
     dto: getStatusQuoteReqDto,
     agency: payloadClass,
   ): Promise<getStatusQuoteResDto> {
+    const estimateExample = await this.estimateRepository.find({
+      where: {
+        auth_code: dto.auth_code,
+        delete_time: '',
+      },
+    });
+    if (!estimateExample) throw new BadRequestException();
+
     const response = new getStatusQuoteResDto();
+
+    // //더미 데이터 넣기
+    // const response = new getStatusQuoteResDto();
+    // response.user_name = '박민준';
+    // response.agency_phone_number = '01012345678';
+    // response.is_user_visit = false;
+
     return response;
   }
 }
