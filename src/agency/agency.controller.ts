@@ -62,6 +62,10 @@ import { getPriceListByPhoneReqDto } from './dto/getPriceListByPhone.req.dto';
 import { getPriceListByPhoneResDto } from './dto/getPriceListByPhone.res.dto';
 import { enrollPriceListDetailReqDto } from './dto/enrollPriceListDetail.req.dto';
 import { enrollPriceListDetailResDto } from './dto/enrollPriceListDetail.res.dto';
+import { checkIsUserVisitReqDto } from './dto/checkIsUserVisit.req.dto';
+import { checkIsUserVisitResDto } from './dto/checkIsUserVisit.res.dto';
+import { checkLoginReqDto } from './dto/checkLogin.req.dto';
+import { checkLoginResDto } from './dto/checkLogin.res.dto';
 
 @Controller('agency')
 export class AgencyController {
@@ -377,6 +381,14 @@ export class AgencyController {
 
   @Post('enrollPriceListDetail')
   @ApiBearerAuth()
+  @ApiOperation({ summary: '가격 리스트 상세 등록' })
+  @ApiResponse({
+    status: 201,
+    description: '조회 성공',
+    type: enrollPriceListDetailResDto,
+  })
+  @ApiBadRequestResponse({ description: '등록 실패' })
+  @ApiNotFoundResponse({ description: '없음' })
   @UseGuards(AuthGuard)
   enrollPriceListDetail(
     @Body() dto: enrollPriceListDetailReqDto,
@@ -384,5 +396,46 @@ export class AgencyController {
   ): Promise<enrollPriceListDetailResDto> {
     const agency: payloadClass = req['agency'];
     return this.agencyService.enrollPriceListDetail(dto, agency);
+  }
+
+  @Post('checkIsUserVisit')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '방문 여부 확인' })
+  @ApiResponse({
+    status: 201,
+    description: '조회 성공',
+    type: checkIsUserVisitResDto,
+  })
+  @ApiBadRequestResponse({ description: '확인 실패' })
+  @ApiNotFoundResponse({ description: '없음' })
+  @UseGuards(AuthGuard)
+  checkIsUserVisit(
+    @Body() dto: checkIsUserVisitReqDto,
+    @Req() req: Request,
+  ): Promise<checkIsUserVisitResDto> {
+    const agency: payloadClass = req['agency'];
+    return this.agencyService.checkIsUserVisit(dto, agency);
+  }
+
+  @Get('checkLogin')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '인증 확인' })
+  @ApiResponse({
+    status: 201,
+    description: '인증 성공',
+    type: checkLoginResDto,
+  })
+  @UseGuards(AuthGuard)
+  checkLogin(
+    @Body() dto: checkLoginReqDto,
+    @Req() req: Request,
+  ): Promise<checkLoginResDto> {
+    const agency: payloadClass = req['agency'];
+    return this.agencyService.checkLogin(dto, agency);
+  }
+
+  @Get('pushDummyData')
+  pushDummyData(): any {
+    return this.agencyService.pushDummyData();
   }
 }
