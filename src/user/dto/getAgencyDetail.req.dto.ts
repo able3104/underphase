@@ -46,7 +46,7 @@ export class getAgencyDetailReqDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '가입 유형',
-    example: 'New',
+    example: '기기변경',
   })
   subscription_type: string;
 }

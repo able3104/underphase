@@ -79,7 +79,7 @@ export class registerQuoteReqDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '가입 유형',
-    example: 'New',
+    example: '기기변경',
   })
   subscription_type: string;
 
@@ -91,11 +91,11 @@ export class registerQuoteReqDto {
   })
   telecom: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    description: '사용자 이름',
-    example: '박민준',
-  })
-  user_name: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // @ApiProperty({
+  //   description: '사용자 이름',
+  //   example: '박민준',
+  // })
+  // user_name: string;
 }
