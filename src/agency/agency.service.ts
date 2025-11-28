@@ -55,7 +55,24 @@ import { getQuoteDetailResDto } from './dto/getQuoteDetail.res.dto';
 import { KakaoUser } from 'src/entity/KakaoUser.entity';
 import { ifError } from 'assert';
 import { getPriceListByPhoneReqDto } from './dto/getPriceListByPhone.req.dto';
-import { getPriceListByPhoneResDto } from './dto/getPriceListByPhone.res.dto';
+import {
+  getPriceListByPhoneResDto,
+  PriceOption,
+  PriceSettingFeildProps,
+} from './dto/getPriceListByPhone.res.dto';
+import { enrollPriceListDetailResDto } from './dto/enrollPriceListDetail.res.dto';
+import { enrollPriceListDetailReqDto } from './dto/enrollPriceListDetail.req.dto';
+
+interface PriceListEntity {
+  id: number;
+  agency: { id: number };
+  phone: { id: number; name: string };
+  telecom: { id: number; name: string }; // name 필드를 통해 통신사 이름을 가져옴
+  rate: { id: number; name: string; price: number }; // name 필드를 통해 요금제 이름을 가져옴
+  subscription_type: string; // '기기변경', '번호이동', '신규가입' 등
+  price: number; // 기기 가격 (실제 응답의 price 필드에 사용)
+  delete_time: string;
+}
 
 @Injectable()
 export class AgencyService {
@@ -667,7 +684,186 @@ export class AgencyService {
     dto: getPriceListByPhoneReqDto,
     agency: payloadClass,
   ): Promise<getPriceListByPhoneResDto> {
+    if (!agency) throw new UnauthorizedException('Agency payload is missing.');
+
+    const agencyForSearch = await this.agencyRepository.findOne({
+      where: { id: agency.payload.id, delete_time: '' },
+    });
+    if (!agencyForSearch) throw new NotFoundException();
+
+    const { phone_brand, phone_name } = dto;
+
+    const phoneForSearch = await this.phoneRepository.findOne({
+      where: {
+        name: phone_name,
+        brand: { name: phone_brand, delete_time: '' },
+        delete_time: '',
+      },
+    });
+    if (!phoneForSearch) throw new NotFoundException();
+
+    const allPriceLists: PriceListEntity[] =
+      await this.priceListRepository.find({
+        where: {
+          agency: { id: agencyForSearch.id },
+          phone: { id: phoneForSearch.id },
+          delete_time: '',
+        },
+        relations: ['telecom', 'rate'],
+      });
+    // console.debug(allPriceLists);
+
+    const TARGET_TELECOMS: ('SKT' | 'KT' | 'LG U+')[] = ['SKT', 'KT', 'LG U+'];
+    const REQUIRED_TYPES: ('기기변경' | '번호이동' | '신규가입')[] = [
+      '기기변경',
+      '번호이동',
+      '신규가입',
+    ];
+    const priceListResults: PriceSettingFeildProps[] = [];
+
+    for (const telecomName of TARGET_TELECOMS) {
+      const telecom = await this.telecomRepository.findOne({
+        where: { name: telecomName, delete_time: '' },
+      });
+      if (!telecom) {
+        // const telecomExample = new Telecom();
+        // telecomExample.name = telecomName;
+        // telecomExample.delete_time = '';
+        // await this.telecomRepository.save(telecomExample);
+        throw new NotFoundException();
+      }
+      const currentPriceList: PriceSettingFeildProps = {
+        telecom: telecomName,
+        device: phone_name,
+        options: [],
+      };
+      // console.debug(telecomName);
+
+      for (const type of REQUIRED_TYPES) {
+        const option: PriceOption = {
+          type: type,
+          plan: '설정된 가격 없음', // 기본값
+          price: 0, // 기본값
+        };
+        const priceListForSearch = await this.priceListRepository.findOne({
+          where: {
+            agency: { id: agencyForSearch.id },
+            phone: phoneForSearch,
+            telecom: { name: telecomName },
+            subscription_type: type,
+            delete_time: '',
+          },
+          relations: ['rate'],
+        });
+        // console.debug(priceListForSearch);
+        if (priceListForSearch) {
+          const { original_price, subsidy_by_agency } = priceListForSearch;
+          const subsidy_by_telecom: SubsidyByTelecom | null =
+            await this.subsidyBytTelecomRepository.findOne({
+              where: { telecom: telecomName },
+            });
+          if (!subsidy_by_telecom) throw new NotFoundException();
+          option.price =
+            original_price - subsidy_by_agency - subsidy_by_telecom.value;
+          option.plan = priceListForSearch.rate.name;
+        }
+        // console.debug(option);
+
+        currentPriceList.options.push(option);
+      }
+
+      priceListResults.push(currentPriceList);
+    }
+
     const response = new getPriceListByPhoneResDto();
+    response.priceList = priceListResults;
+
+    return response;
+  }
+
+  async enrollPriceListDetail(
+    dto: enrollPriceListDetailReqDto,
+    agency: payloadClass,
+  ): Promise<enrollPriceListDetailResDto> {
+    if (!agency) throw new UnauthorizedException();
+    const new_agency = new Agency();
+    new_agency.id = agency.payload.id;
+
+    const {
+      phone_brand,
+      phone_name,
+      phone_plan_name,
+      telecom,
+      subscription_type,
+      subsidy_by_agency,
+    } = dto;
+    const agencyForSearch = await this.agencyRepository.findOne({
+      where: {
+        id: new_agency.id,
+        delete_time: '',
+      },
+    });
+    if (!agencyForSearch) throw new NotFoundException();
+
+    const subsidy_by_telecom = await this.subsidyBytTelecomRepository.findOne({
+      where: { telecom: telecom },
+    });
+    if (!subsidy_by_telecom) throw new NotFoundException();
+    const phoneForSearch = await this.phoneRepository.findOne({
+      where: {
+        name: phone_name,
+        delete_time: '',
+      },
+    });
+    if (!phoneForSearch) throw new NotFoundException();
+    const rate = await this.rateRepository.findOne({
+      where: { name: phone_plan_name, delete_time: '' },
+    });
+    if (!rate) throw new NotFoundException();
+    const priceListForSearch = await this.priceListRepository.findOne({
+      where: {
+        phone: {
+          name: phone_name,
+          brand: { name: phone_brand, delete_time: '' },
+          delete_time: '',
+        },
+        agency: { id: new_agency.id, delete_time: '' },
+        subscription_type: subscription_type,
+        rate: { name: phone_plan_name, delete_time: '' },
+        delete_time: '',
+      },
+    });
+    if (!priceListForSearch) {
+      const telecom_ = await this.telecomRepository.findOne({
+        where: { name: telecom, delete_time: '' },
+      });
+      if (!telecom_) throw new NotFoundException();
+
+      const price =
+        phoneForSearch.price - subsidy_by_agency - subsidy_by_telecom.value;
+      const pricelistEntity = PriceList.setter(
+        agencyForSearch,
+        phoneForSearch,
+        telecom_,
+        subscription_type,
+        price,
+        phoneForSearch.price,
+        '추가 할인',
+        10000,
+        '',
+        rate,
+      );
+      pricelistEntity.subsidy_by_agency = subsidy_by_agency;
+      await this.priceListRepository.save(pricelistEntity);
+    } else {
+      priceListForSearch.price =
+        phoneForSearch.price - subsidy_by_agency - subsidy_by_telecom.value;
+      priceListForSearch.rate = rate;
+      await this.priceListRepository.save(priceListForSearch);
+    }
+
+    const response = new enrollPriceListResDto();
+
     return response;
   }
 }

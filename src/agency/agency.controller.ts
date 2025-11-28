@@ -58,6 +58,10 @@ import { getStatusQuoteReqDto } from './dto/getStatusQuote.req.dto';
 import { getStatusQuoteResDto } from './dto/getStatusQuote.res.dto';
 import { getQuoteDetailReqDto } from './dto/getQuoteDetail.req.dto';
 import { getQuoteDetailResDto } from './dto/getQuoteDetail.res.dto';
+import { getPriceListByPhoneReqDto } from './dto/getPriceListByPhone.req.dto';
+import { getPriceListByPhoneResDto } from './dto/getPriceListByPhone.res.dto';
+import { enrollPriceListDetailReqDto } from './dto/enrollPriceListDetail.req.dto';
+import { enrollPriceListDetailResDto } from './dto/enrollPriceListDetail.res.dto';
 
 @Controller('agency')
 export class AgencyController {
@@ -350,5 +354,35 @@ export class AgencyController {
   ): Promise<getQuoteDetailResDto> {
     const agency: payloadClass = req['agency'];
     return this.agencyService.getQuoteDetail(dto, agency);
+  }
+
+  @Get('getPriceListByPhone')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '기종에 따른 가격 리스트 조회' })
+  @ApiResponse({
+    status: 201,
+    description: '조회 성공',
+    type: getStatusAgencyResDto,
+  })
+  @ApiBadRequestResponse({ description: '조회 실패' })
+  @ApiNotFoundResponse({ description: '없음' })
+  @UseGuards(AuthGuard)
+  getPriceListByPhone(
+    @Query() dto: getPriceListByPhoneReqDto,
+    @Req() req: Request,
+  ): Promise<getPriceListByPhoneResDto> {
+    const agency: payloadClass = req['agency'];
+    return this.agencyService.getPriceListByPhone(dto, agency);
+  }
+
+  @Post('enrollPriceListDetail')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  enrollPriceListDetail(
+    @Body() dto: enrollPriceListDetailReqDto,
+    @Req() req: Request,
+  ): Promise<enrollPriceListDetailResDto> {
+    const agency: payloadClass = req['agency'];
+    return this.agencyService.enrollPriceListDetail(dto, agency);
   }
 }
