@@ -237,7 +237,7 @@ export class UserService {
       phone_price,
       phone_plan,
       subscription_type,
-      // user_name,
+      user_name,
     } = dto;
     const { kakaoId, email, firebaseUid } = kakaoUser;
     const kakaoUserData = await this.kakaoUserRepository.findOne({
@@ -257,7 +257,7 @@ export class UserService {
         newUser.email = oidcUserInfo.email ?? email;
         newUser.firebaseUid = firebaseUid;
         newUser.delete_time = '';
-        // newUser.name = user_name;
+        newUser.name = user_name;
 
         await this.kakaoUserRepository.save(newUser);
         console.debug('✅ 새로운 카카오 사용자 DB에 OIDC 정보로 저장 완료.');
@@ -377,7 +377,7 @@ export class UserService {
 
     // const response = new resisterQuoteResDto();
     // response.quote_code = auth_code;
-    if (!kakaoUserData) throw new NotFoundException();
+    if (!kakaoUserData) throw new NotFoundException('kakaoUser NotFound');
 
     const phone = await this.phoneRepository.findOne({
       where: {
@@ -386,11 +386,11 @@ export class UserService {
         delete_time: '',
       },
     });
-    if (!phone) throw new NotFoundException();
+    if (!phone) throw new NotFoundException('Phone NotFound');
     const agency = await this.agencyRepository.findOne({
       where: { id: agency_id, delete_time: '' },
     });
-    if (!agency) throw new NotFoundException();
+    if (!agency) throw new NotFoundException('Agency NotFound');
 
     const priceList = await this.priceListRepository.findOne({
       where: {
@@ -401,7 +401,7 @@ export class UserService {
         delete_time: '',
       },
     });
-    if (!priceList) throw new NotFoundException();
+    if (!priceList) throw new NotFoundException('PriceList NotFound');
 
     const estimateData = await this.estimateRepository.findOne({
       where: {
@@ -412,7 +412,7 @@ export class UserService {
         delete_time: '',
       },
     });
-    if (!estimateData) throw new NotFoundException();
+    if (!estimateData) throw new NotFoundException('Estimate NotFound');
     const response = new resisterQuoteResDto();
     response.quote_code = estimateData.auth_code;
     // response.quote_code = '1872536263';
