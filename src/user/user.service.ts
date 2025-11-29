@@ -182,7 +182,7 @@ export class UserService {
 
     const priceList = await this.priceListRepository.findOne({
       where: {
-        agency: { id: dto.agency_id },
+        agency: { id: agencies.id },
         phone: { id: phone.id },
         telecom: { name: dto.telecom },
         subscription_type: dto.subscription_type,
@@ -205,6 +205,7 @@ export class UserService {
     response.phone_brand = phone.brand.name;
     response.phone_price = priceList.price;
     response.phone_original_price = priceList.original_price;
+    response.phone_image = phone.image_URL;
 
     // response.start_time = agencies.start_time;
     // response.end_time = agencies.end_time;
@@ -379,6 +380,19 @@ export class UserService {
     // const response = new resisterQuoteResDto();
     // response.quote_code = auth_code;
     if (!kakaoUserData) throw new NotFoundException('kakaoUser NotFound');
+
+    const rateForSearch = await this.rateRepository.findOne({
+      where: { name: dto.phone_plan.name, delete_time: '' },
+    });
+    if (!rateForSearch) {
+      const rate = new Rate();
+      rate.name = dto.phone_plan.name;
+      rate.price = dto.phone_plan.price;
+      rate.data = dto.phone_plan.data;
+      rate.telecom = dto.phone_plan.telecom;
+      rate.delete_time = '';
+      await this.rateRepository.save(rate);
+    }
 
     const phone = await this.phoneRepository.findOne({
       where: {
