@@ -398,6 +398,18 @@ export class UserService {
       rate.delete_time = '';
       await this.rateRepository.save(rate);
     }
+    // const rate = new Rate();
+    // rate.name = dto.phone_plan.name;
+    // rate.price = dto.phone_plan.price;
+    // rate.data = 200;
+    // rate.telecom = telecom;
+    // rate.delete_time = '';
+    // await this.rateRepository.save(rate);
+    // console.debug(rate);
+    const rate = await this.rateRepository.findOne({
+      where: { name: dto.phone_plan.name, delete_time: '' },
+    });
+    if (!rate) throw new NotFoundException('norate');
 
     const phone = await this.phoneRepository.findOne({
       where: {
@@ -407,17 +419,21 @@ export class UserService {
       },
     });
     if (!phone) throw new NotFoundException('Phone NotFound');
+    console.debug(phone);
     const agency = await this.agencyRepository.findOne({
       where: { id: agency_id, delete_time: '' },
     });
     if (!agency) throw new NotFoundException('Agency NotFound');
+    console.debug(agency);
+    console.debug(telecom);
 
     const priceList = await this.priceListRepository.findOne({
       where: {
         agency: { id: agency.id, delete_time: '' },
-        telecom: { name: dto.telecom, delete_time: '' },
-        rate: { name: dto.phone_plan.name, delete_time: '' },
+        telecom: { id: telecom.id, delete_time: '' },
+        rate: { id: rate.id, delete_time: '' },
         phone: { id: phone.id },
+        subscription_type: dto.subscription_type,
         delete_time: '',
       },
     });
