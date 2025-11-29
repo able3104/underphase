@@ -6,7 +6,7 @@ export class searchAgenciesReqDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '휴대폰 기기명',
-    example: 'S25',
+    example: '갤럭시 S25',
   })
   phone_name: string;
 
