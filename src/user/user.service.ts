@@ -172,7 +172,7 @@ export class UserService {
     console.log(agencies);
 
     const phone = await this.phoneRepository.findOne({
-      where: { name: dto.phone_name, brand: { name: dto.phone_brand } },
+      where: { name: dto.phone_name, delete_time: '' },
       relations: ['brand'],
     });
     if (!phone) {
@@ -186,6 +186,7 @@ export class UserService {
         phone: { id: phone.id },
         telecom: { name: dto.telecom },
         subscription_type: dto.subscription_type,
+        delete_time: '',
       },
       relations: ['agency', 'phone', 'telecom', 'phone.brand', 'telecom'],
     });
