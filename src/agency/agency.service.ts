@@ -924,91 +924,125 @@ export class AgencyService {
     // lgu.delete_time = '';
     // await this.telecomRepository.save(lgu);
 
-    const samsung = new Brand();
-    samsung.name = 'samsung';
-    samsung.image_URL = '';
-    samsung.delete_time = '';
-    await this.brandRepository.save(samsung);
-    const apple = new Brand();
-    apple.name = 'apple';
-    apple.image_URL = '';
-    apple.delete_time = '';
-    await this.brandRepository.save(apple);
+    // const samsung = new Brand();
+    // samsung.name = 'samsung';
+    // samsung.image_URL = '';
+    // samsung.delete_time = '';
+    // await this.brandRepository.save(samsung);
+    // const apple = new Brand();
+    // apple.name = 'apple';
+    // apple.image_URL = '';
+    // apple.delete_time = '';
+    // await this.brandRepository.save(apple);
 
-    const brand1 = await this.brandRepository.findOne({
-      where: { name: 'samsung' },
-    });
-    if (!brand1) throw new NotFoundException();
-    const s25 = new Phone();
-    s25.name = 'S25';
-    s25.volume = '256GB';
-    s25.color = 'black';
-    s25.image_URL = '/images/device/galaxy/galaxy_s25.png';
-    s25.delete_time = '';
-    s25.brand = brand1;
-    s25.price = 1000000;
-    await this.phoneRepository.save(s25);
-    const s25p = new Phone();
-    s25p.name = 'S25+';
-    s25p.volume = '256GB';
-    s25p.color = 'black';
-    s25p.image_URL = '/images/device/galaxy/galaxy_s25_+.png';
-    s25p.delete_time = '';
-    s25p.brand = brand1;
-    s25p.price = 1300000;
-    await this.phoneRepository.save(s25p);
-    const s25u = new Phone();
-    s25u.name = 'S25 Ultra';
-    s25u.volume = '512GB';
-    s25u.color = 'black';
-    s25u.image_URL = '/images/device/galaxy/galaxy_s25_ultra.png';
-    s25u.delete_time = '';
-    s25u.brand = brand1;
-    s25u.price = 1400000;
-    await this.phoneRepository.save(s25u);
+    // const brand1 = await this.brandRepository.findOne({
+    //   where: { name: 'samsung' },
+    // });
+    // if (!brand1) throw new NotFoundException();
+    // const s25 = new Phone();
+    // s25.name = 'S25';
+    // s25.volume = '256GB';
+    // s25.color = 'black';
+    // s25.image_URL = '/images/device/galaxy/galaxy_s25.png';
+    // s25.delete_time = '';
+    // s25.brand = brand1;
+    // s25.price = 1000000;
+    // await this.phoneRepository.save(s25);
+    // const s25p = new Phone();
+    // s25p.name = 'S25+';
+    // s25p.volume = '256GB';
+    // s25p.color = 'black';
+    // s25p.image_URL = '/images/device/galaxy/galaxy_s25_+.png';
+    // s25p.delete_time = '';
+    // s25p.brand = brand1;
+    // s25p.price = 1300000;
+    // await this.phoneRepository.save(s25p);
+    // const s25u = new Phone();
+    // s25u.name = 'S25 Ultra';
+    // s25u.volume = '512GB';
+    // s25u.color = 'black';
+    // s25u.image_URL = '/images/device/galaxy/galaxy_s25_ultra.png';
+    // s25u.delete_time = '';
+    // s25u.brand = brand1;
+    // s25u.price = 1400000;
+    // await this.phoneRepository.save(s25u);
 
-    const brand2 = await this.brandRepository.findOne({
-      where: { name: 'apple' },
-    });
-    if (!brand2) throw new NotFoundException();
-    const i17 = new Phone();
-    i17.name = '17';
-    i17.volume = '256GB';
-    i17.color = 'black';
-    i17.image_URL = '/images/device/iphone/iphone_17.png';
-    i17.delete_time = '';
-    i17.brand = brand2;
-    i17.price = 1300000;
-    await this.phoneRepository.save(i17);
-    const i17air = new Phone();
-    i17air.name = '17 Air';
-    i17air.volume = '256GB';
-    i17air.color = 'black';
-    i17air.image_URL = '/images/device/iphone/iphone_17_air.png';
-    i17air.delete_time = '';
-    i17air.brand = brand2;
-    i17air.price = 1500000;
-    await this.phoneRepository.save(i17air);
+    // const brand2 = await this.brandRepository.findOne({
+    //   where: { name: 'apple' },
+    // });
+    // if (!brand2) throw new NotFoundException();
+    // const i17 = new Phone();
+    // i17.name = '17';
+    // i17.volume = '256GB';
+    // i17.color = 'black';
+    // i17.image_URL = '/images/device/iphone/iphone_17.png';
+    // i17.delete_time = '';
+    // i17.brand = brand2;
+    // i17.price = 1300000;
+    // await this.phoneRepository.save(i17);
+    // const i17air = new Phone();
+    // i17air.name = '17 Air';
+    // i17air.volume = '256GB';
+    // i17air.color = 'black';
+    // i17air.image_URL = '/images/device/iphone/iphone_17_air.png';
+    // i17air.delete_time = '';
+    // i17air.brand = brand2;
+    // i17air.price = 1500000;
+    // await this.phoneRepository.save(i17air);
 
-    const i17pro = new Phone();
-    i17pro.name = '17 Pro';
-    i17pro.volume = '256GB';
-    i17pro.color = 'black';
-    i17pro.image_URL = '/images/device/iphone/iphone_17_pro.png';
-    i17pro.delete_time = '';
-    i17pro.brand = brand2;
-    i17pro.price = 2000000;
-    await this.phoneRepository.save(i17pro);
+    // const i17pro = new Phone();
+    // i17pro.name = '17 Pro';
+    // i17pro.volume = '256GB';
+    // i17pro.color = 'black';
+    // i17pro.image_URL = '/images/device/iphone/iphone_17_pro.png';
+    // i17pro.delete_time = '';
+    // i17pro.brand = brand2;
+    // i17pro.price = 2000000;
+    // await this.phoneRepository.save(i17pro);
 
-    const i17promax = new Phone();
-    i17promax.name = '17 Pro Max';
-    i17promax.volume = '512GB';
-    i17promax.color = 'black';
-    i17promax.image_URL = '/images/device/iphone/iphone_17_pro_max.png';
-    i17promax.delete_time = '';
-    i17promax.brand = brand2;
-    i17promax.price = 2300000;
-    await this.phoneRepository.save(i17promax);
+    // const i17promax = new Phone();
+    // i17promax.name = '17 Pro Max';
+    // i17promax.volume = '512GB';
+    // i17promax.color = 'black';
+    // i17promax.image_URL = '/images/device/iphone/iphone_17_pro_max.png';
+    // i17promax.delete_time = '';
+    // i17promax.brand = brand2;
+    // i17promax.price = 2300000;
+    // await this.phoneRepository.save(i17promax);
+
+    // //rate, priceList 더미 데이터 넣어야 됨.
+
+    const TARGET_TELECOMS: ('SKT' | 'KT' | 'LG U+')[] = ['SKT', 'KT', 'LG U+'];
+
+    for (const telecomName of TARGET_TELECOMS) {
+      const telecom = await this.telecomRepository.findOne({
+        where: { name: telecomName, delete_time: '' },
+      });
+      if (!telecom) throw new NotFoundException();
+
+      const rate115 = new Rate();
+      rate115.telecom = telecom;
+      rate115.name = '115';
+      rate115.data = 200;
+      rate115.price = 115000;
+      rate115.delete_time = '';
+      await this.rateRepository.save(rate115);
+      const rate105 = new Rate();
+      rate105.telecom = telecom;
+      rate105.name = '105';
+      rate105.data = 150;
+      rate105.price = 105000;
+      rate105.delete_time = '';
+      await this.rateRepository.save(rate105);
+      const rate95 = new Rate();
+      rate95.telecom = telecom;
+      rate95.name = '95';
+      rate95.data = 100;
+      rate95.price = 95000;
+      rate95.delete_time = '';
+      await this.rateRepository.save(rate95);
+    }
+
     const response = {};
     return response;
   }
