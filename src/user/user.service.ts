@@ -380,6 +380,7 @@ export class UserService {
     // const response = new resisterQuoteResDto();
     // response.quote_code = auth_code;
     if (!kakaoUserData) throw new NotFoundException('kakaoUser NotFound');
+    console.debug(kakaoUserData);
 
     const telecom = await this.telecomRepository.findOne({
       where: { name: dto.telecom, delete_time: '' },
@@ -410,6 +411,7 @@ export class UserService {
       where: { name: dto.phone_plan.name, delete_time: '' },
     });
     if (!rate) throw new NotFoundException('norate');
+    console.debug(rate);
 
     const phone = await this.phoneRepository.findOne({
       where: {
@@ -429,22 +431,23 @@ export class UserService {
 
     const priceList = await this.priceListRepository.findOne({
       where: {
-        agency: { id: agency.id, delete_time: '' },
-        telecom: { id: telecom.id, delete_time: '' },
-        rate: { id: rate.id, delete_time: '' },
-        phone: { id: phone.id },
-        subscription_type: dto.subscription_type,
-        delete_time: '',
+        phone: { name: dto.phone_name },
+        // agency: { id: agency.id },
+        // telecom: { id: telecom.id },
+        rate: { name: dto.phone_plan.name },
+        // subscription_type: dto.subscription_type,
+        // delete_time: '',
       },
     });
     if (!priceList) throw new NotFoundException('PriceList NotFound');
+    console.debug(priceList);
 
     const estimateData = await this.estimateRepository.findOne({
       where: {
-        phone: { id: phone.id, delete_time: '' },
-        priceList: { id: priceList.id, delete_time: '' },
+        // phone: phone,
+        // priceList: priceList,
         kakaoUser: { id: kakaoUserData.id },
-        subscription_type: dto.subscription_type,
+        // subscription_type: dto.subscription_type,
         delete_time: '',
       },
     });
