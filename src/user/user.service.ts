@@ -383,7 +383,7 @@ export class UserService {
     const phone = await this.phoneRepository.findOne({
       where: {
         name: dto.phone_name,
-        brand: { name: dto.phone_brand, delete_time: '' },
+        // brand: { name: dto.phone_brand, delete_time: '' },
         delete_time: '',
       },
     });
