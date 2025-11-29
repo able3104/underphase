@@ -911,18 +911,18 @@ export class AgencyService {
   }
 
   async pushDummyData(): Promise<any> {
-    // const skt = new Telecom();
-    // skt.name = 'SKT';
-    // skt.delete_time = '';
-    // await this.telecomRepository.save(skt);
-    // const kt = new Telecom();
-    // kt.name = 'KT';
-    // kt.delete_time = '';
-    // await this.telecomRepository.save(kt);
-    // const lgu = new Telecom();
-    // lgu.name = 'LG U+';
-    // lgu.delete_time = '';
-    // await this.telecomRepository.save(lgu);
+    const skt = new Telecom();
+    skt.name = 'SKT';
+    skt.delete_time = '';
+    await this.telecomRepository.save(skt);
+    const kt = new Telecom();
+    kt.name = 'KT';
+    kt.delete_time = '';
+    await this.telecomRepository.save(kt);
+    const lgu = new Telecom();
+    lgu.name = 'LG U+';
+    lgu.delete_time = '';
+    await this.telecomRepository.save(lgu);
 
     // const samsung = new Brand();
     // samsung.name = 'samsung';
@@ -1015,6 +1015,7 @@ export class AgencyService {
     const TARGET_TELECOMS: ('SKT' | 'KT' | 'LG U+')[] = ['SKT', 'KT', 'LG U+'];
 
     for (const telecomName of TARGET_TELECOMS) {
+      console.debug(telecomName);
       const telecom = await this.telecomRepository.findOne({
         where: { name: telecomName, delete_time: '' },
       });
