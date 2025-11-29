@@ -381,6 +381,11 @@ export class UserService {
     // response.quote_code = auth_code;
     if (!kakaoUserData) throw new NotFoundException('kakaoUser NotFound');
 
+    const telecom = await this.telecomRepository.findOne({
+      where: { name: dto.telecom, delete_time: '' },
+    });
+    if (!telecom) throw new NotFoundException();
+
     const rateForSearch = await this.rateRepository.findOne({
       where: { name: dto.phone_plan.name, delete_time: '' },
     });
@@ -389,7 +394,7 @@ export class UserService {
       rate.name = dto.phone_plan.name;
       rate.price = dto.phone_plan.price;
       rate.data = 200;
-      rate.telecom = dto.phone_plan.telecom;
+      rate.telecom = telecom;
       rate.delete_time = '';
       await this.rateRepository.save(rate);
     }

@@ -63,7 +63,11 @@ export class registerQuoteReqDto {
       price: 115000,
     },
   })
-  phone_plan: Rate;
+  phone_plan: {
+    name: string;
+    price: number;
+    description: string;
+  };
 
   @IsNotEmpty()
   @ApiProperty({
