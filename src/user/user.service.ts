@@ -481,53 +481,7 @@ export class UserService {
     return code;
   }
 
-  async getQuote(
-    dto: getQuoteReqDto,
-    kakaoUser: UserPayload,
-    token: string,
-  ): Promise<getQuoteResDto> {
-    const { kakaoId, email, firebaseUid } = kakaoUser;
-    const kakaoUserData = await this.kakaoUserRepository.findOne({
-      where: { kakaoId: kakaoId },
-    });
-
-    if (!kakaoUserData) {
-      console.debug('🚨 DB에 사용자 정보 없음. OIDC API 호출 및 저장 시도...');
-
-      try {
-        const oidcUserInfo =
-          await this.userAuthService.getKakaoOidcUserInfo(token);
-        console.debug(oidcUserInfo);
-
-        const newUser = new KakaoUser();
-        newUser.kakaoId = oidcUserInfo.sub;
-        newUser.email = oidcUserInfo.email ?? email;
-        newUser.firebaseUid = firebaseUid;
-        newUser.delete_time = '';
-        newUser.name = '';
-
-        await this.kakaoUserRepository.save(newUser);
-        console.debug('✅ 새로운 카카오 사용자 DB에 OIDC 정보로 저장 완료.');
-      } catch (error) {
-        console.error(
-          'OIDC API 호출 실패. Guard 정보로 대체 저장 시도:',
-          error.message,
-        );
-
-        const newUser = new KakaoUser();
-        newUser.kakaoId = kakaoId;
-        newUser.email = email;
-        newUser.firebaseUid = firebaseUid;
-        newUser.delete_time = '';
-
-        await this.kakaoUserRepository.save(newUser);
-        console.debug(
-          '✅ 새로운 카카오 사용자 DB에 Guard 정보로 대체 저장 완료.',
-        );
-      }
-    } else {
-      console.debug('✅ DB에 사용자 정보 존재. 견적서 등록 계속.');
-    }
+  async getQuote(dto: getQuoteReqDto): Promise<getQuoteResDto> {
     const estimate = await this.estimateRepository.findOne({
       where: { auth_code: dto.quoteCode },
       relations: [
