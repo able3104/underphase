@@ -388,7 +388,7 @@ export class UserService {
       const rate = new Rate();
       rate.name = dto.phone_plan.name;
       rate.price = dto.phone_plan.price;
-      rate.data = dto.phone_plan.data;
+      rate.data = 200;
       rate.telecom = dto.phone_plan.telecom;
       rate.delete_time = '';
       await this.rateRepository.save(rate);
