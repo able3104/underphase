@@ -40,6 +40,7 @@ export class Rate {
   @ApiProperty({
     description: '요금제 데이터 용량(GB)',
     example: 200,
+    default: 200,
   })
   data: number;
 
