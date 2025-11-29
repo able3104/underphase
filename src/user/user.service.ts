@@ -442,24 +442,37 @@ export class UserService {
     if (!priceList) throw new NotFoundException('PriceList NotFound');
     console.debug(priceList);
 
-    const estimateData = await this.estimateRepository.findOne({
-      where: {
-        // phone: phone,
-        // priceList: priceList,
-        kakaoUser: { id: kakaoUserData.id },
-        // subscription_type: dto.subscription_type,
-        delete_time: '',
-      },
-    });
-    if (!estimateData) throw new NotFoundException('Estimate NotFound');
+    const estimateEntity = new Estimate();
+    estimateEntity.price = priceList.price;
+    estimateEntity.rate = 115000;
+    const code: string = this.generateNumericCode(10);
+    estimateEntity.auth_code = code;
+    estimateEntity.phone = phone;
+    estimateEntity.priceList = priceList;
+    estimateEntity.subscription_type = dto.subscription_type;
+    estimateEntity.kakaoUser = kakaoUserData;
+    estimateEntity.is_user_visit = false;
+    estimateEntity.delete_time = '';
+    await this.estimateRepository.save(estimateEntity);
+
+    // const estimateData = await this.estimateRepository.findOne({
+    //   where: {
+    //     // phone: phone,
+    //     // priceList: priceList,
+    //     kakaoUser: { id: kakaoUserData.id },
+    //     // subscription_type: dto.subscription_type,
+    //     delete_time: '',
+    //   },
+    // });
+    // if (!estimateData) throw new NotFoundException('Estimate NotFound');
     const response = new resisterQuoteResDto();
-    response.quote_code = estimateData.auth_code;
+    response.quote_code = estimateEntity.auth_code;
     // response.quote_code = '1872536263';
 
     return response;
   }
 
-  async generateNumericCode(length: number): Promise<string> {
+  generateNumericCode(length: number): string {
     let code = '';
     for (let i = 0; i < length; i++) {
       // 0부터 9까지의 무작위 숫자 생성
