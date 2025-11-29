@@ -387,31 +387,31 @@ export class UserService {
     });
     if (!telecom) throw new NotFoundException();
 
-    const rateForSearch = await this.rateRepository.findOne({
-      where: { name: dto.phone_plan.name, delete_time: '' },
-    });
-    if (!rateForSearch) {
-      const rate = new Rate();
-      rate.name = dto.phone_plan.name;
-      rate.price = dto.phone_plan.price;
-      rate.data = 200;
-      rate.telecom = telecom;
-      rate.delete_time = '';
-      await this.rateRepository.save(rate);
-    }
-    // const rate = new Rate();
-    // rate.name = dto.phone_plan.name;
-    // rate.price = dto.phone_plan.price;
-    // rate.data = 200;
-    // rate.telecom = telecom;
-    // rate.delete_time = '';
-    // await this.rateRepository.save(rate);
+    // const rateForSearch = await this.rateRepository.findOne({
+    //   where: { name: dto.phone_plan.name, delete_time: '' },
+    // });
+    // if (!rateForSearch) {
+    //   const rate = new Rate();
+    //   rate.name = dto.phone_plan.name;
+    //   rate.price = dto.phone_plan.price;
+    //   rate.data = 200;
+    //   rate.telecom = telecom;
+    //   rate.delete_time = '';
+    //   await this.rateRepository.save(rate);
+    // }
+    // // const rate = new Rate();
+    // // rate.name = dto.phone_plan.name;
+    // // rate.price = dto.phone_plan.price;
+    // // rate.data = 200;
+    // // rate.telecom = telecom;
+    // // rate.delete_time = '';
+    // // await this.rateRepository.save(rate);
+    // // console.debug(rate);
+    // const rate = await this.rateRepository.findOne({
+    //   where: { name: dto.phone_plan.name, delete_time: '' },
+    // });
+    // if (!rate) throw new NotFoundException('norate');
     // console.debug(rate);
-    const rate = await this.rateRepository.findOne({
-      where: { name: dto.phone_plan.name, delete_time: '' },
-    });
-    if (!rate) throw new NotFoundException('norate');
-    console.debug(rate);
 
     const phone = await this.phoneRepository.findOne({
       where: {
