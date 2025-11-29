@@ -98,4 +98,8 @@ export class KakaoUser {
 
   @OneToMany(() => Estimate, (estimate) => estimate.kakaoUser)
   estimates: Estimate[];
+
+  constructor() {
+    this.name = '';
+  }
 }
