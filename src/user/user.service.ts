@@ -434,7 +434,7 @@ export class UserService {
         phone: { name: dto.phone_name },
         // agency: { id: agency.id },
         // telecom: { id: telecom.id },
-        rate: { name: dto.phone_plan.name },
+        // rate: { name: dto.phone_plan.name },
         // subscription_type: dto.subscription_type,
         // delete_time: '',
       },
