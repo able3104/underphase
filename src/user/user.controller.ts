@@ -140,7 +140,7 @@ export class UserController {
   }
 
   @Get('getQuote')
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiOperation({ summary: '견적서 조회' })
   @ApiResponse({
     status: 201,
@@ -149,20 +149,12 @@ export class UserController {
   })
   @ApiBadRequestResponse({ description: '견적서 조회 실패' })
   @ApiNotFoundResponse({ description: '해당 견적서 없음' })
-  @UseGuards(UserAuthGuard)
+  // @UseGuards(UserAuthGuard)
   async getQuote(
     @Query() dto: getQuoteReqDto,
     @Req() req: Request,
   ): Promise<getQuoteResDto> {
-    const kakaoUser: UserPayload = req['user'];
-    // console.debug(kakaoUser);
-
-    const authHeader = req.headers['authorization'];
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('인증 토큰(Bearer)이 필요합니다.');
-    }
-    const token = authHeader.split(' ')[1].trim();
-    return this.userService.getQuote(dto, kakaoUser, token);
+    return this.userService.getQuote(dto);
   }
 
   @Get('getSubsidy')
