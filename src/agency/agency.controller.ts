@@ -347,7 +347,7 @@ export class AgencyController {
   @ApiResponse({
     status: 201,
     description: '조회 성공',
-    type: getStatusAgencyResDto,
+    type: getQuoteDetailResDto,
   })
   @ApiBadRequestResponse({ description: '조회 실패' })
   @ApiNotFoundResponse({ description: '없음' })

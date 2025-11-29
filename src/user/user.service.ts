@@ -238,7 +238,7 @@ export class UserService {
       phone_price,
       phone_plan,
       subscription_type,
-      // user_name,
+      customer_name,
     } = dto;
     const { kakaoId, email, firebaseUid } = kakaoUser;
     const kakaoUserData = await this.kakaoUserRepository.findOne({
@@ -258,7 +258,7 @@ export class UserService {
         newUser.email = oidcUserInfo.email ?? email;
         newUser.firebaseUid = firebaseUid;
         newUser.delete_time = '';
-        // newUser.name = user_name;
+        newUser.name = customer_name;
 
         await this.kakaoUserRepository.save(newUser);
         console.debug('✅ 새로운 카카오 사용자 DB에 OIDC 정보로 저장 완료.');
