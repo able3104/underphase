@@ -526,6 +526,8 @@ export class UserService {
     response.discount.price = priceList.discount_price;
 
     response.subscription_type = estimate.subscription_type;
+    response.phone_image = phone.image_URL;
+    //response.auth_tag = agency.auth_tag;
 
     const benefit = [
       '스마트폰 케이스 쇼핑몰 5,000원 할인',

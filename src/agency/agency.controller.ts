@@ -122,78 +122,79 @@ export class AgencyController {
     return this.agencyService.agencyPasswordReset(dto, agency);
   }
 
-  @Post('enrollPriceList')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: '가격 리스트 등록' })
-  @ApiResponse({
-    status: 201,
-    description: '등록 성공',
-    type: enrollPriceListResDto,
-  })
-  @ApiBadRequestResponse({ description: '등록 실패' })
-  @ApiNotFoundResponse({
-    description: '중복되는 가격 리스트 정보 존재함',
-  })
-  @UseGuards(AuthGuard)
-  async enrollPriceList(
-    @Body() dto: enrollPriceListReqDto,
-    @Req() req: Request,
-  ): Promise<enrollPriceListResDto> {
-    const agency: payloadClass = req['agency'];
-    return this.agencyService.enrollPriceList(dto, agency);
-  }
+  // @Post('enrollPriceList')
+  // @ApiBearerAuth()
+  // @ApiOperation({ summary: '가격 리스트 등록' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '등록 성공',
+  //   type: enrollPriceListResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '등록 실패' })
+  // @ApiNotFoundResponse({
+  //   description: '중복되는 가격 리스트 정보 존재함',
+  // })
+  // @UseGuards(AuthGuard)
+  // async enrollPriceList(
+  //   @Body() dto: enrollPriceListReqDto,
+  //   @Req() req: Request,
+  // ): Promise<enrollPriceListResDto> {
+  //   const agency: payloadClass = req['agency'];
+  //   return this.agencyService.enrollPriceList(dto, agency);
+  // }
 
-  @Post('modifyPriceList')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: '가격 리스트 수정' })
-  @ApiResponse({
-    status: 201,
-    description: '수정 성공',
-    type: modifyListResDto,
-  })
-  @ApiBadRequestResponse({ description: '수정 실패' })
-  @ApiNotFoundResponse({ description: '해당 정보 보유 가격 리스트 없음' })
-  @UseGuards(AuthGuard)
-  async modifyPriceList(
-    @Body() dto: modifyListReqDto,
-    @Req() req: Request,
-  ): Promise<modifyListResDto> {
-    const agency: payloadClass = req['agency'];
-    return this.agencyService.modifyPriceList(dto, agency);
-  }
+  // @Post('modifyPriceList')
+  // @ApiBearerAuth()
+  // @ApiOperation({ summary: '가격 리스트 수정' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '수정 성공',
+  //   type: modifyListResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '수정 실패' })
+  // @ApiNotFoundResponse({ description: '해당 정보 보유 가격 리스트 없음' })
+  // @UseGuards(AuthGuard)
+  // async modifyPriceList(
+  //   @Body() dto: modifyListReqDto,
+  //   @Req() req: Request,
+  // ): Promise<modifyListResDto> {
+  //   const agency: payloadClass = req['agency'];
+  //   return this.agencyService.modifyPriceList(dto, agency);
+  // }
 
-  @Get('getAllPriceList')
-  @ApiOperation({ summary: '등록된 모든 가격 리스트 조회' })
-  @ApiResponse({
-    status: 201,
-    description: '조회 성공',
-    type: getAllPriceListResDto,
-  })
-  @ApiBadRequestResponse({ description: '' })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  async getAllPriceList(
-    // @Query() dto: getAllPriceListReqDto,
-    @Req() req: Request,
-  ): Promise<getAllPriceListResDto> {
-    const agency: payloadClass = req['agency'];
-    return this.agencyService.getAllPriceList(agency);
-  }
+  // @Get('getAllPriceList')
+  // @ApiOperation({ summary: '등록된 모든 가격 리스트 조회' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '조회 성공',
+  //   type: getAllPriceListResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '' })
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // async getAllPriceList(
+  //   // @Query() dto: getAllPriceListReqDto,
+  //   @Req() req: Request,
+  // ): Promise<getAllPriceListResDto> {
+  //   const agency: payloadClass = req['agency'];
+  //   return this.agencyService.getAllPriceList(agency);
+  // }
 
-  @Delete('deletePriceList')
-  @ApiOperation({ summary: '가격 리스트 삭제' })
-  @ApiResponse({
-    status: 201,
-    description: '삭제 성공',
-    type: deletePriceListResDto,
-  })
-  @ApiBadRequestResponse({ description: '삭제 실패' })
-  @ApiNotFoundResponse({ description: '해당 정보 보유 가격 리스트 없음' })
-  async deletePriceList(
-    @Body() dto: deletePriceListReqDto,
-  ): Promise<deletePriceListResDto> {
-    return this.agencyService.deletePriceList(dto);
-  }
+  // @Delete('deletePriceList')
+  // @ApiOperation({ summary: '가격 리스트 삭제' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: '삭제 성공',
+  //   type: deletePriceListResDto,
+  // })
+  // @ApiBadRequestResponse({ description: '삭제 실패' })
+  // @ApiNotFoundResponse({ description: '해당 정보 보유 가격 리스트 없음' })
+  // async deletePriceList(
+  //   @Body() dto: deletePriceListReqDto,
+  // ): Promise<deletePriceListResDto> {
+  //   return this.agencyService.deletePriceList(dto);
+  // }
+  /////////////////////////////////////////////////////////////////////
 
   // @Post('registerRatePlan')
   // @ApiOperation({ summary: '요금제 등록' })
