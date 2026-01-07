@@ -96,38 +96,106 @@ export class UserService {
   ): Promise<searchAgenciesResDto> {
     const { phone_name, phone_brand, telecom, can_change_telecom } = dto;
 
-    const priceList = await this.priceListRepository.find({
-      where: {
-        phone: {
-          name: phone_name,
-          brand: { name: phone_brand },
+    if (!can_change_telecom) {
+      const priceList = await this.priceListRepository.find({
+        where: {
+          phone: {
+            name: phone_name,
+            brand: { name: phone_brand },
+          },
+          telecom: { name: telecom },
+          delete_time: '',
+          subscription_type: '기기변경',
         },
-        telecom: { name: telecom },
-        delete_time: '',
-      },
-      relations: ['agency', 'phone', 'telecom', 'phone.brand'],
-      order: { price: 'ASC' },
-    });
-    if (priceList.length === 0) throw new NotFoundException();
+        relations: ['agency', 'phone', 'telecom', 'phone.brand'],
+        order: { price: 'ASC' },
+      });
+      if (priceList.length === 0) throw new NotFoundException();
 
-    const agencySimpleDtos = priceList.map((pl) => {
-      const dtoInstance = new AgencySimpleDto();
-      dtoInstance.agency_id = pl.agency.id;
-      dtoInstance.agency_name = pl.agency.name;
-      dtoInstance.agency_address = pl.agency.address;
+      const agencySimpleDtos = priceList.map((pl) => {
+        const dtoInstance = new AgencySimpleDto();
+        dtoInstance.agency_id = pl.agency.id;
+        dtoInstance.agency_name = pl.agency.name;
+        dtoInstance.agency_address = pl.agency.address;
 
-      // dtoInstance.agency_rating = pl.agency.;
-      dtoInstance.telecom = pl.telecom.name;
-      dtoInstance.subscription_type = pl.subscription_type;
+        // dtoInstance.agency_rating = pl.agency.;
+        dtoInstance.telecom = pl.telecom.name;
+        dtoInstance.subscription_type = pl.subscription_type;
 
-      dtoInstance.phome_brand = pl.phone.brand.name;
-      dtoInstance.phone_name = pl.phone.name;
-      dtoInstance.phone_price = pl.price;
+        dtoInstance.phome_brand = pl.phone.brand.name;
+        dtoInstance.phone_name = pl.phone.name;
+        dtoInstance.phone_price = pl.price;
 
-      dtoInstance.auth_tag = pl.agency.auth_tag;
+        dtoInstance.auth_tag = pl.agency.auth_tag;
 
-      return dtoInstance;
-    });
+        return dtoInstance;
+      });
+
+      const response = new searchAgenciesResDto();
+      // response.setter(agencyData);
+      response.agency = agencySimpleDtos;
+
+      return response;
+    } else {
+      const priceList = await this.priceListRepository.find({
+        where: {
+          phone: {
+            name: phone_name,
+            brand: { name: phone_brand },
+          },
+          telecom: { name: telecom },
+          delete_time: '',
+        },
+        relations: ['agency', 'phone', 'telecom', 'phone.brand'],
+        order: { price: 'ASC' },
+      });
+      if (priceList.length === 0) throw new NotFoundException();
+
+      const agencySimpleDtos = priceList.map((pl) => {
+        const dtoInstance = new AgencySimpleDto();
+        dtoInstance.agency_id = pl.agency.id;
+        dtoInstance.agency_name = pl.agency.name;
+        dtoInstance.agency_address = pl.agency.address;
+
+        // dtoInstance.agency_rating = pl.agency.;
+        dtoInstance.telecom = pl.telecom.name;
+        dtoInstance.subscription_type = pl.subscription_type;
+
+        dtoInstance.phome_brand = pl.phone.brand.name;
+        dtoInstance.phone_name = pl.phone.name;
+        dtoInstance.phone_price = pl.price;
+
+        dtoInstance.auth_tag = pl.agency.auth_tag;
+
+        return dtoInstance;
+      });
+
+      const response = new searchAgenciesResDto();
+      // response.setter(agencyData);
+      response.agency = agencySimpleDtos;
+
+      return response;
+    }
+
+    // const agencySimpleDtos = priceList.map((pl) => {
+    //   const dtoInstance = new AgencySimpleDto();
+    //   dtoInstance.agency_id = pl.agency.id;
+    //   dtoInstance.agency_name = pl.agency.name;
+    //   dtoInstance.agency_address = pl.agency.address;
+
+    //   // dtoInstance.agency_rating = pl.agency.;
+    //   dtoInstance.telecom = pl.telecom.name;
+    //   dtoInstance.subscription_type = pl.subscription_type;
+
+    //   dtoInstance.phome_brand = pl.phone.brand.name;
+    //   dtoInstance.phone_name = pl.phone.name;
+    //   dtoInstance.phone_price = pl.price;
+
+    //   dtoInstance.auth_tag = pl.agency.auth_tag;
+
+    //   return dtoInstance;
+    // });
+
     // const agencyData: AgencySimpleDto[] = [
     //   {
     //     agency_id: 1,
@@ -154,11 +222,12 @@ export class UserService {
     //     auth_tag: true,
     //   },
     // ];
-    const response = new searchAgenciesResDto();
-    // response.setter(agencyData);
-    response.agency = agencySimpleDtos;
 
-    return response;
+    // const response = new searchAgenciesResDto();
+    // // response.setter(agencyData);
+    // response.agency = agencySimpleDtos;
+
+    // return response;
   }
 
   async getAgencyDetail(
