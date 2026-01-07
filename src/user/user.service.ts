@@ -106,6 +106,7 @@ export class UserService {
         delete_time: '',
       },
       relations: ['agency', 'phone', 'telecom', 'phone.brand'],
+      order: { price: 'ASC' },
     });
     if (priceList.length === 0) throw new NotFoundException();
 
