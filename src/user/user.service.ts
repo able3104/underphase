@@ -269,6 +269,8 @@ export class UserService {
     response.agency_id = agencies.id;
     response.agency_name = agencies.name;
     response.agency_address = agencies.address;
+    response.agency_latitude = agencies.latitude;
+    response.agency_longitude = agencies.longitude;
     response.agency_phone_number = agencies.phone_number;
 
     response.phone_name = phone.name;

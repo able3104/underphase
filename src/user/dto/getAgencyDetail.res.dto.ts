@@ -30,6 +30,22 @@ export class getAgencyDetailResDto {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({
+    description: '판매점 위도',
+    example: 35.1795543,
+  })
+  agency_latitude: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '판매점 경도',
+    example: 129.0756416,
+  })
+  agency_longitude: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
     description: '대리점 전화번호',
     example: '0511234567',
   })
