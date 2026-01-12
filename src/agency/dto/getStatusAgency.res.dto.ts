@@ -4,8 +4,10 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class quoteDto {
   quote_id: number;
   customer_name: string;
+  costomer_phone_number: string;
   quote_code: string;
   create_time: Date;
+  is_user_visit: boolean;
 }
 
 export class getStatusAgencyResDto {

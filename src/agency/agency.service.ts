@@ -550,30 +550,30 @@ export class AgencyService {
     dto: getStatusAgencyReqDto,
     agency: payloadClass,
   ): Promise<getStatusAgencyResDto> {
-    // 1. 해당 Agency 존재 여부 확인
+    // 1. 해당 Agency 확인
     const agencyForSearch = await this.agencyRepository.findOne({
       where: { id: agency.payload.id },
     });
     if (!agencyForSearch)
       throw new UnauthorizedException('존재하지 않는 판매점입니다.');
 
-    // 2. 해당 Agency의 모든 견적서 조회 (고객 정보 포함 및 최신순 정렬)
+    // 2. 해당 Agency의 모든 견적서 조회 (KakaoUser 정보 포함)
     const estimates = await this.estimateRepository.find({
       where: {
         priceList: { agency: { id: agencyForSearch.id } },
         delete_time: '',
       },
-      relations: ['kakaoUser'], // 고객명을 가져오기 위한 조인
-      order: { create_time: 'DESC' }, // 최신 견적이 위로 오도록 정렬
+      relations: ['kakaoUser'], // 고객 정보를 가져오기 위해 필수
+      order: { create_time: 'DESC' },
     });
 
-    // 3. 통계 데이터 계산
+    // 3. 통계 계산
     const quoteCount = estimates.length;
     const completeQuoteCount = estimates.filter(
       (e) => e.is_user_visit === true,
     ).length;
 
-    // 4. StatusAgency 엔티티 업데이트 (통계 최신화)
+    // 4. StatusAgency 엔티티 업데이트 (DB 저장)
     let statusAgency = await this.statusAgencyRepository.findOne({
       where: { agency: { id: agencyForSearch.id }, delete_time: '' },
     });
@@ -588,19 +588,26 @@ export class AgencyService {
     statusAgency.complete_quote_count = completeQuoteCount;
     await this.statusAgencyRepository.save(statusAgency);
 
-    // 5. 응답 DTO 매핑
+    // 5. 응답 DTO 생성 및 리스트 매핑
     const response = new getStatusAgencyResDto();
     response.quote_count = statusAgency.quote_count;
     response.complete_quote_count = statusAgency.complete_quote_count;
 
-    // quotes 배열에 생성 날짜(create_time)를 포함하여 매핑
     response.quotes = estimates.map((estimate) => {
-      const quote = new quoteDto(); // 만약 class 인스턴스 생성이 필요하다면
-      quote.quote_id = estimate.id;
-      quote.customer_name = estimate.kakaoUser?.name || '알 수 없음';
-      quote.quote_code = estimate.auth_code;
-      quote.create_time = estimate.create_time; // 추가된 필드
-      return quote;
+      const q = new quoteDto();
+      q.quote_id = estimate.id;
+      q.customer_name = estimate.kakaoUser?.name || '정보 없음';
+
+      // DTO의 오타(costomer)에 맞춰 매핑하되, 엔티티에 phone_number가 활성화되어 있어야 합니다.
+      // 만약 엔티티 컬럼이 없다면 undefined가 들어갑니다.
+      q.costomer_phone_number =
+        (estimate.kakaoUser as any)?.phone_number || '010-0000-0000';
+
+      q.quote_code = estimate.auth_code;
+      q.create_time = estimate.create_time;
+      q.is_user_visit = estimate.is_user_visit; // 방문 여부 추가
+
+      return q;
     });
 
     return response;
