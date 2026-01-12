@@ -585,6 +585,8 @@ export class UserService {
     response.agency_name = agency.name;
     response.agency_rating = agency.review_score;
     response.agency_address = agency.address;
+    response.agency_latitude = agency.latitude;
+    response.agency_longitude = agency.longitude;
     response.agency_phone_number = agency.phone_number;
 
     response.phone_name = phone.name;

@@ -46,6 +46,7 @@ export class getQuoteResDto {
     example: '가야 SKT 판매점',
   })
   agency_name: string;
+
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({
@@ -60,6 +61,23 @@ export class getQuoteResDto {
     example: '부산광역시 가야동',
   })
   agency_address: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '판매점 위도',
+    example: 35.1795543,
+  })
+  agency_latitude: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '판매점 경도',
+    example: 129.0756416,
+  })
+  agency_longitude: number;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
