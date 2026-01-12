@@ -560,6 +560,7 @@ export class UserService {
         'phone',
         'priceList.rate',
         'phone.brand',
+        'kakaoUser',
       ],
     });
 
@@ -579,7 +580,7 @@ export class UserService {
     const agency = priceList.agency;
     const brand = phone.brand;
 
-    // response.customer_name = '박민준';
+    response.customer_name = estimate.kakaoUser.name;
 
     response.agency_name = agency.name;
     response.agency_rating = agency.review_score;

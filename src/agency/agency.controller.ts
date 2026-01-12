@@ -367,7 +367,7 @@ export class AgencyController {
   @ApiResponse({
     status: 201,
     description: '조회 성공',
-    type: getStatusAgencyResDto,
+    type: getPriceListByPhoneResDto,
   })
   @ApiBadRequestResponse({ description: '조회 실패' })
   @ApiNotFoundResponse({ description: '없음' })
@@ -435,8 +435,8 @@ export class AgencyController {
     return this.agencyService.checkLogin(dto, agency);
   }
 
-  @Get('pushDummyData')
-  pushDummyData(): any {
-    return this.agencyService.pushDummyData();
-  }
+  // @Get('pushDummyData')
+  // pushDummyData(): any {
+  //   return this.agencyService.pushDummyData();
+  // }
 }

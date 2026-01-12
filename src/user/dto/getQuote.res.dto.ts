@@ -31,13 +31,13 @@ export class rateSimpleDto {
 }
 
 export class getQuoteResDto {
-  // @IsNumber()
-  // @IsNotEmpty()
-  // @ApiProperty({
-  //   description: '소비자 이름',
-  //   example: '박민준',
-  // })
-  // customer_name: string;
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '소비자 이름',
+    example: '박민준',
+  })
+  customer_name: string;
 
   @IsString()
   @IsNotEmpty()

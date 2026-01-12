@@ -77,6 +77,20 @@ export class Agency {
   })
   address: string;
 
+  @Column('double')
+  @ApiProperty({
+    description: '판매점 위도',
+    example: 35.1795543,
+  })
+  latitude: number;
+
+  @Column('double')
+  @ApiProperty({
+    description: '판매점 경도',
+    example: 129.0756416,
+  })
+  longitude: number;
+
   @Column()
   @ApiProperty({
     description: '판매점 전화번호',
