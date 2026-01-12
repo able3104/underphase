@@ -45,7 +45,7 @@ import { SubsidyByTelecom } from 'src/entity/SubsidyByTelecom.entity';
 import { enrollSubsidyReqDto } from './dto/enrollSubsidy.req.dto';
 import { enrollSubsidyResDto } from './dto/enrollSubsidy.res.dto';
 import { getStatusAgencyReqDto } from './dto/getStatusAgency.req.dto';
-import { getStatusAgencyResDto } from './dto/getStatusAgency.res.dto';
+import { getStatusAgencyResDto, quoteDto } from './dto/getStatusAgency.res.dto';
 import { StatusAgency } from 'src/entity/StatusAgency.entity';
 import { getStatusQuoteReqDto } from './dto/getStatusQuote.req.dto';
 import { getStatusQuoteResDto } from './dto/getStatusQuote.res.dto';
@@ -550,57 +550,58 @@ export class AgencyService {
     dto: getStatusAgencyReqDto,
     agency: payloadClass,
   ): Promise<getStatusAgencyResDto> {
-    // 1. 해당 Agency가 존재하는지 먼저 확인
+    // 1. 해당 Agency 존재 여부 확인
     const agencyForSearch = await this.agencyRepository.findOne({
       where: { id: agency.payload.id },
     });
     if (!agencyForSearch)
       throw new UnauthorizedException('존재하지 않는 판매점입니다.');
 
-    // 2. 해당 Agency의 견적서 개수 계산 (Estimate -> PriceList -> Agency 관계 이용)
-    // 전체 견적 개수
-    const quoteCount = await this.estimateRepository.count({
+    // 2. 해당 Agency의 모든 견적서 조회 (고객 정보 포함 및 최신순 정렬)
+    const estimates = await this.estimateRepository.find({
       where: {
         priceList: { agency: { id: agencyForSearch.id } },
         delete_time: '',
       },
+      relations: ['kakaoUser'], // 고객명을 가져오기 위한 조인
+      order: { create_time: 'DESC' }, // 최신 견적이 위로 오도록 정렬
     });
 
-    // 방문 처리된(완료된) 견적 개수 (is_user_visit 가 true인 경우)
-    const completeQuoteCount = await this.estimateRepository.count({
-      where: {
-        priceList: { agency: { id: agencyForSearch.id } },
-        is_user_visit: true,
-        delete_time: '',
-      },
-    });
+    // 3. 통계 데이터 계산
+    const quoteCount = estimates.length;
+    const completeQuoteCount = estimates.filter(
+      (e) => e.is_user_visit === true,
+    ).length;
 
-    // 3. StatusAgency 업데이트 또는 생성
+    // 4. StatusAgency 엔티티 업데이트 (통계 최신화)
     let statusAgency = await this.statusAgencyRepository.findOne({
-      where: {
-        agency: { id: agencyForSearch.id },
-        delete_time: '',
-      },
+      where: { agency: { id: agencyForSearch.id }, delete_time: '' },
     });
 
     if (!statusAgency) {
-      // 없으면 신규 생성
       statusAgency = new StatusAgency();
       statusAgency.agency = agencyForSearch;
       statusAgency.delete_time = '';
     }
 
-    // 최신 카운트 정보 업데이트
     statusAgency.quote_count = quoteCount;
     statusAgency.complete_quote_count = completeQuoteCount;
-
-    // DB에 저장
     await this.statusAgencyRepository.save(statusAgency);
 
-    // 4. 응답 DTO 반환
+    // 5. 응답 DTO 매핑
     const response = new getStatusAgencyResDto();
     response.quote_count = statusAgency.quote_count;
     response.complete_quote_count = statusAgency.complete_quote_count;
+
+    // quotes 배열에 생성 날짜(create_time)를 포함하여 매핑
+    response.quotes = estimates.map((estimate) => {
+      const quote = new quoteDto(); // 만약 class 인스턴스 생성이 필요하다면
+      quote.quote_id = estimate.id;
+      quote.customer_name = estimate.kakaoUser?.name || '알 수 없음';
+      quote.quote_code = estimate.auth_code;
+      quote.create_time = estimate.create_time; // 추가된 필드
+      return quote;
+    });
 
     return response;
   }

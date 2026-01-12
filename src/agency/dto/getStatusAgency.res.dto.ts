@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
+export class quoteDto {
+  quote_id: number;
+  customer_name: string;
+  quote_code: string;
+  create_time: Date;
+}
+
 export class getStatusAgencyResDto {
   @IsString()
   @IsNotEmpty()
@@ -17,4 +24,6 @@ export class getStatusAgencyResDto {
     example: 1000,
   })
   complete_quote_count: number;
+
+  quotes: quoteDto[];
 }
