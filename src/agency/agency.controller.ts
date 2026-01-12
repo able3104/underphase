@@ -75,7 +75,7 @@ export class AgencyController {
   ) {}
 
   @Post('agencyLogin')
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiOperation({ summary: '판매점 로그인' })
   @ApiResponse({
     status: 201,
