@@ -660,21 +660,22 @@ export class AgencyService {
   ): Promise<getQuoteDetailResDto> {
     if (!agency) throw new UnauthorizedException();
 
-    const newAgency = new Agency();
-    newAgency.id = agency.payload.id;
+    // 1. 판매점 확인
     const agencyForSearch = await this.agencyRepository.findOne({
       where: {
-        id: newAgency.id,
-        delete_time: '',
+        id: agency.payload.id,
+        delete_time: '', // 서버 DB가 NULL을 사용한다면 이 조건은 주의가 필요합니다.
       },
     });
-    if (!agencyForSearch) throw new UnauthorizedException();
+    if (!agencyForSearch)
+      throw new UnauthorizedException('판매점 정보를 찾을 수 없습니다.');
 
+    // 2. 인증 코드(auth_code)로 특정 견적서 조회
     const estimateData = await this.estimateRepository.findOne({
       where: {
+        auth_code: dto.auth_code, // ★ DTO에서 받은 인증 코드를 조건에 추가
         priceList: {
-          agency: { id: newAgency.id, delete_time: '' },
-          delete_time: '',
+          agency: { id: agencyForSearch.id },
         },
         delete_time: '',
       },
@@ -687,22 +688,37 @@ export class AgencyService {
         'priceList.telecom',
       ],
     });
-    if (!estimateData) throw new NotFoundException();
 
+    // 데이터가 없으면 404 반환
+    if (!estimateData) {
+      console.error(
+        `Estimate not found. AgencyID: ${agencyForSearch.id}, AuthCode: ${dto.auth_code}`,
+      );
+      throw new NotFoundException(
+        '해당 인증 코드와 일치하는 견적서가 없습니다.',
+      );
+    }
+
+    // 3. 통신사 공시지원금 조회
     const subsidy_by_telecom = await this.subsidyBytTelecomRepository.findOne({
       where: {
         telecom: estimateData.priceList.telecom.name,
       },
     });
-    if (!subsidy_by_telecom) throw new NotFoundException();
 
+    // 지원금 정보가 없을 경우 404 또는 기본값 처리
+    if (!subsidy_by_telecom) {
+      throw new NotFoundException('통신사 지원금 정보를 찾을 수 없습니다.');
+    }
+
+    // 4. 응답 DTO 매핑
     const response = new getQuoteDetailResDto();
     response.is_phone_activate = estimateData.is_user_visit;
-    response.customer_name = estimateData.kakaoUser.name;
-    response.customer_email = estimateData.kakaoUser.email;
-    response.phone_brand = estimateData.phone.brand.name;
-    response.phone_name = estimateData.phone.name;
-    response.phone_volume = estimateData.phone.volume;
+    response.customer_name = estimateData.kakaoUser?.name || '정보 없음';
+    response.customer_email = estimateData.kakaoUser?.email || '정보 없음';
+    response.phone_brand = estimateData.phone?.brand?.name || '정보 없음';
+    response.phone_name = estimateData.phone?.name || '정보 없음';
+    response.phone_volume = estimateData.phone?.volume || '';
     response.subscription_type = estimateData.subscription_type;
     response.subsidy_by_telecom = subsidy_by_telecom.value;
     response.subsidy_by_agency = estimateData.priceList.discount_price;
