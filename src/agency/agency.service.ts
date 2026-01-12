@@ -550,41 +550,58 @@ export class AgencyService {
     dto: getStatusAgencyReqDto,
     agency: payloadClass,
   ): Promise<getStatusAgencyResDto> {
-    const agencyForSearch: Agency | null = await this.agencyRepository.findOne({
+    // 1. 해당 Agency가 존재하는지 먼저 확인
+    const agencyForSearch = await this.agencyRepository.findOne({
       where: { id: agency.payload.id },
     });
-    if (!agencyForSearch) throw new UnauthorizedException();
-    console.debug(agencyForSearch);
+    if (!agencyForSearch)
+      throw new UnauthorizedException('존재하지 않는 판매점입니다.');
 
-    const statusAgencyForSearch = await this.statusAgencyRepository.find({
+    // 2. 해당 Agency의 견적서 개수 계산 (Estimate -> PriceList -> Agency 관계 이용)
+    // 전체 견적 개수
+    const quoteCount = await this.estimateRepository.count({
+      where: {
+        priceList: { agency: { id: agencyForSearch.id } },
+        delete_time: '',
+      },
+    });
+
+    // 방문 처리된(완료된) 견적 개수 (is_user_visit 가 true인 경우)
+    const completeQuoteCount = await this.estimateRepository.count({
+      where: {
+        priceList: { agency: { id: agencyForSearch.id } },
+        is_user_visit: true,
+        delete_time: '',
+      },
+    });
+
+    // 3. StatusAgency 업데이트 또는 생성
+    let statusAgency = await this.statusAgencyRepository.findOne({
       where: {
         agency: { id: agencyForSearch.id },
         delete_time: '',
       },
     });
-    if (statusAgencyForSearch) {
-    } else if (!statusAgencyForSearch) {
-      const statusAgencyEntity = new StatusAgency();
-      statusAgencyEntity.agency = agencyForSearch;
-      statusAgencyEntity.complete_quote_count = 0;
-      statusAgencyEntity.quote_count = 0;
-      statusAgencyEntity.delete_time = '';
 
-      await this.statusAgencyRepository.save(statusAgencyEntity);
+    if (!statusAgency) {
+      // 없으면 신규 생성
+      statusAgency = new StatusAgency();
+      statusAgency.agency = agencyForSearch;
+      statusAgency.delete_time = '';
     }
-    console.debug(statusAgencyForSearch);
-    const statusAgency: StatusAgency | null =
-      await this.statusAgencyRepository.findOne({
-        where: {
-          agency: { id: agencyForSearch.id },
-          delete_time: '',
-        },
-      });
-    if (!statusAgency) throw new NotFoundException();
 
+    // 최신 카운트 정보 업데이트
+    statusAgency.quote_count = quoteCount;
+    statusAgency.complete_quote_count = completeQuoteCount;
+
+    // DB에 저장
+    await this.statusAgencyRepository.save(statusAgency);
+
+    // 4. 응답 DTO 반환
     const response = new getStatusAgencyResDto();
-    response.complete_quote_count = statusAgency.complete_quote_count;
     response.quote_count = statusAgency.quote_count;
+    response.complete_quote_count = statusAgency.complete_quote_count;
+
     return response;
   }
 
