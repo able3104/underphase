@@ -739,6 +739,7 @@ export class AgencyService {
 
     const { phone_brand, phone_name } = dto;
 
+    console.log('Searching for phone name:', phone_name);
     const phoneForSearch = await this.phoneRepository.findOne({
       where: {
         name: phone_name,
@@ -746,6 +747,7 @@ export class AgencyService {
         // delete_time: '',
       },
     });
+    console.log('Search Result:', phoneForSearch);
     if (!phoneForSearch) throw new NotFoundException('Phone not found.');
 
     const allPriceLists: PriceListEntity[] =
