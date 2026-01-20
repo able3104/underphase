@@ -772,14 +772,17 @@ export class AgencyService {
 
     for (const telecomName of TARGET_TELECOMS) {
       const telecom = await this.telecomRepository.findOne({
-        where: { name: telecomName, delete_time: '' },
+        where: {
+          name: telecomName,
+          //delete_time: ''
+        },
       });
       if (!telecom) {
         // const telecomExample = new Telecom();
         // telecomExample.name = telecomName;
         // telecomExample.delete_time = '';
         // await this.telecomRepository.save(telecomExample);
-        throw new NotFoundException();
+        throw new NotFoundException('Telecom not found.');
       }
       const currentPriceList: PriceSettingFeildProps = {
         telecom: telecomName,
