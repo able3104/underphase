@@ -743,7 +743,7 @@ export class AgencyService {
       where: {
         name: phone_name,
         // brand: { name: phone_brand, delete_time: '' },
-        delete_time: '',
+        // delete_time: '',
       },
     });
     if (!phoneForSearch) throw new NotFoundException('Phone not found.');
