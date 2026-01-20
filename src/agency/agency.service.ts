@@ -738,7 +738,8 @@ export class AgencyService {
     if (!agencyForSearch) throw new NotFoundException('Agency not found.');
 
     // const { phone_name } = dto;
-    const phone_name = '갤럭시S25';
+    // const phone_name = '갤럭시S25';
+    const phone_name = dto.phone_name;
 
     console.log('Searching for phone name:', phone_name);
     const phoneForSearch = await this.phoneRepository.findOne({
