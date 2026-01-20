@@ -735,7 +735,7 @@ export class AgencyService {
     const agencyForSearch = await this.agencyRepository.findOne({
       where: { id: agency.payload.id, delete_time: '' },
     });
-    if (!agencyForSearch) throw new NotFoundException('');
+    if (!agencyForSearch) throw new NotFoundException('Agency not found.');
 
     const { phone_brand, phone_name } = dto;
 
@@ -746,7 +746,7 @@ export class AgencyService {
         delete_time: '',
       },
     });
-    if (!phoneForSearch) throw new NotFoundException();
+    if (!phoneForSearch) throw new NotFoundException('Phone not found.');
 
     const allPriceLists: PriceListEntity[] =
       await this.priceListRepository.find({
@@ -808,7 +808,8 @@ export class AgencyService {
             await this.subsidyBytTelecomRepository.findOne({
               where: { telecom: telecomName },
             });
-          if (!subsidy_by_telecom) throw new NotFoundException();
+          if (!subsidy_by_telecom)
+            throw new NotFoundException('Subsidy by telecom not found.');
           option.price =
             original_price - subsidy_by_agency - subsidy_by_telecom.value;
           option.plan = priceListForSearch.rate.name;
