@@ -14,6 +14,7 @@ export interface PriceSettingFeildProps {
 }
 
 export class getPriceListByPhoneResDto {
+  
   priceList: PriceSettingFeildProps[];
 
   constructor() {

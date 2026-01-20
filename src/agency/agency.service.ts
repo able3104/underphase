@@ -735,7 +735,7 @@ export class AgencyService {
     const agencyForSearch = await this.agencyRepository.findOne({
       where: { id: agency.payload.id, delete_time: '' },
     });
-    if (!agencyForSearch) throw new NotFoundException();
+    if (!agencyForSearch) throw new NotFoundException('');
 
     const { phone_brand, phone_name } = dto;
 

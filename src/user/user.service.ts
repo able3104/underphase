@@ -315,7 +315,7 @@ export class UserService {
     } = dto;
     const { kakaoId, email, firebaseUid } = kakaoUser;
     const kakaoUserData = await this.kakaoUserRepository.findOne({
-      where: { kakaoId: kakaoId },
+      where: { email: email, delete_time: '' },
     });
 
     if (!kakaoUserData) {
